@@ -147,3 +147,8 @@ h1{line-height:1.05}
 .paid-fold>summary span{color:#c5cbd2;font-size:14px}.paid-fold>summary strong{margin-left:auto;font-family:'Saira Stencil One','Barlow',sans-serif;font-weight:400;font-size:20px}
 .paid-fold>summary::after{content:'▾';color:var(--gold);margin-left:10px}.paid-fold[open]>summary::after{content:'▴'}
 .paid-fold>.paid-sport{padding:0 14px 6px;margin-bottom:10px}
+.paid-boss-grid{grid-template-columns:1fr 1fr!important;gap:12px!important}
+.paid-role-top{text-align:center;font-family:'Saira Stencil One','Barlow',sans-serif;font-size:20px;letter-spacing:2px;color:var(--gold);padding:10px 0 8px;background:#0e1116;border-bottom:1px solid #3a3427}
+.paid-mafia-portrait{object-position:center 30%!important}
+.paid-duo-noart{margin-top:14px}
+@media(max-width:600px){.paid-role-top{font-size:15px;letter-spacing:1px}.paid-profile-info h3{font-size:18px}.paid-money b{font-size:19px}}
