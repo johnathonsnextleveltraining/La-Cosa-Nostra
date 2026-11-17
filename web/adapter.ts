@@ -1,6 +1,7 @@
 // Standalone web version: replaces the old app's /api/* server with calls to Boss's Supabase
 // through one passcode-locked database function (public.lcn_api).
 import { stateFor, today } from '../src/lib/engine.ts';
+import { ensureDen } from './den.ts';
 
 const SB = 'https://nnwnaskgkugxfunxmllc.supabase.co';
 const KEY = 'sb_publishable_aqT2OLxm-2CqOW6QRPZnEg_K8-qFfsd';
@@ -52,6 +53,7 @@ async function state() {
   s.den = settings.den?.den || null; s.denDate = denDate; s.denPicks = picks.filter((p: any) => p.date === denDate); s.denSnapshots = snaps;
   s.cash = { cash: settings.cash ?? 0, bookie: settings.bookie ?? 0, date: settings.cashDate || '' };
   s.audit = []; s.empty = false; s.onlyJohnny = false;
+  if (denDate !== today()) ensureDen(getPass(), denDate, () => { cache = null });
   return s;
 }
 
