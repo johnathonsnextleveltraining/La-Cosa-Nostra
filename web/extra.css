@@ -105,3 +105,7 @@ h1{line-height:1.05}
 .lock-pick .den-lion{width:30px;height:30px;flex:none;margin-left:auto;filter:drop-shadow(0 0 4px #0008)}
 .lock-pick .den-lion+.grade{margin-left:8px}
 @media(max-width:600px){.lock-pick .den-lion{width:24px;height:24px}.lock-pick .den-lion+.grade{margin-left:6px}.lock-pick{gap:10px}}
+.den-crew{display:flex;align-items:center;gap:12px;width:100%;margin-top:6px;padding:10px 12px;border:1px solid #3a3427;border-radius:6px;background:#14120d}
+.den-crew .card-avatars{padding-left:6px}.den-crew .card-avatars .avatar,.den-crew .card-avatars img{width:30px;height:30px;margin-left:-6px}
+.den-crew strong{display:block;font-size:22px;color:var(--gold);font-family:'Saira Stencil One','Barlow',sans-serif}.den-crew small{display:block;font-size:11px;color:#aab3bd}
+.den-crew>div{margin-left:auto;text-align:right}

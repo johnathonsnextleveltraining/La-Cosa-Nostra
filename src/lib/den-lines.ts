@@ -1,5 +1,5 @@
 import {norm,type Pick} from './engine.ts';
-const sameTeam=(a:string,b:string)=>{a=norm(a.replace(/^\d+\.\s*/,''));b=norm(b);return !!a&&!!b&&(a===b||a.endsWith(b)||b.endsWith(a))};
+export const sameTeam=(a:string,b:string)=>{a=norm(a.replace(/^\d+\.\s*/,''));b=norm(b);return !!a&&!!b&&(a===b||a.endsWith(b)||b.endsWith(a))};
 function denMatches(picks:Pick[],sport:string,team:string,details:string,date:string){
  const opponent=details.match(/Playing:\s*(?:vs\.?|@)\s*([^\n]+)/i)?.[1];
  if(!opponent)return [];
