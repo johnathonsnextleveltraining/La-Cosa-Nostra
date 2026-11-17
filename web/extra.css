@@ -52,3 +52,4 @@ aside nav::-webkit-scrollbar{width:6px}aside nav::-webkit-scrollbar-track{backgr
   .pif-sticky-heading{top:calc(57px + env(safe-area-inset-top))}
   aside{z-index:50;padding-top:env(safe-area-inset-top)}
 }
+@media(max-width:800px){.header-right .revision,.header-right .private{display:none}}
