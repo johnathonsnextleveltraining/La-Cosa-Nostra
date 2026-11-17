@@ -6,12 +6,26 @@ import { today, offset } from '../src/lib/engine.ts';
 const SB = 'https://nnwnaskgkugxfunxmllc.supabase.co';
 const KEY = 'sb_publishable_aqT2OLxm-2CqOW6QRPZnEg_K8-qFfsd';
 const ESPN = 'https://site.api.espn.com/apis/site/v2/sports/';
-const LEAGUES: Record<string, { path: string; start: string; q: string }> = {
-  NBA: { path: 'basketball/nba', start: '2026-10-20', q: '' },
-  CBB: { path: 'basketball/mens-college-basketball', start: '2026-11-02', q: '&groups=50&limit=400' },
-  CFB: { path: 'football/college-football', start: '2026-08-27', q: '&groups=80&limit=400' },
-  NFL: { path: 'football/nfl', start: '2026-09-09', q: '' },
+const CORE = 'https://sports.core.api.espn.com/v2/sports/';
+const LEAGUES: Record<string, { path: string; core: string; start: string; q: string }> = {
+  NBA: { path: 'basketball/nba', core: 'basketball/leagues/nba', start: '2026-10-20', q: '' },
+  CBB: { path: 'basketball/mens-college-basketball', core: 'basketball/leagues/mens-college-basketball', start: '2026-11-02', q: '&groups=50&limit=400' },
+  CFB: { path: 'football/college-football', core: 'football/leagues/college-football', start: '2026-08-27', q: '&groups=80&limit=400' },
+  NFL: { path: 'football/nfl', core: 'football/leagues/nfl', start: '2026-09-09', q: '' },
 };
+// Finished games drop their odds from the scoreboard, so the closing spread comes from ESPN's
+// per-game odds feed (DraftKings) and is cached in the saved Den (_Lines) so each day only fetches new finals.
+async function closingLine(sport: string, id: string): Promise<number | null> {
+  try {
+    const r = await fetch(CORE + LEAGUES[sport].core + '/events/' + id + '/competitions/' + id + '/odds', { cache: 'no-store' });
+    if (!r.ok) return null; const j = await r.json();
+    const it = (j.items || []).find((x: any) => /draft/i.test(x.provider?.name || '')) || (j.items || [])[0]; if (!it) return null;
+    const det = String(it.details || '').trim(); if (/^(even|pk|pick)/i.test(det)) return 0;
+    const n = Math.abs(Number(it.spread ?? (det.match(/([+-]?\d+(?:\.\d+)?)$/) || [])[1])); if (isNaN(n)) return null;
+    if (it.homeTeamOdds?.favorite) return -n; if (it.awayTeamOdds?.favorite) return n;
+    return typeof it.spread === 'number' ? it.spread : null;
+  } catch { return null }
+}
 const MIN_OWN = 3, MIN_OPP = 2, TOP = 3;
 
 type Rec = { id: string; name: string; hw: number; hl: number; hp: number; aw: number; al: number; ap: number; sw: number; sl: number };
@@ -45,7 +59,8 @@ async function pool<T>(items: T[], n: number, fn: (x: T) => Promise<void>) {
   let i = 0; await Promise.all(Array.from({ length: n }, async () => { while (i < items.length) { const x = items[i++]; await fn(x) } }));
 }
 
-export async function buildDen(date = today(), log: (s: string) => void = () => { }) {
+export async function buildDen(date = today(), log: (s: string) => void = () => { }, prev: any = null) {
+  const lines = new Map<string, number>((prev?._Lines || []).slice(1).map((r: any) => [String(r[0]), Number(r[1])]));
   const ranked: any[] = [['Sport', 'Category', 'Rank', 'Team', 'ATS %', 'Details']];
   const cache: any[] = [['Sport', 'Team ID', 'Team', '', 'Home W', 'Home L', 'Home P', 'Away W', 'Away L', 'Away P', 'SU W', 'SU L', '', 'As of']];
   const asof = offset(date, -1);
@@ -54,18 +69,21 @@ export async function buildDen(date = today(), log: (s: string) => void = () => 
     for (let d = L.start; d <= asof; d = offset(d, 1)) days.push(d);
     const recs = new Map<string, Rec>(); const get = (t: any) => { let r = recs.get(t.id); if (!r) recs.set(t.id, r = { id: t.id, name: t.displayName, hw: 0, hl: 0, hp: 0, aw: 0, al: 0, ap: 0, sw: 0, sl: 0 }); return r };
     let finals = 0, priced = 0;
-    await pool(days, 6, async d => {
-      for (const e of await day(sport, d)) {
-        const c = e.competitions?.[0]; if (!c || !e.status?.type?.completed) continue;
+    const done: any[] = [];
+    await pool(days, 6, async d => { for (const e of await day(sport, d)) if (e.competitions?.[0] && e.status?.type?.completed) done.push(e) });
+    await pool(done.filter(e => !lines.has(sport + ':' + e.id)), 8, async e => { const l = homeLine(e.competitions[0]) ?? await closingLine(sport, e.id); if (l != null) lines.set(sport + ':' + e.id, l) });
+    for (const e of done) {
+      {
+        const c = e.competitions[0];
         const { h, a } = teams(c); if (!h || !a) continue;
         const hs = Number(h.score), as = Number(a.score); if (isNaN(hs) || isNaN(as)) continue;
         finals++; const H = get(h.team), A = get(a.team);
         if (hs > as) { H.sw++; A.sl++ } else if (as > hs) { A.sw++; H.sl++ }
-        const line = homeLine(c); if (line == null) continue; priced++;
+        const line = lines.get(sport + ':' + e.id); if (line == null) continue; priced++;
         const m = hs - as + line;
         if (m > 0) { H.hw++; A.al++ } else if (m < 0) { H.hl++; A.aw++ } else { H.hp++; A.ap++ }
       }
-    });
+    }
     log(`${sport}: ${finals} finals, ${priced} with closing spreads`);
     for (const r of recs.values()) cache.push([sport, r.id, r.name, '', r.hw, r.hl, r.hp, r.aw, r.al, r.ap, r.sw, r.sl, '', asof + 'T23:59:00Z']);
     const games = (await day(sport, date)).filter(e => e.status?.type?.state === 'pre');
@@ -94,7 +112,7 @@ export async function buildDen(date = today(), log: (s: string) => void = () => 
     }
     log(`${sport}: ${games.length} games today, ${rows.length} rankable sides`);
   }
-  return { 'Den Nov8 Ranked': ranked, '_Lions Den Team Cache': cache };
+  return { 'Den Nov8 Ranked': ranked, '_Lions Den Team Cache': cache, _Lines: [['Event', 'Home closing spread'], ...[...lines.entries()]] };
 }
 
 export async function saveDen(pass: string, date: string, den: any) {
@@ -104,9 +122,9 @@ export async function saveDen(pass: string, date: string, den: any) {
 
 let running = false;
 /** Called on app load: if today's Den is missing, build it in the background and save it. */
-export async function ensureDen(pass: string, denDate: string, onDone: () => void) {
+export async function ensureDen(pass: string, denDate: string, onDone: () => void, prev: any = null) {
   const d = today(); if (!pass || denDate === d || running) return;
   try { if (localStorage.getItem('lcn-den-try') === d + ':' + new Date().getHours()) return; localStorage.setItem('lcn-den-try', d + ':' + new Date().getHours()) } catch { }
   running = true;
-  try { const den = await buildDen(d); await saveDen(pass, d, den); onDone() } catch (e) { console.warn('Lions Den build failed', e) } finally { running = false }
+  try { const den = await buildDen(d, () => { }, prev); await saveDen(pass, d, den); onDone() } catch (e) { console.warn('Lions Den build failed', e) } finally { running = false }
 }

@@ -53,7 +53,7 @@ async function state() {
   s.den = settings.den?.den || null; s.denDate = denDate; s.denPicks = picks.filter((p: any) => p.date === denDate); s.denSnapshots = snaps;
   s.cash = { cash: settings.cash ?? 0, bookie: settings.bookie ?? 0, date: settings.cashDate || '' };
   s.audit = []; s.empty = false; s.onlyJohnny = false;
-  if (denDate !== today()) ensureDen(getPass(), denDate, () => { cache = null });
+  if (denDate !== today()) ensureDen(getPass(), denDate, () => { cache = null }, settings.den?.den);
   return s;
 }
 
