@@ -5,9 +5,12 @@ import { useEffect, useState } from 'react';
 const ESPN = 'https://site.api.espn.com/apis/site/v2/sports/';
 const PATHS: Record<string, string> = { NBA: 'basketball/nba/scoreboard', CBB: 'basketball/mens-college-basketball/scoreboard?groups=50&limit=400', CFB: 'football/college-football/scoreboard?groups=80&limit=400', NFL: 'football/nfl/scoreboard' };
 const norm = (s: string) => s.toLowerCase().replace(/[’']/g, '').replace(/\bst[.]?\s/g, 'saint ').replace(/[^a-z0-9]/g, '');
-type Game = { state: string; detail: string; away: string; home: string; awayAbbr: string; homeAbbr: string; as: number; hs: number };
+export type Game = { state: string; detail: string; away: string; home: string; awayAbbr: string; homeAbbr: string; as: number; hs: number; start: string };
 
-export function useLive(date: string) {
+export function useLive(date: string) { return useLiveData(date).games }
+export function useLiveData(date: string, every = 60000) {
+  const [tick, setTick] = useState(0);
+  const [stamp, setStamp] = useState(0);
   const [games, setGames] = useState<Record<string, Game>>({});
   useEffect(() => {
     let dead = false;
@@ -19,17 +22,17 @@ export function useLive(date: string) {
           const j = await (await fetch(ESPN + path + (path.includes('?') ? '&' : '?') + 'dates=' + d, { cache: 'no-store' })).json();
           for (const e of j.events || []) {
             const c = e.competitions?.[0]; const h = c?.competitors?.find((x: any) => x.homeAway === 'home'), a = c?.competitors?.find((x: any) => x.homeAway === 'away'); if (!h || !a) continue;
-            const g = { state: e.status?.type?.state || 'pre', detail: e.status?.type?.shortDetail || '', away: a.team.displayName, home: h.team.displayName, awayAbbr: a.team.abbreviation, homeAbbr: h.team.abbreviation, as: Number(a.score || 0), hs: Number(h.score || 0) };
+            const g = { state: e.status?.type?.state || 'pre', detail: e.status?.type?.shortDetail || '', away: a.team.displayName, home: h.team.displayName, awayAbbr: a.team.abbreviation, homeAbbr: h.team.abbreviation, as: Number(a.score || 0), hs: Number(h.score || 0), start: e.date || '' };
             out[sport + '|' + norm(g.away) + '|' + norm(g.home)] = g;
           }
         } catch { }
       }));
-      if (!dead) setGames(out);
+      if (!dead) { setGames(out); setStamp(Date.now()) }
     };
-    load(); const t = setInterval(load, 60000); document.addEventListener('visibilitychange', load);
+    load(); const t = setInterval(load, every); document.addEventListener('visibilitychange', load);
     return () => { dead = true; clearInterval(t); document.removeEventListener('visibilitychange', load) };
-  }, [date]);
-  return games;
+  }, [date, every, tick]);
+  return { games, stamp, reload: () => setTick(t => t + 1) };
 }
 
 function lockTerms(l: any) {
