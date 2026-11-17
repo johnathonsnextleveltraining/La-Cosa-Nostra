@@ -66,22 +66,24 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 
 **Font, DONE 11/17:** Saira Stencil One for titles, team names and big numbers; Barlow for body text (Google Fonts link in web/index.template.html, rules at the bottom of web/extra.css). Boss called it "as close as it's gonna get". Don't reopen it unless he does. Nino may still draw title images.
 
-**Bankroll (in progress, 11/17):**
-- Removed the "Record a money movement" form and "The money rules" box (Boss: "bullshit").
-- Added month dropdown → Week 1–5 money made/lost from Boss's real tickets (analyst Johnny Biz, `is_actual_wager`).
-- Weeks are Monday–Sunday betting weeks (match the Monday bookie reset). A week belongs to the month its Monday is in, so every month has 4 or 5 weeks.
-- Data comes from `stateFor().myWagers`.
+**Bankroll: COMPLETE (Boss, 11/17):**
+- Tagline "Men lie, women lie, numbers don't lie." Gold dollar sign (docs/art/dollar.webp) centered right of the title.
+- "This week with the Bookie" heading over tiles: MONEY IN THE STASH / PLAY MONEY (bookie > $1) or LOST MONEY / ACTUAL BANKROLL / BALANCE UPDATED.
+- Dropdown (white text, gold triangle): "2026 Annual" → 1ST–4TH QUARTER; each month → WEEK 1–5 (Mon–Sun, week belongs to the month of its Monday). Win = CASHED OUT, loss = FUCKED OFF.
+- Data = Boss's real tickets (`stateFor().myWagers`). Date math avoids `new Date(string)` parsing (iPhone Safari threw "Invalid Date"). `Catch` error boundary shows "Page tripped: <error>" instead of a black screen.
+- Money-movement form and money-rules box removed.
+
+**Locked & Loaded: IN PROGRESS (11/17).**
 
 **Next pages (Boss can jump the order, he did with Bankroll):**
-1. Locked & Loaded
-2. Lions Den
-3. Let's Get Paid
-4. Paid in Full
-5. Usual Suspects
-6. Bragging Rights
-7. Ledger
-8. Sit-Down
-9. Data Health
+1. Lions Den
+2. Let's Get Paid
+3. Paid in Full
+4. Usual Suspects
+5. Bragging Rights
+6. Ledger
+7. Sit-Down
+8. Data Health
 
 ## Loose ends
 - Nino owes 17 common-slate games for 11/17 (5 of them Top 25) and should drop his 11 off-slate games.
