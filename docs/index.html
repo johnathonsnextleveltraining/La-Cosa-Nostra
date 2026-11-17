@@ -134,6 +134,15 @@ aside nav{overflow-y:auto}
 @media(max-width:800px){.toolbar{top:57px}.pif-sticky-heading{top:57px}aside{position:fixed}}
 aside nav{scrollbar-width:thin;scrollbar-color:#3a3528 transparent}
 aside nav::-webkit-scrollbar{width:6px}aside nav::-webkit-scrollbar-track{background:transparent}aside nav::-webkit-scrollbar-thumb{background:#3a3528;border-radius:3px}
+
+/* Phone: menu bar pinned to the top of the screen on every page, under the iPhone status bar */
+@media(max-width:800px){
+  .workspace{padding-top:calc(57px + env(safe-area-inset-top))}
+  .workspace>header{position:fixed;top:0;left:0;right:0;height:calc(57px + env(safe-area-inset-top));padding-top:env(safe-area-inset-top);z-index:40;background:#0e1116}
+  .toolbar{top:calc(57px + env(safe-area-inset-top))}
+  .pif-sticky-heading{top:calc(57px + env(safe-area-inset-top))}
+  aside{z-index:50;padding-top:env(safe-area-inset-top)}
+}
 </style>
 </head>
 <body>
