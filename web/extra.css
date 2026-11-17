@@ -41,3 +41,5 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .pif-sticky-heading{top:64px}
 aside nav{overflow-y:auto}
 @media(max-width:800px){.toolbar{top:57px}.pif-sticky-heading{top:57px}aside{position:fixed}}
+aside nav{scrollbar-width:thin;scrollbar-color:#3a3528 transparent}
+aside nav::-webkit-scrollbar{width:6px}aside nav::-webkit-scrollbar-track{background:transparent}aside nav::-webkit-scrollbar-thumb{background:#3a3528;border-radius:3px}
