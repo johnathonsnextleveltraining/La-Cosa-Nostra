@@ -62,12 +62,7 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 - Fixed phone header.
 - Robot disclaimers removed.
 
-**Big Board, open: the font.** Boss thinks the current one is boring. He wants a sporty italic look like the stock fonts "Drive9" and "Nitro & Storm", but those are paid, so they're out.
-- Free lookalikes shown so far:
-  - Drive9 style: Bruno Ace SC, Orbitron 900 (skewed, chrome gradient).
-  - Nitro style: Anton, Teko 700.
-- Hova recommended Nino draw the page titles as images and the app use Bruno Ace or Anton for team names and numbers.
-- Boss may have Nino make a custom font. That only works if Nino delivers an actual .ttf, .otf, or .woff2 file.
+**Font, DONE 11/17:** Saira Stencil One for titles, team names and big numbers; Barlow for body text (Google Fonts link in web/index.template.html, rules at the bottom of web/extra.css). Boss called it "as close as it's gonna get". Don't reopen it unless he does. Nino may still draw title images.
 
 **Next pages, in order:**
 1. Locked & Loaded
