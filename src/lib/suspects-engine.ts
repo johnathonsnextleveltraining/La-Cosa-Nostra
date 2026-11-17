@@ -1,0 +1,3 @@
+import {crew,offset,summarize} from './engine.ts';
+export const suspectTitles=['Big Dog on the Porch','2nd in Command',"I Ain’t No Bitch",'Tryna Keep the Lights On','On Probation','Fresh Off Parole','Locked Up State'];
+export function suspectRankings(performance:any[],asof:string){const from=offset(asof,-13);const rows=performance.filter(p=>p.date>=from&&p.date<=asof);return [...crew,'Johnny Biz'].map(analyst=>({analyst,...summarize(rows.filter(p=>p.analyst===analyst))})).sort((a,b)=>(b.rate??-1)-(a.rate??-1)||(b.w+b.l)-(a.w+a.l)||b.net-a.net||a.analyst.localeCompare(b.analyst)).map((r,i)=>({...r,rank:i+1,title:suspectTitles[i],from,through:asof}))}
