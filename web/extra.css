@@ -152,3 +152,4 @@ h1{line-height:1.05}
 .paid-mafia-portrait{object-position:center 30%!important}
 .paid-duo-noart{margin-top:14px}
 @media(max-width:600px){.paid-role-top{font-size:15px;letter-spacing:1px}.paid-profile-info h3{font-size:18px}.paid-money b{font-size:19px}}
+.tagline-gold{color:var(--gold)!important;font-weight:600}
