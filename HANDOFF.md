@@ -90,7 +90,11 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 - Banner shows "LIONS DEN · W-L LAST 30 DAYS" from saved Den snapshots (Best lists only).
 - `sameTeam` strips parentheses so "Miami (OH)" matches.
 
-**Let's Get Paid: IN PROGRESS (11/17).**
+**Let's Get Paid: IN PROGRESS (11/17) — code done, waiting on Nino's new art:**
+- Boss = most money made in the sport over the last 30 days (min 10 decisions); Underboss = most money made together with the Boss (min 5 same-side, same-price picks). Each shows dollars + ROI (green/red), win %, and record (src/lib/paid-engine.ts).
+- "Your real tickets" Johnny Biz strip on top: this week, this month (Mon–Sun weeks, same as Bankroll), and his locks over 30 days.
+- Matching picks show the Den lion (`denLionFor`), ✓/✕/∞, and a grade only if one exists. Fine print removed. All Sports = tap-to-open sport sections.
+- Art slots: art/mafia-<x>.webp (portraits) and art/duos/<boss>-<underboss>.webp (30 duo pics). Nino is making new pics for this page; swap them in when Boss drops them in Drive.
 
 **Next pages (Boss can jump the order, he did with Bankroll):**
 1. Let's Get Paid
