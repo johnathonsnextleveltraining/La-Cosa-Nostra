@@ -75,6 +75,9 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 - Money-movement form and money-rules box removed.
 
 **Locked & Loaded: IN PROGRESS (11/17).**
+- Mugshot popup: "Last 7 locks" with ✓/✕ above the by-grade table (follows the popup's sport buttons). Fine print removed.
+- Gold crown (DenCrown) next to the name of the best 30-day locks record per sport (min 5 settled, ties → more wins → more money). Sport tag under the crown on All Sports.
+- Lions Den lion (docs/art/den-lion.webp, black lion on white circle, Boss picked it) left of the grade when a lock's team is one of the Den's "Best Home"/"Best Away" teams for that sport and date (Den TOP=3 per side per sport). Boss never answered same-side vs top-10; Den's Best lists are its picks, so that's the rule until he says otherwise.
 
 **Next pages (Boss can jump the order, he did with Bankroll):**
 1. Lions Den
