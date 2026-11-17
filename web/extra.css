@@ -96,3 +96,6 @@ h1{line-height:1.05}
 .br-title{display:flex;align-items:center;gap:12px}.br-dollar{height:58px;width:auto;flex:none}
 @media(max-width:600px){.br-dollar{height:46px}}
 .br-section{font-size:20px;margin:14px 0 0;color:#fff}.br-stats{margin-top:12px}
+.page-heading>div:has(.br-title){flex:1;min-width:0}
+.br-title .br-dollar{height:96px;margin:0 auto}
+@media(max-width:600px){.br-title .br-dollar{height:78px}}
