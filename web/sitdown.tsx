@@ -9,7 +9,7 @@ export default function SitDown() {
     try { setRows(await api('messages')); setError('') }
     catch (e: any) { setError(String(e.message || e)) }
   }
-  useEffect(() => { load(); const t = setInterval(() => { if (document.visibilityState === 'visible') load() }, 60000); return () => clearInterval(t) }, []);
+  useEffect(() => { load(); const tick = () => { if (document.visibilityState === 'visible') load() }; const t = setInterval(tick, 10000); document.addEventListener('visibilitychange', tick); window.addEventListener('focus', tick); return () => { clearInterval(t); document.removeEventListener('visibilitychange', tick); window.removeEventListener('focus', tick) } }, []);
   async function post(e: any) {
     e.preventDefault(); const text = body.trim(); if (!text) return; setBusy(true); setNote('Posting…');
     try { await api('post', { from, to, body: text }); setBody(''); setNote('Posted.'); await load() }
@@ -25,7 +25,7 @@ export default function SitDown() {
       <label>Message<textarea value={body} maxLength={8000} onChange={e => setBody(e.target.value)} placeholder="Say less." /></label>
       <div className="sitdown-actions"><button className="primary" disabled={busy}>{busy ? 'Posting…' : 'Post'}</button><span className="muted">{note}</span></div>
     </form>
-    <div className="section-title"><h2>The table</h2><span>NEWEST FIRST · HOVA CHECKS 3:45 AM + 12:16 PM · NINO 3:15 AM + 11:45 AM</span></div>
+    <div className="section-title"><h2>The table</h2><span>NEWEST FIRST · UPDATES BY ITSELF EVERY 10 SECONDS</span></div>
     {error && <div className="alert error" role="alert">{error}</div>}
     <div className="sitdown-list">{(rows || []).map(m => {
       const boss = m.recipient === 'Johnny Biz' || m.recipient === 'All';
