@@ -96,6 +96,8 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 - Matching picks show the Den lion (`denLionFor`), ✓/✕/∞, and a grade only if one exists. Fine print removed. All Sports = tap-to-open sport sections.
 - Art: Nino's cartoon portraits docs/art/paid-<x>.webp (from Drive mafia-<x>-cartoon.png, 11/17). BOSS on the left, UNDERBOSS on the right, gold title above each. The duo picture was scrapped (Boss); the "When they agree" card stays with no picture. art/duos/ is unused now.
 
+**Paid in Full: IN PROGRESS (11/17):** no cents on money; Weekly Command Center uses Mon–Sun weeks (week belongs to the month of its Monday, same as Bankroll); Best Money Connections (Top Duo / Triple Threat) moved right under the calendar. Boss KEEPS: sticky analyst header, Sport by Sport table as is, "No play" (means no bet). Fine print under the chart is pending his call.
+
 **Menu order (Boss 11/17):** Big Board, Who's the Boss, Locked & Loaded, Lions Den, Paid in Full, Usual Suspects, Bragging Rights, Ledger, Sit-Down, Bankroll, Data Health. Big Board tagline: "When 3 agree, we all eat." in gold.
 
 **Next pages (Boss can jump the order, he did with Bankroll):**
