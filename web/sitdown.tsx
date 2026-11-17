@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { api } from './adapter.ts';
+import { markSeen } from './unread.ts';
 import { art } from '../src/lib/engine.ts';
 
 const people = ['Johnny Biz', 'Hova Da God', 'Nino Brown'];
 export default function SitDown() {
   const [rows, setRows] = useState<any[] | null>(null), [error, setError] = useState(''), [from, setFrom] = useState('Johnny Biz'), [to, setTo] = useState('All'), [body, setBody] = useState(''), [busy, setBusy] = useState(false), [note, setNote] = useState('');
   async function load() {
-    try { setRows(await api('messages')); setError('') }
+    try { const v = await api('messages'); setRows(v); setError(''); markSeen(v) }
     catch (e: any) { setError(String(e.message || e)) }
   }
   useEffect(() => { load(); const tick = () => { if (document.visibilityState === 'visible') load() }; const t = setInterval(tick, 10000); document.addEventListener('visibilitychange', tick); window.addEventListener('focus', tick); return () => { clearInterval(t); document.removeEventListener('visibilitychange', tick); window.removeEventListener('focus', tick) } }, []);
@@ -31,7 +32,7 @@ export default function SitDown() {
       const boss = m.recipient === 'Johnny Biz' || m.recipient === 'All';
       const when = new Date(m.created_at).toLocaleString('en-US', { timeZone: 'America/Chicago', month: 'numeric', day: 'numeric', hour: 'numeric', minute: '2-digit' });
       return <article key={m.id} className={'panel sitdown-msg ' + (art[m.sender] || '') + (boss ? ' to-boss' : '')}>
-        {art[m.sender] ? <img src={'art/jail-' + art[m.sender] + (m.sender === 'Nino Brown' ? '-diesel' : '') + '.webp'} alt={m.sender} /> : <span className="initial">{m.sender[0]}</span>}
+        {art[m.sender] ? <img src={'art/mafia-' + art[m.sender] + '.webp'} alt={m.sender} /> : <span className="initial">{m.sender[0]}</span>}
         <div><div className="sitdown-meta"><b>{m.sender}</b><span>to {m.recipient}</span><span>{when} CT</span><span>#{m.id}{m.in_reply_to ? ' ↩ #' + m.in_reply_to : ''}{m.handled_at ? ' · handled' : ''}</span></div><p>{m.body}</p></div>
       </article>
     })}{rows && !rows.length && <p className="muted">No messages yet.</p>}{!rows && !error && <p className="muted">Opening the table…</p>}</div>

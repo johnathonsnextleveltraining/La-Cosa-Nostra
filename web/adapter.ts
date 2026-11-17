@@ -13,7 +13,7 @@ export function setPass(p: string) { try { if (p) localStorage.setItem(PASS_KEY,
 export async function api(op: string, args: any = {}, pass = getPass()): Promise<any> {
   let r: Response;
   try {
-    r = await fetch(SB + '/rest/v1/rpc/lcn_api', {
+    r = await fetch(SB + '/rest/v1/rpc/lcn_api2', {
       method: 'POST', cache: 'no-store',
       headers: { apikey: KEY, Authorization: 'Bearer ' + KEY, 'Content-Type': 'application/json' },
       body: JSON.stringify({ pass, op, args }),
@@ -35,12 +35,28 @@ function toPick(r: any[]) {
   if (raw9 != null) { const a: any[] = new Array(10).fill(''); a[9] = raw9; p.raw = a }
   return p;
 }
-async function loadAll(revision: number) {
-  const n = Number(await api('count'));
+// Speed: picks are cached on the device (IndexedDB). On open we only download rows changed since the
+// last visit; a count mismatch (e.g. deleted rows) falls back to one full download.
+function idb(): Promise<IDBDatabase> { return new Promise((ok, bad) => { const q = indexedDB.open('lcn', 1); q.onupgradeneeded = () => q.result.createObjectStore('kv'); q.onsuccess = () => ok(q.result); q.onerror = () => bad(q.error) }) }
+async function kvGet(k: string): Promise<any> { try { const db = await idb(); return await new Promise(ok => { const q = db.transaction('kv').objectStore('kv').get(k); q.onsuccess = () => ok(q.result); q.onerror = () => ok(null) }) } catch { return null } }
+async function kvSet(k: string, v: any) { try { const db = await idb(); await new Promise(ok => { const t = db.transaction('kv', 'readwrite'); t.objectStore('kv').put(v, k); t.oncomplete = () => ok(null); t.onerror = () => ok(null) }) } catch { } }
+async function fullPicks(n: number) {
   const size = 2500, chunks: Promise<any>[] = [];
   for (let off = 0; off < n; off += size) chunks.push(api('picks', { off, lim: size }));
-  const [locks, settings, ...parts] = await Promise.all([api('locks'), api('settings'), ...chunks]);
-  cache = { revision, picks: ([] as any[]).concat(...parts).map(toPick), locks, settings };
+  return ([] as any[]).concat(...(await Promise.all(chunks)));
+}
+async function loadAll(revision: number) {
+  const [sig, locks, settings, saved] = await Promise.all([api('sig'), api('locks'), api('settings'), kvGet('picks')]);
+  let rows: any[];
+  if (saved && saved.since && Array.isArray(saved.rows)) {
+    const fresh: any[] = await api('picks_since', { since: saved.since });
+    const byId = new Map(saved.rows.map((r: any) => [r[0], r]));
+    for (const r of fresh) byId.set(r[0], r);
+    rows = [...byId.values()];
+    if (rows.length !== Number(sig.count) || fresh.length >= 5000) rows = await fullPicks(Number(sig.count));
+  } else rows = await fullPicks(Number(sig.count));
+  kvSet('picks', { since: sig.now, rows });
+  cache = { revision, picks: rows.map(toPick), locks, settings };
 }
 async function state() {
   const rev = (await api('revision')).revision as number;
