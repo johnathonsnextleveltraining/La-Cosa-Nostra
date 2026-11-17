@@ -104,3 +104,4 @@ h1{line-height:1.05}
 .crown-badge small{font-family:'Barlow',Arial,sans-serif!important;font-size:8px!important;letter-spacing:1px;color:var(--gold)!important;margin-top:2px}
 .lock-pick .den-lion{width:30px;height:30px;flex:none;margin-left:auto;filter:drop-shadow(0 0 4px #0008)}
 .lock-pick .den-lion+.grade{margin-left:8px}
+@media(max-width:600px){.lock-pick .den-lion{width:24px;height:24px}.lock-pick .den-lion+.grade{margin-left:6px}.lock-pick{gap:10px}}
