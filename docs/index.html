@@ -125,6 +125,13 @@ body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .live-strip{display:flex;flex-direction:column;gap:6px;margin:12px 0;padding:14px 16px}
 .live-strip-crew{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:#ccc}
 .logbet input,.logbet select{width:100%}
+
+/* Frozen top: header (menu button) + sport tabs stay put while scrolling */
+.workspace>header{position:sticky;top:0;z-index:28;background:#0e1116f5;backdrop-filter:blur(8px)}
+.toolbar{position:sticky;top:64px;z-index:26;background:#0b0e12f2;backdrop-filter:blur(8px);padding:10px 0;margin:14px 0 18px}
+.pif-sticky-heading{top:64px}
+aside nav{overflow-y:auto}
+@media(max-width:800px){.toolbar{top:57px}.pif-sticky-heading{top:57px}aside{position:fixed}}
 </style>
 </head>
 <body>
