@@ -82,13 +82,15 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 - Gold crown (DenCrown) next to the name of the best 30-day locks record per sport (min 5 settled, ties → more wins → more money). Sport tag under the crown on All Sports.
 - Lions Den lion (docs/art/den-lion.webp, black lion on white circle, Boss picked it) left of the grade when a lock's team is one of the Den's "Best Home"/"Best Away" teams for that sport and date (Den TOP=3 per side per sport). Boss never answered same-side vs top-10; Den's Best lists are its picks, so that's the rule until he says otherwise.
 
-**Lions Den: IN PROGRESS (11/17):**
+**Lions Den: DONE (11/17):**
 - Compact cards: "N. Team line" + "vs Opp · 5-2 home ATS vs 1-5 away" + EDGE (matchup ATS margin, rounded). Tap a card for the full breakdown (fine print stripped). Source-coverage panel removed.
 - Line = Hova's DraftKings line, else the crew's most common (`denLine` in src/lib/den-lines.ts); results graded on that line.
 - Boss wants the BIGGEST mismatches even off the crew's slate: every game is ranked; off-slate teams get a red "NOT ON THE CREW'S CARD" tag. Top 3 per sport per list (den.ts TOP=8 now).
 - Gold box next to the result: crew on that side + their 60-day agreement record (`sideCrews` in engine).
 - Banner shows "LIONS DEN · W-L LAST 30 DAYS" from saved Den snapshots (Best lists only).
 - `sameTeam` strips parentheses so "Miami (OH)" matches.
+
+**Let's Get Paid: IN PROGRESS (11/17).**
 
 **Next pages (Boss can jump the order, he did with Bankroll):**
 1. Let's Get Paid
