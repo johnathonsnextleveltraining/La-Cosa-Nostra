@@ -1,7 +1,7 @@
 import {norm,type Pick} from './engine.ts';
-export const sameTeam=(a:string,b:string)=>{a=norm(a.replace(/^\d+\.\s*/,''));b=norm(b);return !!a&&!!b&&(a===b||a.endsWith(b)||b.endsWith(a))};
+export const sameTeam=(a:string,b:string)=>{a=norm(a.replace(/^\d+\.\s*/,'').replace(/\([^)]*\)/g,''));b=norm(b.replace(/\([^)]*\)/g,''));return !!a&&!!b&&(a===b||a.endsWith(b)||b.endsWith(a))};
 export function denMatches(picks:Pick[],sport:string,team:string,details:string,date:string){
- const opponent=details.match(/Playing:\s*(?:vs\.?|@)\s*([^\n]+)/i)?.[1];
+ const opponent=details.match(/Playing:\s*(?:vs\.?|@)\s*([^\n]+)/i)?.[1]?.replace(/\([^)]*\)/g,'');
  if(!opponent)return [];
  const matches:{line:number,result:string,analyst:string}[]=[];
  for(const p of picks){
