@@ -105,8 +105,9 @@ export async function buildDen(date = today(), log: (s: string) => void = () => 
     }
     for (const side of ['Home', 'Away']) {
       const list = rows.filter(r => r.cat === side);
-      const best = [...list].sort((x, y) => y.margin - x.margin || y.own - x.own).slice(0, TOP);
-      const worst = [...list].sort((x, y) => x.margin - y.margin || x.own - y.own).slice(0, TOP);
+      // Best = edge over the opponent (margin > 0); Worst = the opponent has the edge (margin < 0). A team never sits in both.
+      const best = list.filter(r => r.margin > 0).sort((x, y) => y.margin - x.margin || y.own - x.own).slice(0, TOP);
+      const worst = list.filter(r => r.margin < 0).sort((x, y) => x.margin - y.margin || x.own - y.own).slice(0, TOP);
       best.forEach((r, i) => ranked.push([sport, 'Best ' + side, i + 1, `${i + 1}. ${r.team}`, r.own, r.details]));
       worst.forEach((r, i) => ranked.push([sport, 'Worst ' + side, i + 1, `${i + 1}. ${r.team}`, r.own, r.details]));
     }
