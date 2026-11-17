@@ -4,7 +4,7 @@ export type WorstDuo={bySport:DuoSport[];names:string[];w:number;l:number;push:n
 type Shared={crew:string[];offset:(date:string,n:number)=>string;eventKey:(p:Pick)=>string;side:(p:Pick)=>string;quote:(p:Pick)=>string};
 /** Descriptive agreement record only: no paired dollars, predictions or invented outcomes. */
 export function worstDuoView(picks:Pick[],asof:string,{crew,offset,eventKey,side,quote}:Shared):WorstDuo|null{
- const from=offset(asof,-13),active=new Set(crew) // Boss 11/17: the Boss doesn't go in the fade file,events=new Map<string,Pick[]>();
+ const from=offset(asof,-13),active=new Set(crew)/* Boss 11/17: the Boss does not go in the fade file */,events=new Map<string,Pick[]>();
  for(const p of picks){if(p.date<from||p.date>asof||!active.has(p.analyst)||!['NBA','NFL','CBB','CFB'].includes(p.sport)||!['Spread','Total','ML'].includes(p.market))continue;const key=eventKey(p)+'|'+p.market;events.set(key,[...(events.get(key)||[]),p])}
  const totals=new Map<string,{names:string[];w:number;l:number;push:number;net:number;bySport:DuoSport[]}>();
  for(const rows of events.values()){
