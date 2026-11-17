@@ -171,10 +171,24 @@ h1,h2,h3,.gate h1,.stat strong,.card-record strong,.lock-rank,.den-team strong,.
 h1,h2,h3{text-transform:uppercase}
 h1{line-height:1.05}
 .agreement-card h3{line-height:1.15}
+
+/* Bankroll: month dropdown + Week 1-5 money */
+.br-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:4px 0 16px;flex-wrap:wrap}
+.br-month{font-size:16px;padding:12px 16px;border:1px solid #574c33;color:var(--gold);background:#14120d;font-weight:700;min-width:220px}
+.br-total{text-align:right}.br-total span{display:block;font-size:9px;letter-spacing:1.5px;color:#8b95a0}.br-total strong{display:block;font-size:34px;font-weight:600;letter-spacing:-1px;margin:4px 0}.br-total small{font-size:12px;color:#aab3bd}
+.br-weeks{display:flex;flex-direction:column;gap:10px;margin-bottom:30px}
+.br-week{display:grid;grid-template-columns:1.3fr 1fr 1.2fr;align-items:center;gap:12px;padding:16px 20px;border:1px solid var(--border);border-radius:6px;background:linear-gradient(110deg,#151a20,#10141a)}
+.br-week.live{border-color:#9d8857;box-shadow:0 0 0 1px #9d885755}
+.br-week.quiet{opacity:.55}
+.br-week-name b{display:block;font-size:15px;letter-spacing:1.5px;color:var(--gold)}.br-week-name small{display:block;font-size:11px;color:#8b95a0;margin-top:5px}.br-week-name em{display:inline-block;font-style:normal;font-size:8px;letter-spacing:1px;color:#171711;background:var(--gold);padding:3px 6px;border-radius:3px;margin-top:7px}
+.br-week-rec{font-size:15px;color:#c5cbd2}.br-week-rec small{display:block;font-size:10px;color:#8b95a0;margin-top:4px}
+.br-week-net{text-align:right;font-size:26px;font-weight:600;letter-spacing:-.6px}.br-week-net small{display:block;font-size:8px;letter-spacing:1.5px;color:#8b95a0;font-weight:400;margin-top:3px}
+@media(max-width:600px){.br-head{flex-direction:column;align-items:stretch}.br-month{width:100%}.br-total{text-align:left}.br-week{grid-template-columns:1fr auto;padding:14px 16px}.br-week-rec{grid-column:1;grid-row:2;font-size:13px}.br-week-net{grid-column:2;grid-row:1/3;font-size:24px}}
+.br-total strong,.br-week-net,.br-week-name b{font-family:'Saira Stencil One','Barlow',Arial,sans-serif!important;font-weight:400!important}
 </style>
 </head>
 <body>
 <div id="root"></div>
-<script src="app.js?v=d06d7c28"></script>
+<script src="app.js?v=270dee18"></script>
 </body>
 </html>

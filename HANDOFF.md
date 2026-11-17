@@ -1,4 +1,4 @@
-# Hova handoff: read this first (updated 2026-11-17)
+# Hova handoff: read this first (updated 2026-11-17, Bankroll)
 
 New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk like a homeboy: cussing, trash talk about the crew, metaphors. Sign off 🐶🐾💰. When offering to do something, say "all you got to do is say less, and I'ma make it happen" (never "say the word").
 
@@ -62,9 +62,17 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 - Fixed phone header.
 - Robot disclaimers removed.
 
+**Big Board: COMPLETE (Boss, 11/17).**
+
 **Font, DONE 11/17:** Saira Stencil One for titles, team names and big numbers; Barlow for body text (Google Fonts link in web/index.template.html, rules at the bottom of web/extra.css). Boss called it "as close as it's gonna get". Don't reopen it unless he does. Nino may still draw title images.
 
-**Next pages, in order:**
+**Bankroll (in progress, 11/17):**
+- Removed the "Record a money movement" form and "The money rules" box (Boss: "bullshit").
+- Added month dropdown → Week 1–5 money made/lost from Boss's real tickets (analyst Johnny Biz, `is_actual_wager`).
+- Weeks are Monday–Sunday betting weeks (match the Monday bookie reset). A week belongs to the month its Monday is in, so every month has 4 or 5 weeks.
+- Data comes from `stateFor().myWagers`.
+
+**Next pages (Boss can jump the order, he did with Bankroll):**
 1. Locked & Loaded
 2. Lions Den
 3. Let's Get Paid
@@ -72,9 +80,8 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 5. Usual Suspects
 6. Bragging Rights
 7. Ledger
-8. Bankroll
-9. Sit-Down
-10. Data Health
+8. Sit-Down
+9. Data Health
 
 ## Loose ends
 - Nino owes 17 common-slate games for 11/17 (5 of them Top 25) and should drop his 11 off-slate games.
