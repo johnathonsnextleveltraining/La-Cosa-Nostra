@@ -121,3 +121,4 @@ h1{line-height:1.05}
 .den-team.open{border-color:#6b5a35}
 .den-empty{font-size:12px;color:#8b95a0;padding:14px 0}
 .den-banner-caption b{font-family:'Saira Stencil One','Barlow',sans-serif;font-weight:400;font-size:1.3em;margin:0 4px}
+.den-off{display:inline-block;font-style:normal;font-size:9px;letter-spacing:1px;color:#f2a3a3;border:1px solid #6e3d3d;background:#28191e;border-radius:3px;padding:3px 6px;margin-top:6px}

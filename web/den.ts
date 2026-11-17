@@ -26,7 +26,7 @@ async function closingLine(sport: string, id: string): Promise<number | null> {
     return typeof it.spread === 'number' ? it.spread : null;
   } catch { return null }
 }
-const MIN_OWN = 3, MIN_OPP = 2, TOP = 8; // deeper list; the page shows the top 3 games on our slate
+const MIN_OWN = 3, MIN_OPP = 2, TOP = 8; // ranked 8 deep; the page shows the top 3 per sport
 
 type Rec = { id: string; name: string; hw: number; hl: number; hp: number; aw: number; al: number; ap: number; sw: number; sl: number };
 const ymd = (d: string) => d.replace(/-/g, '');
