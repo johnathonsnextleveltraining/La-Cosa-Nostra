@@ -22,3 +22,16 @@ function Gate() {
 
 const root = createRoot(document.getElementById('root')!);
 root.render(getPass() ? <Home /> : <Gate />);
+
+// Auto-update: if a newer version of the app was published, reload once to get it (phones cache hard).
+(async () => {
+  try {
+    const mine = ((document.querySelector('script[src*="app.js"]') as HTMLScriptElement)?.src.match(/v=(\w+)/) || [])[1];
+    const check = async () => {
+      const html = await (await fetch('./?u=' + Date.now(), { cache: 'no-store' })).text();
+      const live = (html.match(/app\.js\?v=(\w+)/) || [])[1];
+      if (mine && live && live !== mine && sessionStorage.getItem('lcn-upd') !== live) { sessionStorage.setItem('lcn-upd', live); location.replace('./?v=' + live) }
+    };
+    check(); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') check() });
+  } catch { }
+})();
