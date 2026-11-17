@@ -1,6 +1,6 @@
 // "Get Money" (Boss 11/17): live sweat board for every game on tonight's card.
 // Scores from ESPN every 5 minutes. Results here are unofficial until the 1:30 AM grader writes them.
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { art, crew } from '../src/lib/engine';
 import { useLiveData, findGame, evalPick, type Game } from './live';
 
@@ -61,20 +61,25 @@ function GameCard({ x }: { x: any }) {
   const [away, home] = x.matchup.split(/\s+at\s+/);
   const groups = new Map<string, any>();
   for (const r of x.rows) { const k = r.p.market + '|' + r.p.pick.toLowerCase(); const v = groups.get(k) || { market: r.p.market, pick: r.p.pick, odds: r.p.odds, s: r.s, who: [] as string[] }; if (!v.who.includes(r.p.analyst)) v.who.push(r.p.analyst); groups.set(k, v) }
+  const [openUser, setOpen] = useState<boolean | null>(null);
+  const open = openUser ?? g?.state === 'in';
   const sides = [...groups.values()].sort((a, b) => MK.indexOf(a.market) - MK.indexOf(b.market) || b.who.length - a.who.length);
+  const up = sides.filter(sd => sd.s === 'W' || sd.s === 'up').length, dn = sides.filter(sd => sd.s === 'L' || sd.s === 'down').length;
+  const boss = x.rows.some((r: any) => r.p.analyst === 'Johnny Biz');
   return <section className={'gm-game ' + (g?.state === 'in' ? 'live' : g?.state === 'post' ? 'final' : '')}>
-    <div className="gm-head">
+    <div className="gm-head" role="button" tabIndex={0} onClick={() => setOpen(!open)}>
       <small>{x.sport}</small>
       {g?.state === 'in' ? <span className="gm-state"><span className="live-dot">LIVE</span> {g.detail}</span> : g?.state === 'post' ? <span className="gm-state">FINAL</span> : <span className="gm-state">{g?.start ? timeText(g.start) : 'Time TBD'}</span>}
     </div>
-    <div className="gm-score">
+    <div className="gm-score" role="button" tabIndex={0} onClick={() => setOpen(!open)}>
       <div><span>{g?.away || away}</span><b>{g && g.state !== 'pre' ? g.as : ''}</b></div>
       <div><span>{g?.home || home}</span><b>{g && g.state !== 'pre' ? g.hs : ''}</b></div>
     </div>
-    <div className="gm-sides">{sides.map(sd => <div key={sd.market + sd.pick} className={'gm-side ' + (sd.s === 'W' || sd.s === 'up' ? 'win' : sd.s === 'L' || sd.s === 'down' ? 'lose' : '')}>
+    {!open && <button className="gm-more" onClick={() => setOpen(true)}>{sides.length} picks{boss ? ' · BOSS $ on it' : ''}{up || dn ? ' · ' + up + ' cashing · ' + dn + ' losing' : ''} ▾</button>}
+    {open && <div className="gm-sides">{sides.map(sd => <div key={sd.market + sd.pick} className={'gm-side ' + (sd.s === 'W' || sd.s === 'up' ? 'win' : sd.s === 'L' || sd.s === 'down' ? 'lose' : '')}>
       <span className="gm-mark">{STATUS[sd.s] || '•'}</span>
       <div className="gm-pick"><b>{sd.pick}</b> <small>{oddsText(sd.odds)} · {sd.market === 'ML' ? 'Moneyline' : sd.market}</small></div>
       <div className="gm-who">{sd.who.map((n: string) => n === 'Johnny Biz' ? <em key={n} className="gm-boss">BOSS $</em> : <img key={n} src={pic(n)} alt={SHORT[n]} title={SHORT[n]} />)}</div>
-    </div>)}</div>
+    </div>)}</div>}
   </section>;
 }
