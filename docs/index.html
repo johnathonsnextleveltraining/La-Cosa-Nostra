@@ -247,10 +247,22 @@ h1{line-height:1.05}
 .paid-duo-noart{margin-top:14px}
 @media(max-width:600px){.paid-role-top{font-size:15px;letter-spacing:1px}.paid-profile-info h3{font-size:18px}.paid-money b{font-size:19px}}
 .tagline-gold{color:var(--gold)!important;font-weight:600}
+/* Usual Suspects: tighter */
+.suspects-list{gap:14px!important}
+.suspect-card{padding:18px 16px!important}
+.suspect-title{margin-bottom:12px!important}
+.suspect-photo-button{width:min(100%,190px)!important}
+.suspect-card h3{margin:10px 0 6px}
+.suspect-compact{display:grid;grid-template-columns:96px 1fr;grid-template-areas:"pic title" "pic name" "stats stats";column-gap:14px;text-align:left;padding:14px!important}
+.suspect-compact .suspect-title{grid-area:title;justify-content:flex-start;gap:8px;margin:0!important}
+.suspect-compact .suspect-title>span{font-size:18px!important}.suspect-compact .suspect-title h2{font-size:17px!important;text-align:left}
+.suspect-compact .suspect-photo-button{grid-area:pic;width:96px!important;margin:0}
+.suspect-compact h3{grid-area:name;margin:4px 0 0;font-size:18px}
+.suspect-compact .suspect-stats{grid-area:stats;margin-top:12px}
 </style>
 </head>
 <body>
 <div id="root"></div>
-<script src="app.js?v=5fe79ab6"></script>
+<script src="app.js?v=23e24da7"></script>
 </body>
 </html>
