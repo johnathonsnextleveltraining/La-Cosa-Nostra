@@ -4,7 +4,7 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 
 ## The crew
 - **Hova** (you): your own card, Rithmm's card, G' Money's card, Sharps/Paulie, all grading, and the app code. Only Hova edits code.
-- **Hova's own card (from 11/18, `rules:hova_card`):** NBA totals lean Under; CBB totals unchanged; CFB totals only with a real read, never a lock; prefer ML dog over spread dog; no ML favorite worse than −300; fewer CBB spreads (weigh Sharps' side when we disagree). Review after 2 weeks.
+- **Hova's own card (from 11/18, `rules:hova_card`):** NBA totals lean Under; CBB totals unchanged; CFB totals only with a real read, never a lock; prefer ML dog over spread dog; no ML favorite worse than −300; every game keeps its spread lean, but fewer CBB spread locks and pickier sides (weigh Sharps' side when we disagree). Review after 2 weeks.
 - **Rithmm**: read from Boss's Rithmm account at app.rithmm.com in his Chrome. Never invent picks.
   - Locks (Boss 11/17, from the 11/18 card): top 3 by edge in every sport playing that night, then fill to 12 by highest edge. Save each edge in `frozen.edge`. Full rule in `rules:rithmm`.
 - **G' Money**: Gemini at gemini.google.com in Boss's Chrome.
@@ -103,7 +103,7 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 
 **Bragging Rights: DONE pending Boss's OK (11/17):** Annual Books = crew + Johnny Biz only (old touts like Vegas Covers hidden); fine print gone. ROI everywhere (engine `summarize`): a crew pick with a result but no saved stake counts at $200. Partners in Crime ranked by money made together (history() now tracks net/risk), compact rows, top 10 + Show more.
 
-**Get Money (NEW, Boss 11/17), first in the menu, above the Big Board:** web/getmoney.tsx. A live sweat board for every game on tonight's card (data.current, crew + Johnny Biz, spread/total/ML). ESPN scores every 5 minutes via `useLiveData(date, 300000)` in web/live.tsx (also a manual ↻ button). Live games are open; upcoming/final games are tap-to-open. Each side shows ✓/✕/▲/▼, odds, and the mugshots of who's on it, with a BOSS $ tag on Johnny's real tickets. The top strip has each analyst's night so far (finals W–L + money, live ▲/▼) plus Johnny Biz. Unofficial until the 1:30 AM grader settles it.
+**Get Money (NEW, Boss 11/17), first in the menu, above the Big Board:** web/getmoney.tsx. Menu icon: Nino's fedora, art/menu-getmoney.webp. A live sweat board for every game on tonight's card (data.current, crew + Johnny Biz, spread/total/ML). ESPN scores every 5 minutes via `useLiveData(date, 300000)` in web/live.tsx (also a manual ↻ button). Live games are open; upcoming/final games are tap-to-open. Each side shows ✓/✕/▲/▼, odds, and the mugshots of who's on it, with a BOSS $ tag on Johnny's real tickets. The top strip has each analyst's night so far (finals W–L + money, live ▲/▼) plus Johnny Biz. Unofficial until the 1:30 AM grader settles it.
 
 **Menu order (Boss 11/17):** Get Money, Big Board, Who's the Boss, Locked & Loaded, Lions Den, Paid in Full, Usual Suspects, Bragging Rights, Ledger, Sit-Down, Bankroll, Data Health. Big Board tagline: "When 3 agree, we all eat." in gold.
 
