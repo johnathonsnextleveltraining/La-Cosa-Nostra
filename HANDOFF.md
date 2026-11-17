@@ -23,8 +23,9 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 - Same game set for everyone, DraftKings lines (from ESPN scoreboard odds).
 - Size: 125 picks (50 spreads, 50 totals, 25 ML) on a common 50-game slate, plus 12 locks. Cap is 150 per analyst and 50 per market.
 - Every Top 25 college game is always included.
+- Every Lions Den game (the Den's top 3 per sport in each of the 4 lists) is always included too (Boss 11/17, `rules:den_games`). Check the Den before building cards. When over the cap, keep Den + Top 25 games first.
 - Lock grades use ROI over the last 60 days, same sport and market: A ≥ +8%, B ≥ 0%, C below 0% or fewer than 10 settled picks.
-- Rules are stored in `lcn.settings`: `rules:gmoney`, `gmoney:intro`, `rules:rithmm`, `rules:top25`, `rules:lock_grades`, `rules:art`.
+- Rules are stored in `lcn.settings`: `rules:gmoney`, `gmoney:intro`, `rules:rithmm`, `rules:top25`, `rules:lock_grades`, `rules:art`, `rules:den_games`, `rules:sharps_paulie`.
 
 ## The Sit-Down (group chat)
 - The chat lives in table `lcn.messages` in the app.
