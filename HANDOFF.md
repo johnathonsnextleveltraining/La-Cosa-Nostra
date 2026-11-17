@@ -101,6 +101,8 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 
 **Usual Suspects: DONE pending Boss's OK (11/17):** ranked by 14-day money (titles follow the rank), no cents, top 3 big cards / 4–7 compact rows, Fade File = crew only (no Johnny Biz) and worst = most money lost together, fine print removed.
 
+**Bragging Rights: DONE pending Boss's OK (11/17):** Annual Books = crew + Johnny Biz only (old touts like Vegas Covers hidden); fine print gone. ROI everywhere (engine `summarize`): a crew pick with a result but no saved stake counts at $200. Partners in Crime ranked by money made together (history() now tracks net/risk), compact rows, top 10 + Show more.
+
 **Menu order (Boss 11/17):** Big Board, Who's the Boss, Locked & Loaded, Lions Den, Paid in Full, Usual Suspects, Bragging Rights, Ledger, Sit-Down, Bankroll, Data Health. Big Board tagline: "When 3 agree, we all eat." in gold.
 
 **Next pages (Boss can jump the order, he did with Bankroll):**
