@@ -219,10 +219,32 @@ h1{line-height:1.05}
 .den-team{flex-wrap:wrap}.den-team .den-head{flex:1 1 60%}
 .den-foot{width:100%;display:flex;align-items:center;gap:12px;margin-top:8px}.den-foot:empty{display:none}
 .den-team>p{width:100%}
+/* Let's Get Paid renovation */
+.paid-mafia-portrait,.paid-portrait-empty{height:200px!important}
+@media(max-width:600px){.paid-mafia-portrait,.paid-portrait-empty{height:150px!important}.paid-duo>img{max-height:210px;object-fit:cover}}
+.paid-duo>img{max-height:320px}
+.paid-money{display:flex;flex-direction:column;margin:6px 0 4px}.paid-money b{font-family:'Saira Stencil One','Barlow',sans-serif;font-weight:400;font-size:24px}.paid-money span{font-size:11px;color:#aab3bd}
+.paid-money.green b{color:var(--green)}.paid-money.red b{color:var(--red)}
+.paid-individual-stats strong{font-size:18px!important}.paid-individual-stats b{font-size:14px}
+.paid-match-top .den-lion{width:24px;height:24px;margin-left:auto}
+.johnny-strip{border:1px solid #2c3e66;border-radius:9px;background:linear-gradient(110deg,#121a2c,#0f131b);padding:16px 18px;margin:8px 0 24px}
+.johnny-strip-head{display:flex;align-items:center;gap:12px}.johnny-strip-head img{width:52px;height:52px;border-radius:50%;object-fit:cover;object-position:center 20%;border:2px solid #4a6db3}
+.johnny-strip-head h2{font-size:22px;margin:2px 0 0}
+.johnny-strip-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.johnny-strip-stats>div{background:#0b0f17;border:1px solid #22304d;border-radius:6px;padding:10px}
+.johnny-strip-stats span{display:block;font-size:8px;letter-spacing:1.2px;color:#8b95a0}.johnny-strip-stats b{display:block;font-size:14px;margin-top:6px;color:#dfe5ee}
+.johnny-strip-stats strong{display:block;font-family:'Saira Stencil One','Barlow',sans-serif;font-weight:400;font-size:20px;margin-top:2px}
+.paid-fold{border:1px solid #3a3427;border-radius:9px;margin-bottom:12px;background:#12151b}
+.paid-fold>summary{display:flex;align-items:center;gap:12px;padding:16px 18px;cursor:pointer;list-style:none}
+.paid-fold>summary::-webkit-details-marker{display:none}
+.paid-fold>summary b{font-family:'Saira Stencil One','Barlow',sans-serif;font-weight:400;font-size:20px;color:var(--gold);min-width:50px}
+.paid-fold>summary span{color:#c5cbd2;font-size:14px}.paid-fold>summary strong{margin-left:auto;font-family:'Saira Stencil One','Barlow',sans-serif;font-weight:400;font-size:20px}
+.paid-fold>summary::after{content:'▾';color:var(--gold);margin-left:10px}.paid-fold[open]>summary::after{content:'▴'}
+.paid-fold>.paid-sport{padding:0 14px 6px;margin-bottom:10px}
 </style>
 </head>
 <body>
 <div id="root"></div>
-<script src="app.js?v=141c6fb7"></script>
+<script src="app.js?v=f104cf0a"></script>
 </body>
 </html>
