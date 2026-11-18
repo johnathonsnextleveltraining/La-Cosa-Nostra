@@ -126,4 +126,10 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
   - Never invent anyone's picks or results.
   - Never spend money.
 
+**Boss 11/18 changes (live):**
+- Big Board: only crews hitting **61%+ together** make the board. TODAY / LAST NIGHT switch under the sport tabs; Last Night shows yesterday's 61%+ board with ✓/✕ plus analyst chips (THE CREW, each analyst, Johnny Biz). Tapping a chip turns the 4 boxes into that analyst's last-night Record / Money / Locks / Big Board record and filters the board to crews they were in. Old "Last Night's Business" strip removed (the switch replaces it).
+- Who's the Boss: tap the Boss/Underboss portraits (or "Last night together ▼") → every game they were on the same side last night (line ignored) with ✓/✕, record and money (`lastNight` in paid-engine).
+- Lions Den: tap the lion → that sport's Den history: Den W–L plus each analyst who rode a Den pick (Best Home/Away top 3, spread or ML on the Den team): record, win %, money (`denHistory` in page.tsx). Only 4 Den snapshots saved so far (11/8, 11/9, 11/17, 11/18).
+- Bankroll: bookie balance = Monday snapshot + this week's real-ticket net; ACTUAL BANKROLL = stash + that (i.e. stash minus what's owed).
+
 **Real-time grading (Boss 11/17):** every page grades picks and locks the moment ESPN calls the game final (`provisional()` in web/adapter.ts, today + yesterday, unofficial overlay with `unofficial:true`; ESPN scores cached 60s). Pages already reload state every 5 min when open (BoardSync) and also on the clock at :00/:30. The 1:30 AM grader still writes the official result into the book.
