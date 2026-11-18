@@ -260,3 +260,4 @@ h1{line-height:1.05}
 .books-table tbody td:nth-child(6)::before{content:'NET'}
 .books-table tbody td:nth-child(7)::before{content:'ROI'}
 }
+.crime-roi{font-style:normal;font-size:.55em;margin-left:3px;letter-spacing:.05em;opacity:.8}

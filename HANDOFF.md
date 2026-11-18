@@ -132,4 +132,7 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 - Lions Den: tap the lion → that sport's Den history: Den W–L plus each analyst who rode a Den pick (Best Home/Away top 3, spread or ML on the Den team): record, win %, money (`denHistory` in page.tsx). Only 4 Den snapshots saved so far (11/8, 11/9, 11/17, 11/18).
 - Bankroll: bookie balance = Monday snapshot + this week's real-ticket net; ACTUAL BANKROLL = stash + that (i.e. stash minus what's owed).
 
+- Bragging Rights Partners in Crime (Boss 11/18): ranked by **ROI**, min **20 decided games** together, per sport + bet type, 60 days (history()). ROI is the big number, dollars underneath. Who's the Boss stays the 30-day money board.
+- Bragging Rights books table on phones: name on top, labeled record row underneath (.books-table).
+
 **Real-time grading (Boss 11/17):** every page grades picks and locks the moment ESPN calls the game final (`provisional()` in web/adapter.ts, today + yesterday, unofficial overlay with `unofficial:true`; ESPN scores cached 60s). Pages already reload state every 5 min when open (BoardSync) and also on the clock at :00/:30. The 1:30 AM grader still writes the official result into the book.
