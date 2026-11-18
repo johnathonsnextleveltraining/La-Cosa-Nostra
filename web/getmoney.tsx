@@ -68,7 +68,7 @@ function GameCard({ x }: { x: any }) {
   const sides = [...groups.values()].sort((a, b) => MK.indexOf(a.market) - MK.indexOf(b.market) || b.who.length - a.who.length);
   const up = sides.filter(sd => sd.s === 'W' || sd.s === 'up').length, dn = sides.filter(sd => sd.s === 'L' || sd.s === 'down').length;
   const boss = x.rows.some((r: any) => r.p.analyst === 'Johnny Biz');
-  return <section className={'gm-game ' + (g?.state === 'in' ? 'live' + (boss ? ' boss' : '') : g?.state === 'post' ? 'final' : '')}>
+  return <section className={'gm-game ' + (g?.state === 'in' ? 'live' + (boss ? ' gm-mine' : '') : g?.state === 'post' ? 'final' : '')}>
     <div className="gm-head" role="button" tabIndex={0} onClick={() => setOpen(!open)}>
       <small>{x.sport}</small>
       {g?.state === 'in' ? <span className="gm-state"><span className="live-dot">LIVE</span> {g.detail}</span> : g?.state === 'post' ? <span className="gm-state">FINAL</span> : <span className="gm-state">{g?.start ? timeText(g.start) : 'Time TBD'}</span>}
