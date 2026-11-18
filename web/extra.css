@@ -243,3 +243,20 @@ h1{line-height:1.05}
 .den-hist-who{display:flex;align-items:center;gap:6px;min-width:0}
 .den-hist-who b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .den-hist-who .lineup-portrait,.den-hist-who .avatar{width:32px!important;height:32px!important;border-radius:6px;object-fit:cover;flex:0 0 auto}
+/* Boss 11/18: Bragging Rights books table on phones — name on top, record row under it (no more overlap) */
+@media (max-width:700px){
+.books-table{width:100%;min-width:0!important;table-layout:auto}
+.books-table thead{display:none}
+.books-table tbody tr{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px 4px;padding:12px 12px 14px;border-bottom:1px solid var(--border)}
+.books-table tbody td{display:block;padding:0!important;border:0!important;text-align:center;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.books-table tbody td:first-child{grid-column:1/-1;text-align:left;margin-bottom:6px}
+.books-table .table-person{gap:12px;font-family:'Saira Stencil One','Barlow',sans-serif;font-size:18px;color:var(--text)}
+.books-table .table-person .lineup-portrait{width:52px!important;height:52px!important}
+.books-table tbody td:not(:first-child)::before{display:block;font-size:9px;letter-spacing:.08em;color:#8d949e;margin-bottom:3px;font-family:'Barlow',sans-serif}
+.books-table tbody td:nth-child(2)::before{content:'W–L'}
+.books-table tbody td:nth-child(3)::before{content:'PUSH'}
+.books-table tbody td:nth-child(4)::before{content:'PENDING'}
+.books-table tbody td:nth-child(5)::before{content:'WIN %'}
+.books-table tbody td:nth-child(6)::before{content:'NET'}
+.books-table tbody td:nth-child(7)::before{content:'ROI'}
+}
