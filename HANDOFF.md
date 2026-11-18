@@ -125,3 +125,5 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
   - Never type Boss's passwords.
   - Never invent anyone's picks or results.
   - Never spend money.
+
+**Real-time grading (Boss 11/17):** every page grades picks and locks the moment ESPN calls the game final (`provisional()` in web/adapter.ts, today + yesterday, unofficial overlay with `unofficial:true`; ESPN scores cached 60s). Pages already reload state every 5 min when open (BoardSync) and also on the clock at :00/:30. The 1:30 AM grader still writes the official result into the book.

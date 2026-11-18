@@ -7,16 +7,8 @@ const PATHS: Record<string, string> = { NBA: 'basketball/nba/scoreboard', CBB: '
 const norm = (s: string) => s.toLowerCase().replace(/[’']/g, '').replace(/\bst[.]?\s/g, 'saint ').replace(/[^a-z0-9]/g, '');
 export type Game = { state: string; detail: string; away: string; home: string; awayAbbr: string; homeAbbr: string; as: number; hs: number; start: string };
 
-export function useLive(date: string) { return useLiveData(date).games }
-export function useLiveData(date: string, every = 60000) {
-  const [tick, setTick] = useState(0);
-  const [stamp, setStamp] = useState(0);
-  const [games, setGames] = useState<Record<string, Game>>({});
-  useEffect(() => {
-    let dead = false;
-    const load = async () => {
-      if (document.visibilityState !== 'visible') return;
-      const out: Record<string, Game> = {}; const d = date.replace(/-/g, '');
+export async function fetchGames(date: string): Promise<Record<string, Game>> {
+  const out: Record<string, Game> = {}; const d = date.replace(/-/g, '');
       await Promise.all(Object.entries(PATHS).map(async ([sport, path]) => {
         try {
           const j = await (await fetch(ESPN + path + (path.includes('?') ? '&' : '?') + 'dates=' + d, { cache: 'no-store' })).json();
@@ -27,6 +19,18 @@ export function useLiveData(date: string, every = 60000) {
           }
         } catch { }
       }));
+  return out;
+}
+export function useLive(date: string) { return useLiveData(date).games }
+export function useLiveData(date: string, every = 60000) {
+  const [tick, setTick] = useState(0);
+  const [stamp, setStamp] = useState(0);
+  const [games, setGames] = useState<Record<string, Game>>({});
+  useEffect(() => {
+    let dead = false;
+    const load = async () => {
+      if (document.visibilityState !== 'visible') return;
+      const out = await fetchGames(date);
       if (!dead) { setGames(out); setStamp(Date.now()) }
     };
     // Boss 11/17: refresh on the clock (7:15, 7:20, 7:25…), not 5 min after you opened it
@@ -37,7 +41,7 @@ export function useLiveData(date: string, every = 60000) {
   return { games, stamp, reload: () => setTick(t => t + 1) };
 }
 
-function lockTerms(l: any) {
+export function lockTerms(l: any) {
   const first = String(l.card || '').split('\n')[0].replace(/^\d+\s*[•.)]?\s*/, '').replace(/\s+[+-]\d{3,}\s*$/, '').trim();
   const matchup = l.frozen?.matchup || String(l.card || '').split('\n').find((s: string) => /\sat\s/.test(s)) || '';
   const market = l.frozen?.market || (/\bML$/.test(first) ? 'ML' : /^(over|under)\s/i.test(first) ? 'Total' : 'Spread');
