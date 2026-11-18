@@ -247,8 +247,8 @@ h1{line-height:1.05}
 @media (max-width:700px){
 .books-table{width:100%;min-width:0!important;table-layout:auto}
 .books-table thead{display:none}
-.books-table tbody tr{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px 4px;padding:12px 12px 14px;border-bottom:1px solid var(--border)}
-.books-table tbody td{display:block;padding:0!important;border:0!important;text-align:center;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.books-table tbody tr{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,.8fr) minmax(0,1.1fr) minmax(0,.9fr) minmax(0,1.5fr) minmax(0,.8fr);gap:6px 3px;padding:12px 10px 14px;border-bottom:1px solid var(--border)}
+.books-table tbody td{display:block;padding:0!important;border:0!important;text-align:center;font-size:13px;white-space:nowrap;overflow:visible}
 .books-table tbody td:first-child{grid-column:1/-1;text-align:left;margin-bottom:6px}
 .books-table .table-person{gap:12px;font-family:'Saira Stencil One','Barlow',sans-serif;font-size:18px;color:var(--text)}
 .books-table .table-person .lineup-portrait{width:52px!important;height:52px!important}
