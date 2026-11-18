@@ -29,8 +29,10 @@ export function useLiveData(date: string, every = 60000) {
       }));
       if (!dead) { setGames(out); setStamp(Date.now()) }
     };
-    load(); const t = setInterval(load, every); document.addEventListener('visibilitychange', load);
-    return () => { dead = true; clearInterval(t); document.removeEventListener('visibilitychange', load) };
+    // Boss 11/17: refresh on the clock (7:15, 7:20, 7:25…), not 5 min after you opened it
+    let t: any; const next = () => { t = setTimeout(() => { load(); next() }, every - (Date.now() % every) + 1000) };
+    load(); next(); document.addEventListener('visibilitychange', load);
+    return () => { dead = true; clearTimeout(t); document.removeEventListener('visibilitychange', load) };
   }, [date, every, tick]);
   return { games, stamp, reload: () => setTick(t => t + 1) };
 }
