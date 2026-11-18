@@ -35,7 +35,9 @@ export default function GetMoney({ data, sport }: { data: any; sport: string }) 
   // Games: live first, then upcoming by tip time, then finals
   const byGame = new Map<string, any>();
   for (const r of rows) { const k = r.p.sport + '|' + r.p.matchup.toLowerCase(); const g = byGame.get(k) || { k, sport: r.p.sport, matchup: r.p.matchup, g: r.g, rows: [] }; g.rows.push(r); if (!g.g && r.g) g.g = r.g; byGame.set(k, g) }
-  const order = (x: any) => !x.g ? 3 : x.g.state === 'in' ? 0 : x.g.state === 'pre' ? 1 : 2;
+  const isBoss = (x: any) => x.rows.some((r: any) => r.p.analyst === 'Johnny Biz');
+  // Boss 11/17: live games with his real tickets go first
+  const order = (x: any) => !x.g ? 4 : x.g.state === 'in' ? (isBoss(x) ? 0 : 1) : x.g.state === 'pre' ? 2 : 3;
   const list = [...byGame.values()].sort((a, b) => order(a) - order(b) || String(a.g?.start || '').localeCompare(String(b.g?.start || '')) || a.matchup.localeCompare(b.matchup));
   const live = list.filter(x => x.g?.state === 'in').length, fin = list.filter(x => x.g?.state === 'post').length, pre = list.length - live - fin;
 
@@ -66,7 +68,7 @@ function GameCard({ x }: { x: any }) {
   const sides = [...groups.values()].sort((a, b) => MK.indexOf(a.market) - MK.indexOf(b.market) || b.who.length - a.who.length);
   const up = sides.filter(sd => sd.s === 'W' || sd.s === 'up').length, dn = sides.filter(sd => sd.s === 'L' || sd.s === 'down').length;
   const boss = x.rows.some((r: any) => r.p.analyst === 'Johnny Biz');
-  return <section className={'gm-game ' + (g?.state === 'in' ? 'live' : g?.state === 'post' ? 'final' : '')}>
+  return <section className={'gm-game ' + (g?.state === 'in' ? 'live' + (boss ? ' boss' : '') : g?.state === 'post' ? 'final' : '')}>
     <div className="gm-head" role="button" tabIndex={0} onClick={() => setOpen(!open)}>
       <small>{x.sport}</small>
       {g?.state === 'in' ? <span className="gm-state"><span className="live-dot">LIVE</span> {g.detail}</span> : g?.state === 'post' ? <span className="gm-state">FINAL</span> : <span className="gm-state">{g?.start ? timeText(g.start) : 'Time TBD'}</span>}
