@@ -1,7 +1,8 @@
 import type {Pick} from './engine.ts';
 export type PaidRecord={analyst:string;w:number;l:number;push:number;rate:number|null;net:number;risk:number;roi:number|null};
 export type PaidPair={names:string[];w:number;l:number;push:number;rate:number;net:number;risk:number;roi:number|null};
-export type PaidView={boss:PaidRecord|null;underboss:PaidRecord|null;pair:PaidPair|null;games:(Omit<Pick,'raw'>&{agreementResult:string})[];windowDays:30;from:string;through:string};
+export type PaidLast={id:string;sport:string;market:string;matchup:string;pick:string;odds:number|null;bossPick:string;underPick:string;bossResult:string;underResult:string;net:number};
+export type PaidView={boss:PaidRecord|null;underboss:PaidRecord|null;pair:PaidPair|null;games:(Omit<Pick,'raw'>&{agreementResult:string})[];lastNight:PaidLast[];lastDate:string;windowDays:30;from:string;through:string};
 type Shared={crew:string[];offset:(date:string,n:number)=>string;eventKey:(p:Pick)=>string;side:(p:Pick)=>string;quote:(p:Pick)=>string};
 const markets=new Set(['Spread','Total','ML']);
 const stable=(a:string,b:string)=>a.localeCompare(b,'en');
@@ -18,6 +19,9 @@ export function paidViews(picks:Pick[],asof:string,shared:Shared):Record<string,
  const matching=(a:Pick,b:Pick)=>!!side(a)&&!!quote(a)&&side(a)===side(b)&&quote(a)===quote(b)&&a.odds!==null&&a.odds===b.odds;
  const historyGroups=[...group(historical).values()].map(unique);
  const currentGroups=[...group(current).values()].map(unique);
+ // Boss 11/18: tap the Boss & Underboss to see every game they agreed on last night (same side, line ignored) with ✓/✕
+ const lastDate=offset(asof,-1);
+ const lastGroups=[...group(picks.filter(p=>p.date===lastDate&&crew.includes(p.analyst)&&markets.has(p.market))).values()].map(unique);
  const result:Record<string,PaidView>={};
  for(const sport of ['All','NBA','NFL','CBB','CFB']){
   const rows=historical.filter(p=>sport==='All'||p.sport===sport);
@@ -34,7 +38,10 @@ export function paidViews(picks:Pick[],asof:string,shared:Shared):Record<string,
   const games:(Omit<Pick,'raw'>&{agreementResult:string})[]=[];
   if(boss&&underboss)for(const g of currentGroups){const a=g.get(boss.analyst),b=g.get(underboss.analyst);if(!a||!b||(sport!=='All'&&a.sport!==sport)||!matching(a,b)||(a.market==='ML'&&a.odds!< -300))continue;const {raw,...pick}=a;games.push({...pick,agreementResult:a.result===b.result&&['W','L','Push','Void'].includes(a.result)?a.result:''})}
   games.sort((a,b)=>stable(a.sport,b.sport)||stable(a.matchup,b.matchup)||(['Spread','Total','ML'].indexOf(a.market)-['Spread','Total','ML'].indexOf(b.market))||stable(a.id,b.id));
-  result[sport]={boss,underboss,pair,games:games.slice(0,10),windowDays:30,from,through};
+  const lastNight:PaidLast[]=[];
+  if(boss&&underboss)for(const g of lastGroups){const a=g.get(boss.analyst),b=g.get(underboss.analyst);if(!a||!b||(sport!=='All'&&a.sport!==sport)||!side(a)||side(a)!==side(b))continue;lastNight.push({id:a.id,sport:a.sport,market:a.market,matchup:a.matchup,pick:a.pick,odds:a.odds,bossPick:a.pick,underPick:b.pick,bossResult:a.result||'',underResult:b.result||'',net:(settled(a.result)?a.net||0:0)+(settled(b.result)?b.net||0:0)})}
+  lastNight.sort((a,b)=>stable(a.sport,b.sport)||stable(a.matchup,b.matchup)||(['Spread','Total','ML'].indexOf(a.market)-['Spread','Total','ML'].indexOf(b.market)));
+  result[sport]={boss,underboss,pair,games:games.slice(0,10),lastNight,lastDate,windowDays:30,from,through};
  }
  return result;
 }

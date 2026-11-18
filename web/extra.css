@@ -200,3 +200,46 @@ h1{line-height:1.05}
 .gm-more{display:block;width:100%;text-align:left;border:0;border-top:1px solid #222831;background:none;color:#9aa3ad;font-size:12px;padding:8px 0 0}.gm-head,.gm-score{cursor:pointer}
 .br-title .gm-fedora{height:110px}@media(max-width:600px){.br-title .gm-fedora{height:92px}}
 .gm-game.live.gm-mine{border-color:var(--gold);box-shadow:0 0 0 1px #d2b77888,0 0 14px #d2b77833}
+/* Boss 11/18: Big Board TODAY / LAST NIGHT switch + analyst chips */
+.bb-switch{display:flex;gap:0;margin:16px 0 12px;border:1px solid #3a3427;border-radius:999px;overflow:hidden;width:max-content;max-width:100%}
+.bb-switch button{background:#12151b;color:#c5cbd2;border:0;padding:10px 22px;font-family:'Saira Stencil One','Barlow',sans-serif;font-size:15px;letter-spacing:.06em;cursor:pointer}
+.bb-switch button.on{background:var(--gold);color:#0b0e12}
+.bb-names{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.bb-names::-webkit-scrollbar{display:none}
+.bb-names button{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:5px;background:#12151b;border:1px solid var(--border);border-radius:10px;padding:7px 9px;color:#c5cbd2;font-size:11px;cursor:pointer;min-width:66px}
+.bb-names button.on{border-color:var(--gold);color:var(--gold);background:#1a1810}
+.bb-names .lineup-portrait,.bb-names .avatar{width:40px!important;height:40px!important;border-radius:8px;object-fit:cover}
+.bb-crew-chip{display:flex;align-items:center;justify-content:center;height:40px;width:48px;font-family:'Saira Stencil One','Barlow',sans-serif;font-size:12px;line-height:1.05;text-align:center;color:inherit}
+.bb-last-stats .stat strong,.bb-last-stats strong{font-variant-numeric:tabular-nums}
+/* Boss 11/18: Who's the Boss — last night together */
+.paid-tap{cursor:pointer}
+.paid-last-toggle{display:block;width:100%;margin:10px 0 4px;background:#12151b;border:1px solid #3a3427;border-radius:8px;color:var(--gold);padding:11px;font-family:'Saira Stencil One','Barlow',sans-serif;font-size:15px;letter-spacing:.05em;cursor:pointer}
+.paid-last{border:1px solid #3a3427;border-radius:9px;background:#0f1217;padding:14px;margin:8px 0 16px}
+.paid-last-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px;margin-bottom:10px}
+.paid-last-head h3{margin:4px 0 0;font-size:18px}
+.paid-last-head h3 span{color:var(--gold)}
+.paid-last-sum{display:flex;gap:12px;align-items:baseline;font-family:'Saira Stencil One','Barlow',sans-serif;font-size:20px}
+.paid-last-row{display:grid;grid-template-columns:44px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid #1f242b}
+.paid-last-mark{display:flex;justify-content:center}
+.paid-last-mark .paid-result,.paid-last-mark .paid-result-neutral{font-size:22px}
+.paid-last-split{display:flex;gap:2px}.paid-last-split strong{font-size:15px!important}
+.paid-last-pick b{display:block;font-size:15px}
+.paid-last-pick span{display:block;font-size:12px;color:#9aa1ab;margin-top:2px}
+.paid-last-odds{font-family:'Saira Stencil One','Barlow',sans-serif;color:#c5cbd2}
+/* Boss 11/18: Lions Den — tap the lion for the Den's history */
+.den-tap{cursor:pointer}
+.den-hist-hint{display:block;margin:10px auto 6px;background:none;border:1px dashed #3a3427;border-radius:999px;color:var(--gold);padding:8px 16px;font-size:13px;cursor:pointer}
+.den-hist{border:1px solid #3a3427;border-radius:10px;background:#0f1217;padding:14px;margin:12px 0 18px}
+.den-hist-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.den-hist-head h3{margin:4px 0 0;font-size:20px}
+.den-hist-x{background:none;border:1px solid var(--border);color:#c5cbd2;border-radius:6px;width:32px;height:32px;cursor:pointer}
+.den-hist-sports{margin:12px 0 8px}
+.den-hist-cols,.den-hist-row{display:grid;grid-template-columns:1fr 78px 54px 78px;gap:8px;align-items:center}
+.den-hist-cols{font-size:10px;letter-spacing:.08em;color:#8d949e;padding:6px 0;border-bottom:1px solid #1f242b}
+.den-hist-cols span:not(:first-child),.den-hist-row>:not(:first-child){text-align:right}
+.den-hist-row{padding:9px 0;border-bottom:1px solid #1a1e24;font-size:14px}
+.den-hist-row strong{font-family:'Saira Stencil One','Barlow',sans-serif;font-weight:400}
+.den-hist-row small{color:#8d949e;font-size:10px;display:block}
+.den-hist-who{display:flex;align-items:center;gap:8px;min-width:0}
+.den-hist-who b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.den-hist-who .lineup-portrait,.den-hist-who .avatar{width:32px!important;height:32px!important;border-radius:6px;object-fit:cover;flex:0 0 auto}
