@@ -49,7 +49,7 @@ export default function GetMoney({ data, sport }: { data: any; sport: string }) 
       <button onClick={reload}>{stamp ? 'Updated ' + new Date(stamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' }) : 'Loading scores…'} ↻</button>
     </div>
     <div className="gm-strip">{strip.map(x => <div key={x.n} className={'gm-box' + (x.n === 'Johnny Biz' ? ' boss' : '')}>
-      <img src={x.n === 'Johnny Biz' ? 'art/mafia-johnny.webp' : pic(x.n)} alt="" />
+      <img src={x.n === 'Johnny Biz' ? 'art/johnny-free-face.webp' : pic(x.n)} alt="" />
       <span>{SHORT[x.n]}</span>
       <b>{x.w}–{x.l}{x.push ? '–' + x.push : ''}</b>
       <strong className={x.net > 0 ? 'green' : x.net < 0 ? 'red' : ''}>{money(x.net)}</strong>
