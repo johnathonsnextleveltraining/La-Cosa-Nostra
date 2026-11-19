@@ -20,7 +20,7 @@ export default function SitDown() {
   const shown = list.slice(-limit);
   const hidden = (rows || []).length - (rows || []).filter(toBoss).length;
   // jump to the newest message when the thread opens or something new lands
-  useEffect(() => { const top = shown.length ? Number(shown[shown.length - 1].id) : 0; if (top && (first.current || top > lastId.current)) { end.current?.scrollIntoView({ block: 'end', behavior: first.current ? 'auto' : 'smooth' }); first.current = false } lastId.current = top }, [shown.length, chatter]);
+  useEffect(() => { const top = shown.length ? Number(shown[shown.length - 1].id) : 0; if (top && (first.current || top > lastId.current)) { const go = () => end.current?.scrollIntoView({ block: 'end', behavior: first.current ? 'auto' : 'smooth' }); go(); if (first.current) { setTimeout(go, 400); setTimeout(go, 1200) } first.current = false } lastId.current = top }, [shown.length, chatter]);
   async function post(e: any) {
     e.preventDefault(); const text = body.trim(); if (!text) return; setBusy(true); setNote('');
     try { await api('post', { from: 'Johnny Biz', to, body: text }); setBody(''); await load() }
