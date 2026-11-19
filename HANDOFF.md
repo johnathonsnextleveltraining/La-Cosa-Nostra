@@ -107,7 +107,7 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 
 **Get Money (NEW, Boss 11/17), first in the menu, above the Big Board:** web/getmoney.tsx. Menu icon: Nino's fedora, art/menu-getmoney.webp. A live sweat board for every game on tonight's card (data.current, crew + Johnny Biz, spread/total/ML). ESPN scores every 5 minutes via `useLiveData(date, 300000)` in web/live.tsx (also a manual ↻ button). Live games are open; upcoming/final games are tap-to-open. Each side shows ✓/✕/▲/▼, odds, and the mugshots of who's on it, with a BOSS $ tag on Johnny's real tickets. The top strip has each analyst's night so far (finals W–L + money, live ▲/▼) plus Johnny Biz. Unofficial until the 1:30 AM grader settles it.
 
-**Menu order (Boss 11/17):** Get Money, Big Board, Who's the Boss, Locked & Loaded, Lions Den, Paid in Full, Usual Suspects, Bragging Rights, Ledger, Sit-Down, Bankroll, Data Health. Big Board tagline: "When 3 agree, we all eat." in gold.
+**Menu order (Boss 11/19):** Get Money, Bragging Rights, Big Board, Who's the Boss, Locked & Loaded, Lions Den, Paid in Full, Usual Suspects, Ledger, Sit-Down, Bankroll, Data Health. Big Board tagline: "When 3 agree, we all eat." in gold.
 
 **Next pages (Boss can jump the order, he did with Bankroll):**
 1. Let's Get Paid
@@ -144,3 +144,4 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 **The Sit-Down: DONE pending Boss's OK (11/19):** text thread (web/sitdown.tsx). Boss on the right, crew on the left, newest at the bottom, day separators. Messages to Boss in gold, crew-to-crew chatter hidden behind "Everything". Send bar pinned to the bottom, From is always Johnny Biz, To = Everybody / Hova / Nino.
 **Data Health: DONE pending Boss's OK (11/19):** plain-English checklist with green/yellow/red lights (cards tonight, 12 locks each, Rithmm full card, last night graded, Lions Den built, Boss tickets logged, book size). Downloads: whole book CSV (`/api/export`) and full JSON backup (`/api/backup`). All the old migration/audit fine print is gone.
 **Renovation: every page done.**
+**11/19 later:** Bragging Rights moved under Get Money. Partners in Crime: tap the whole box (tonight's games together), then "Last 10 games" (`/api/together`) for the last 10 graded games that group agreed on. Boss's tickets are graded from final scores (rules:johnny_grading; nightly grader prompt updated) — never wait for his slip.
