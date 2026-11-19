@@ -1,3 +1,4 @@
+import { R } from './ranks.tsx';
 // "Get Money" (Boss 11/17): live sweat board for every game on tonight's card.
 // Scores from ESPN every 5 minutes. Results here are unofficial until the 1:30 AM grader writes them.
 import { useMemo, useState } from 'react';
@@ -76,13 +77,13 @@ function GameCard({ x }: { x: any }) {
       {g?.state === 'in' ? <span className="gm-state"><span className="live-dot">LIVE</span> {g.detail}</span> : g?.state === 'post' ? <span className="gm-state">FINAL</span> : <span className="gm-state">{g?.start ? timeText(g.start) : 'Time TBD'}</span>}
     </div>
     <div className="gm-score" role="button" tabIndex={0} onClick={() => setOpen(!open)}>
-      <div><span>{g?.away || away}</span><b>{g && g.state !== 'pre' ? g.as : ''}</b></div>
-      <div><span>{g?.home || home}</span><b>{g && g.state !== 'pre' ? g.hs : ''}</b></div>
+      <div><span><R t={g?.away || away} s={x.sport}/></span><b>{g && g.state !== 'pre' ? g.as : ''}</b></div>
+      <div><span><R t={g?.home || home} s={x.sport}/></span><b>{g && g.state !== 'pre' ? g.hs : ''}</b></div>
     </div>
     {!open && <button className="gm-more" onClick={() => setOpen(true)}>{sides.length} picks{boss ? ' · 👑 BOSS on it' : ''}{up || dn ? ' · ' + up + ' cashing · ' + dn + ' losing' : ''} ▾</button>}
     {open && <div className="gm-sides">{sides.map(sd => <div key={sd.market + sd.pick} className={'gm-side ' + (sd.s === 'W' || sd.s === 'up' ? 'win' : sd.s === 'L' || sd.s === 'down' ? 'lose' : '')}>
       <span className="gm-mark">{STATUS[sd.s] || '•'}</span>
-      <div className="gm-pick"><b>{sd.pick}</b> <small>{oddsText(sd.odds)} · {sd.market === 'ML' ? 'Moneyline' : sd.market}</small></div>
+      <div className="gm-pick"><b><R t={sd.pick} s={x.sport}/></b> <small>{oddsText(sd.odds)} · {sd.market === 'ML' ? 'Moneyline' : sd.market}</small></div>
       <div className="gm-who">{sd.who.map((n: string) => n === 'Johnny Biz' ? <span key={n} className="gm-boss"><DenCrown size={22}/><small>BOSS</small></span> : <img key={n} src={pic(n)} alt={SHORT[n]} title={SHORT[n]} />)}</div>
     </div>)}</div>}
   </section>;

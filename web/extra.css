@@ -303,3 +303,4 @@ h1{line-height:1.05}
 .hc-export{display:flex;flex-direction:column;gap:8px}.hc-export button{justify-content:center;display:flex;gap:8px;align-items:center;cursor:pointer}.hc-alt{background:none;border:1px solid var(--border);color:#fff;border-radius:6px;padding:10px}
 .crime-click{cursor:pointer}.crime-last-btn{display:block;margin:10px auto 2px;background:var(--gold);color:#111;border:0;border-radius:999px;padding:7px 16px;font-weight:800;font-size:12px;cursor:pointer}
 .crime-last{margin-top:8px;padding:8px 10px;border:1px solid #d2b77855;border-radius:10px;background:#0b0d10}
+.rk{color:#ffe600;font-weight:900;margin-right:3px;font-size:.92em;letter-spacing:0;text-shadow:0 0 6px #ffe60055}
