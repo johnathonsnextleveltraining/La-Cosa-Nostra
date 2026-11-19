@@ -279,3 +279,25 @@ h1{line-height:1.05}
 .lg-res{display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-width:58px}.lg-mark{font-size:22px;font-weight:900;line-height:1}.lg-mark.w{color:#3ecf6a}.lg-mark.l{color:#ff5a5a}.lg-mark.p{color:#777}.lg-res small{font-size:12px;font-weight:700}
 .lg-loading{opacity:.6;text-align:center}.lg-export{text-align:center;margin:14px 0}.lg-export button{background:none;border:1px solid var(--border);color:#fff;border-radius:999px;padding:7px 14px;font-size:12px;display:inline-flex;gap:6px;align-items:center;cursor:pointer}
 .lg-faces{align-items:center}.lg-faces .lg-chip{align-self:center}
+/* Sit-Down text thread 11/19 */
+.sd-top{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.sd-thread{display:flex;flex-direction:column;gap:8px;padding-bottom:150px}
+.sd-older{align-self:center;background:none;border:1px solid var(--border);color:#fff;border-radius:999px;padding:6px 12px;font-size:12px;cursor:pointer}
+.sd-day{text-align:center;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#888;margin:8px 0 2px}
+.sd-row{display:flex;gap:8px;align-items:flex-end}.sd-row.mine{justify-content:flex-end}
+.sd-face{width:34px;height:34px;border-radius:50%;object-fit:cover;background:#fff;flex:0 0 34px}
+.sd-bubble{max-width:80%;border-radius:16px 16px 16px 4px;padding:8px 12px;background:#1a1f27;border:1px solid var(--border)}
+.sd-bubble p{margin:0;white-space:pre-wrap;word-break:break-word;font-size:14px;line-height:1.4}
+.sd-bubble.boss p{color:var(--gold)}.sd-bubble.crew{opacity:.75}.sd-bubble.crew p{color:#fff}
+.sd-bubble.mine{border-radius:16px 16px 4px 16px;background:#2a2312;border-color:#d2b77866}.sd-bubble.mine p{color:#fff}
+.sd-who{font-size:11px;font-weight:800;color:#bbb;margin-bottom:2px}.sd-time{font-size:10px;color:#777;text-align:right;margin-top:3px}
+.sd-compose{position:fixed;left:0;right:0;bottom:0;z-index:20;background:#0b0e12f2;border-top:1px solid var(--border);padding:8px 10px calc(8px + env(safe-area-inset-bottom));backdrop-filter:blur(6px)}
+@media(min-width:801px){.sd-compose{left:236px}}
+.sd-to{display:flex;gap:6px;margin-bottom:6px}.sd-to .lg-chip{padding:4px 10px;font-size:11px}
+.sd-input{display:flex;gap:8px;align-items:flex-end}.sd-input textarea{flex:1;background:#12161c;border:1px solid var(--border);border-radius:14px;padding:9px 12px;color:#fff;font-size:15px;resize:none;max-height:140px}
+.sd-input .primary{border-radius:14px;padding:10px 16px}.sd-note{font-size:12px;color:#ff8a8a;margin-top:4px}
+/* Data Health checklist 11/19 */
+.hc-list{display:flex;flex-direction:column;gap:8px;margin:6px 0 16px}.hc{display:flex;gap:12px;align-items:flex-start;background:#12161c;border:1px solid var(--border);border-radius:10px;padding:12px}
+.hc-dot{width:14px;height:14px;border-radius:50%;flex:0 0 14px;margin-top:3px;background:#ff5a5a;box-shadow:0 0 8px #ff5a5a88}.hc.ok .hc-dot{background:#3ecf6a;box-shadow:0 0 8px #3ecf6a88}.hc.warn .hc-dot{background:#f2c94c;box-shadow:0 0 8px #f2c94c88}
+.hc b{display:block;font-size:14px}.hc small{display:block;font-size:12px;opacity:.65;margin-top:2px}
+.hc-export{display:flex;flex-direction:column;gap:8px}.hc-export button{justify-content:center;display:flex;gap:8px;align-items:center;cursor:pointer}.hc-alt{background:none;border:1px solid var(--border);color:#fff;border-radius:6px;padding:10px}
