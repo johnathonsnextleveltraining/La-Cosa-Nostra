@@ -43,9 +43,9 @@ export default function SitDown() {
         const crewTalk = !toBoss(m);
         return <div key={m.id}>
           {sep && <div className="sd-day">{d}</div>}
-          <div className={'sd-row' + (mine ? ' mine' : '')}>
+          <div className={'sd-row' + (mine ? ' sd-mine-row' : '')}>
             {!mine && (art[m.sender] ? <img className="sd-face" src={'art/mafia-' + art[m.sender] + '.webp'} alt={m.sender} /> : <span className="sd-face initial">{m.sender[0]}</span>)}
-            <div className={'sd-bubble' + (mine ? ' mine' : crewTalk ? ' crew' : ' boss')}>
+            <div className={'sd-bubble' + (mine ? ' sd-mine' : crewTalk ? ' sd-crew' : ' sd-tome')}>
               {!mine && <div className="sd-who">{short[m.sender] || m.sender}{m.recipient !== 'All' && m.recipient !== 'Johnny Biz' ? ' → ' + (short[m.recipient] || m.recipient) : ''}</div>}
               {mine && m.recipient !== 'All' && <div className="sd-who">to {short[m.recipient] || m.recipient}</div>}
               <p>{m.body}</p>

@@ -284,12 +284,12 @@ h1{line-height:1.05}
 .sd-thread{display:flex;flex-direction:column;gap:8px;padding-bottom:150px}
 .sd-older{align-self:center;background:none;border:1px solid var(--border);color:#fff;border-radius:999px;padding:6px 12px;font-size:12px;cursor:pointer}
 .sd-day{text-align:center;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#888;margin:8px 0 2px}
-.sd-row{display:flex;gap:8px;align-items:flex-end}.sd-row.mine{justify-content:flex-end}
+.sd-row{display:flex;gap:8px;align-items:flex-end}.sd-row.sd-mine-row{justify-content:flex-end}
 .sd-face{width:34px;height:34px;border-radius:50%;object-fit:cover;background:#fff;flex:0 0 34px}
 .sd-bubble{max-width:80%;border-radius:16px 16px 16px 4px;padding:8px 12px;background:#1a1f27;border:1px solid var(--border)}
 .sd-bubble p{margin:0;white-space:pre-wrap;word-break:break-word;font-size:14px;line-height:1.4}
-.sd-bubble.boss p{color:var(--gold)}.sd-bubble.crew{opacity:.75}.sd-bubble.crew p{color:#fff}
-.sd-bubble.mine{border-radius:16px 16px 4px 16px;background:#2a2312;border-color:#d2b77866}.sd-bubble.mine p{color:#fff}
+.sd-bubble.sd-tome p{color:var(--gold)}.sd-bubble.sd-crew{opacity:.75}.sd-bubble.sd-crew p{color:#fff}
+.sd-bubble.sd-mine{border-radius:16px 16px 4px 16px;background:#2a2312;border-color:#d2b77866}.sd-bubble.sd-mine p{color:#fff}
 .sd-who{font-size:11px;font-weight:800;color:#bbb;margin-bottom:2px}.sd-time{font-size:10px;color:#777;text-align:right;margin-top:3px}
 .sd-compose{position:fixed;left:0;right:0;bottom:0;z-index:20;background:#0b0e12f2;border-top:1px solid var(--border);padding:8px 10px calc(8px + env(safe-area-inset-bottom));backdrop-filter:blur(6px)}
 @media(min-width:801px){.sd-compose{left:236px}}
