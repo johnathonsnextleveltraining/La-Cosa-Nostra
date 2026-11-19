@@ -138,3 +138,6 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 - Bragging Rights books table on phones: name on top, labeled record row underneath (.books-table).
 
 **Real-time grading (Boss 11/17):** every page grades picks and locks the moment ESPN calls the game final (`provisional()` in web/adapter.ts, today + yesterday, unofficial overlay with `unofficial:true`; ESPN scores cached 60s). Pages already reload state every 5 min when open (BoardSync) and also on the clock at :00/:30. The 1:30 AM grader still writes the official result into the book.
+
+**Bragging Rights (11/19):** Partners in Crime shows the top 5 only; tap the faces to see tonight's games that group is on the same side of (live ✓/✕).
+**The Ledger: DONE pending Boss's OK (11/19):** filtered locally from the cached book in web/adapter.ts (`ledger()`, live grades included). Opens on Last Night. Running total (record, money, ROI, picks), range chips (Today/Last Night/This Week/This Month/All Time + date), analyst face chips (Johnny = My Tickets), result + bet-type chips, Locks only, search, phone cards with ✓/✕ and money, badges: crown = lock, lion = Lions Den game, research flag from `lcn.research` (RPC `public.lcn_research`). CSV export built on the phone (`/api/export`).
