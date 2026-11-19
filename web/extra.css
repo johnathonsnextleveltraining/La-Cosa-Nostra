@@ -278,3 +278,4 @@ h1{line-height:1.05}
 .lg-badge{display:inline-flex;align-items:center;color:var(--gold);font-size:12px}.lg-lion{width:16px;height:16px;border-radius:50%}
 .lg-res{display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-width:58px}.lg-mark{font-size:22px;font-weight:900;line-height:1}.lg-mark.w{color:#3ecf6a}.lg-mark.l{color:#ff5a5a}.lg-mark.p{color:#777}.lg-res small{font-size:12px;font-weight:700}
 .lg-loading{opacity:.6;text-align:center}.lg-export{text-align:center;margin:14px 0}.lg-export button{background:none;border:1px solid var(--border);color:#fff;border-radius:999px;padding:7px 14px;font-size:12px;display:inline-flex;gap:6px;align-items:center;cursor:pointer}
+.lg-faces{align-items:center}.lg-faces .lg-chip{align-self:center}
