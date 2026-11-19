@@ -89,6 +89,38 @@ async function provisional(picks: any[], locks: any[]) {
   });
   return { picks: done.size ? picks.map(p => done.get(p.id) || p) : picks, locks: outLocks };
 }
+// Boss 11/19 Ledger rebuild: filtered locally from the cached book (fast, works with live ✓/✕).
+let research: { at: number; rows: any[] } | null = null;
+async function researchRows() {
+  if (research && Date.now() - research.at < 300000) return research.rows;
+  let rows: any[] = [];
+  try { const r = await fetch(SB + '/rest/v1/rpc/lcn_research', { method: 'POST', cache: 'no-store', headers: { apikey: KEY, Authorization: 'Bearer ' + KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ pass: getPass() }) }); const v = await r.json(); if (Array.isArray(v)) rows = v } catch { }
+  research = { at: Date.now(), rows }; return rows;
+}
+async function ledger(q: Record<string, string>) {
+  const rev = (await api('revision')).revision as number;
+  if (!cache || cache.revision !== rev) await loadAll(rev);
+  const copy = cache!.locks.map((l: any) => ({ ...l }));
+  const { picks, locks } = await provisional(cache!.picks, copy).catch(() => ({ picks: cache!.picks, locks: copy }));
+  const t = today(); const range = q.range || 'lastnight';
+  const mon = (d: string) => { const x = new Date(d + 'T12:00:00Z'); const k = (x.getUTCDay() + 6) % 7; return offset(d, -k) };
+  const inRange = (d: string) => q.date ? d === q.date : range === 'today' ? d === t : range === 'lastnight' ? d === offset(t, -1) : range === 'week' ? d >= mon(t) && d <= t : range === 'month' ? d.slice(0, 7) === t.slice(0, 7) && d <= t : true;
+  const lockIds = new Set<string>(); for (const l of locks as any[]) { const id = l.pickId || l.pick_id || l.frozen?.id; if (id) lockIds.add(id) }
+  const res = new Map<string, any>(); for (const r of await researchRows()) if (r.pick) res.set(r.pick, r);
+  const words = (q.q || '').toLowerCase().split(/\s+/).filter(Boolean);
+  const rows = (picks as any[]).filter(p => inRange(p.date)
+    && (!q.sport || q.sport === 'All' || p.sport === q.sport)
+    && (!q.analyst || p.analyst === q.analyst)
+    && (!q.market || p.market === q.market)
+    && (!q.result || (q.result === 'pending' ? !p.result : p.result === q.result))
+    && (!q.locks || lockIds.has(p.id))
+    && words.every(w => (p.matchup + ' ' + p.pick + ' ' + p.analyst).toLowerCase().includes(w)))
+    .sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : String(a.matchup).localeCompare(String(b.matchup)) || String(a.analyst).localeCompare(String(b.analyst)));
+  const sum = { w: 0, l: 0, push: 0, pending: 0, net: 0, risk: 0 };
+  for (const p of rows) { if (p.result === 'W') sum.w++; else if (p.result === 'L') sum.l++; else if (p.result === 'Push') sum.push++; else sum.pending++; if (p.result && p.net != null) { sum.net += p.net; sum.risk += p.risk ?? (p.analyst !== 'Johnny Biz' ? 20000 : 0) } }
+  const page = Number(q.page || 0);
+  return { count: rows.length, summary: sum, rows: rows.slice(page * 50, page * 50 + 50).map(p => ({ ...p, lock: lockIds.has(p.id), research: res.get(p.id) || null })) };
+}
 async function state() {
   const rev = (await api('revision')).revision as number;
   if (!cache || cache.revision !== rev) await loadAll(rev);
@@ -115,7 +147,8 @@ const realFetch = window.fetch.bind(window);
   try {
     if (u.pathname === '/api/state') return json(await state());
     if (u.pathname === '/api/revision') return json({ ...(await api('revision')), date: today() });
-    if (u.pathname === '/api/ledger') return json(await api('ledger', Object.fromEntries(u.searchParams)));
+    if (u.pathname === '/api/export') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); const cols = ['date', 'analyst', 'sport', 'market', 'matchup', 'pick', 'odds', 'risk', 'result', 'net']; const esc = (x: any) => { const t = x == null ? '' : String(x); return /[",\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t }; const body = [cols.join(',')].concat(cache!.picks.map((p: any) => cols.map(c => esc(c === 'risk' || c === 'net' ? (p[c] == null ? '' : p[c] / 100) : p[c])).join(','))).join('\n'); return new Response(body, { headers: { 'content-type': 'text/csv' } }) }
+    if (u.pathname === '/api/ledger') return json(await ledger(Object.fromEntries(u.searchParams)));
     if (u.pathname === '/api/manage') return json({ error: 'Changes go through Hova now. Post it in The Sit-Down.' }, 403);
     return json({ error: 'Not available in this version.' }, 404);
   } catch (e: any) { return json({ error: String(e && e.message || e) }, 503) }
