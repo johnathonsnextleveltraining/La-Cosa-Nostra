@@ -137,6 +137,8 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 - Bragging Rights Partners in Crime (Boss 11/18): ranked by **ROI**, min **20 decided games** together, per sport + bet type, 60 days (history()). ROI is the big number, dollars underneath. Who's the Boss stays the 30-day money board.
 - Bragging Rights books table on phones: name on top, labeled record row underneath (.books-table).
 
+- Ledger (Boss 11/19): each row shows, left of the result, that analyst's win % and W–L over their last 30 settled picks of the same sport + bet type before that pick's date (`form` in adapter ledger()).
+
 **Real-time grading (Boss 11/17):** every page grades picks and locks the moment ESPN calls the game final (`provisional()` in web/adapter.ts, today + yesterday, unofficial overlay with `unofficial:true`; ESPN scores cached 60s). Pages already reload state every 5 min when open (BoardSync) and also on the clock at :00/:30. The 1:30 AM grader still writes the official result into the book.
 
 **Bragging Rights (11/19):** Partners in Crime shows the top 5 only; tap the faces to see tonight's games that group is on the same side of (live ✓/✕).

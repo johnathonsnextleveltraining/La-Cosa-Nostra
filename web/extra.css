@@ -329,3 +329,9 @@ h1{line-height:1.05}
 @media(max-width:600px){.brag-banner{margin-bottom:16px}.books-table.books-vault tbody{padding:6px}.books-table.books-vault tbody tr{grid-template-columns:118px repeat(3,minmax(0,1fr))}.books-table.books-vault tbody td{font-size:14px}.books-table.books-vault .table-person{font-size:19px}.books-table.books-vault td.books-pic{min-height:140px}}
 .books-table.books-vault tbody td:first-child{grid-column:1;grid-row:1/-1;margin:0!important;text-align:center}
 .books-table.books-vault tbody td:nth-child(2)::before,.books-table.books-vault tbody td:first-child::before{content:none!important;display:none}
+/* Boss 11/19: last-30 form of this bet type, left of the result */
+.lg-form{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:50px;padding:0 6px;border-left:1px solid #252a31;border-right:1px solid #252a31}
+.lg-form strong{font-family:'Saira Stencil One','Barlow',sans-serif;font-weight:400;font-size:16px;line-height:1.1}
+.lg-form small{font-size:11px;color:#c5cbd2;white-space:nowrap}
+.lg-form em{font-style:normal;font-size:9px;letter-spacing:.06em;color:#8d949e}
+.lg-main{min-width:0;flex:1}

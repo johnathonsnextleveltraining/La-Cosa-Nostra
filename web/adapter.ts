@@ -119,7 +119,12 @@ async function ledger(q: Record<string, string>) {
   const sum = { w: 0, l: 0, push: 0, pending: 0, net: 0, risk: 0 };
   for (const p of rows) { if (p.result === 'W') sum.w++; else if (p.result === 'L') sum.l++; else if (p.result === 'Push') sum.push++; else sum.pending++; if (p.result && p.net != null) { sum.net += p.net; sum.risk += p.risk ?? (p.analyst !== 'Johnny Biz' ? 20000 : 0) } }
   const page = Number(q.page || 0);
-  return { count: rows.length, summary: sum, rows: rows.slice(page * 50, page * 50 + 50).map(p => ({ ...p, lock: lockIds.has(p.id), research: res.get(p.id) || null })) };
+  // Boss 11/19: next to each pick, that analyst's last 30 settled picks of the same sport + bet type (before this pick's date)
+  const hist = new Map<string, any[]>();
+  for (const p of picks as any[]) { if (!['W', 'L', 'Push'].includes(p.result)) continue; const k = p.analyst + '|' + p.sport + '|' + p.market; (hist.get(k) || hist.set(k, []).get(k)!).push(p) }
+  for (const v of hist.values()) v.sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : 0);
+  const form = (p: any) => { const last = (hist.get(p.analyst + '|' + p.sport + '|' + p.market) || []).filter(x => x.date < p.date).slice(0, 30); let w = 0, l = 0, push = 0; for (const x of last) { if (x.result === 'W') w++; else if (x.result === 'L') l++; else push++ } return { w, l, push, n: last.length, rate: w + l ? w / (w + l) : null } };
+  return { count: rows.length, summary: sum, rows: rows.slice(page * 50, page * 50 + 50).map(p => ({ ...p, lock: lockIds.has(p.id), research: res.get(p.id) || null, form: form(p) })) };
 }
 async function state() {
   const rev = (await api('revision')).revision as number;
