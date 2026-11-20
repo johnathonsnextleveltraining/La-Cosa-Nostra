@@ -401,15 +401,32 @@ h1{line-height:1.05}
 .den-cat-recs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:6px 0 10px}.den-cat-rec{background:#12161c;border:1px solid var(--border);border-radius:8px;padding:8px 4px;text-align:center}.den-cat-rec small{display:block;font-size:10px;letter-spacing:1px;text-transform:uppercase;opacity:.7}.den-cat-rec b{display:block;font-size:17px;font-weight:900;margin-top:2px}
 .lg-face .lineup-portrait{width:40px!important;height:40px!important;margin:0!important;border:1px solid #bba774;border-radius:4px}.lg-card .lineup-portrait{width:46px!important;height:46px!important;margin:0!important;border:1px solid #bba774;border-radius:4px;flex:0 0 46px}
 
-/* Boss 11/19: Bragging Rights opens the app — crew vault banner under the title, vault portraits for the lineup + books (Partners in Crime keeps the jailhouse mugs) */
-.brag-banner{display:block;width:100%;aspect-ratio:2/1;max-height:460px;object-fit:cover;object-position:center 35%;border-radius:6px;border:1px solid rgba(212,175,55,.45);margin:0 0 18px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
-.brag-lineup .lineup-portrait.vault-portrait{aspect-ratio:4/5;object-fit:cover;border-radius:6px;border:1px solid rgba(212,175,55,.35)}
-.table-person .lineup-portrait.vault-portrait{object-fit:cover;object-position:50% 22%;border-radius:6px}
-@media(max-width:600px){.brag-banner{aspect-ratio:16/10;margin-bottom:14px}.brag-lineup{margin-top:14px}}
+/* Boss 11/19: Bragging Rights opens the app — crew vault banner under the title; Annual Books = one card per analyst, big vault pic full height on the left, numbers on the right (Partners in Crime keeps the jailhouse mugs) */
+.brag-banner{display:block;width:100%;aspect-ratio:2/1;max-height:460px;object-fit:cover;object-position:center 35%;border-radius:6px;border:1px solid rgba(212,175,55,.45);margin:0 0 22px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.books-table.books-vault{width:100%;min-width:0!important;border-collapse:separate}
+.books-table.books-vault thead{display:none}
+.books-table.books-vault tbody{display:flex;flex-direction:column;gap:12px;padding:10px}
+.books-table.books-vault tbody tr{display:grid!important;grid-template-columns:clamp(110px,30%,190px) repeat(3,minmax(0,1fr));grid-template-rows:auto 1fr 1fr;gap:8px 6px;padding:0 0 12px!important;border:1px solid rgba(212,175,55,.3)!important;border-radius:10px;overflow:hidden;background:#0f1216}
+.books-table.books-vault tbody td{display:flex!important;flex-direction:column;justify-content:center;align-items:center;padding:0!important;border:0!important;font-size:16px;font-weight:700;white-space:nowrap;text-align:center;margin:0!important}
+.books-table.books-vault td.books-pic{grid-column:1;grid-row:1/-1;align-self:stretch;justify-content:stretch;min-height:150px}
+.books-table.books-vault td.books-pic .lineup-portrait{width:100%!important;height:100%!important;aspect-ratio:auto;object-fit:cover;object-position:50% 30%;border-radius:0;border:0}
+.books-table.books-vault tbody td:nth-child(2){grid-column:2/-1;align-items:flex-start;padding:12px 8px 0!important}
+.books-table.books-vault .table-person{font-family:'Saira Stencil One','Barlow',sans-serif;font-size:22px;color:var(--gold);gap:0}
+.books-table.books-vault tbody td:nth-child(n+3){padding-right:6px!important}
+.books-table.books-vault tbody td:nth-child(n+3)::before{display:block;font-size:10px;letter-spacing:.08em;color:#8d949e;margin-bottom:4px;font-weight:600;font-family:'Barlow',sans-serif}
+.books-table.books-vault tbody td:nth-child(3)::before{content:'W–L'}
+.books-table.books-vault tbody td:nth-child(4)::before{content:'PUSH'}
+.books-table.books-vault tbody td:nth-child(5)::before{content:'PENDING'}
+.books-table.books-vault tbody td:nth-child(6)::before{content:'WIN %'}
+.books-table.books-vault tbody td:nth-child(7)::before{content:'NET'}
+.books-table.books-vault tbody td:nth-child(8)::before{content:'ROI'}
+@media(max-width:600px){.brag-banner{margin-bottom:16px}.books-table.books-vault tbody{padding:6px}.books-table.books-vault tbody tr{grid-template-columns:118px repeat(3,minmax(0,1fr))}.books-table.books-vault tbody td{font-size:14px}.books-table.books-vault .table-person{font-size:19px}.books-table.books-vault td.books-pic{min-height:140px}}
+.books-table.books-vault tbody td:first-child{grid-column:1;grid-row:1/-1;margin:0!important;text-align:center}
+.books-table.books-vault tbody td:nth-child(2)::before,.books-table.books-vault tbody td:first-child::before{content:none!important;display:none}
 </style>
 </head>
 <body>
 <div id="root"></div>
-<script src="app.js?v=e1df2255"></script>
+<script src="app.js?v=4bb2bb95"></script>
 </body>
 </html>
