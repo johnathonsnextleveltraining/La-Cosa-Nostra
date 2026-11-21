@@ -15,18 +15,30 @@ const riskOf = (p: any) => Number(p.risk ?? 20000);
 const oddsText = (o: any) => o == null ? '' : Number(o) > 0 ? '+' + o : String(o);
 const timeText = (iso: string) => { try { return new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' }) } catch { return '' } };
 const MK = ['Spread', 'Total', 'ML'];
+// Boss 11/20: his parlay/teaser legs go on the feed (crown + live-first) for sweating only.
+// The ticket row stores legs as matchup 'NBA:Away at Home | CFB:...' and pick 'Team -2 | Over 222'.
+// Legs never count in the strip money or record; only the whole ticket gets graded.
+const legsOf = (p: any): any[] => {
+  if (p.analyst !== 'Johnny Biz' || !/^(Parlay|Teaser)$/.test(p.market)) return [];
+  const ms = String(p.matchup || '').split(' | '), ks = String(p.pick || '').split(' | ');
+  if (ms.length < 2 || ms.length !== ks.length) return [];
+  return ms.map((m, i) => {
+    const mm = m.match(/^([A-Z]{2,4}):\s*(.+)$/), pk = ks[i].trim();
+    return { ...p, id: p.id + '#' + i, sport: mm ? mm[1] : p.sport, matchup: (mm ? mm[2] : m).trim(), pick: pk, market: /^(over|under)\b/i.test(pk) ? 'Total' : /\sML$/i.test(pk) ? 'ML' : 'Spread', odds: null, result: '', leg: ms.length };
+  });
+};
 const STATUS: Record<string, string> = { W: '✓', L: '✕', Push: '∞', up: '▲', down: '▼', even: '=' };
 
 export default function GetMoney({ data, sport }: { data: any; sport: string }) {
   const { games, stamp, reload } = useLiveData(data.date, 300000);
   const names = [...crew, 'Johnny Biz'];
-  const picks = useMemo(() => (data.current || []).filter((p: any) => names.includes(p.analyst) && MK.includes(p.market) && (sport === 'All' || p.sport === sport)), [data.current, sport]);
+  const picks = useMemo(() => (data.current || []).flatMap((p: any) => MK.includes(p.market) ? [p] : legsOf(p)).filter((p: any) => names.includes(p.analyst) && MK.includes(p.market) && (sport === 'All' || p.sport === sport)), [data.current, sport]);
 
   const rows = picks.map((p: any) => { const g = findGame(games, p.sport, p.matchup); return { p, g, s: p.result || evalPick(p.pick, p.market, g) } });
 
   // Top strip: each analyst's night so far (finals count, live shown as up/down)
   const strip = names.map(n => {
-    const mine = rows.filter((r: any) => r.p.analyst === n);
+    const mine = rows.filter((r: any) => r.p.analyst === n && !r.p.leg);
     const t = { w: 0, l: 0, push: 0, up: 0, down: 0, net: 0, left: 0 };
     for (const r of mine) {
       if (r.s === 'W') { t.w++; t.net += winOf(r.p) } else if (r.s === 'L') { t.l++; t.net -= riskOf(r.p) } else if (r.s === 'Push') t.push++;
@@ -65,7 +77,7 @@ function GameCard({ x }: { x: any }) {
   const g: Game | null = x.g;
   const [away, home] = x.matchup.split(/\s+at\s+/);
   const groups = new Map<string, any>();
-  for (const r of x.rows) { const k = r.p.market + '|' + r.p.pick.toLowerCase(); const v = groups.get(k) || { market: r.p.market, pick: r.p.pick, odds: r.p.odds, s: r.s, who: [] as string[] }; if (!v.who.includes(r.p.analyst)) v.who.push(r.p.analyst); groups.set(k, v) }
+  for (const r of x.rows) { const k = r.p.market + '|' + r.p.pick.toLowerCase() + (r.p.leg ? '|leg' : ''); const v = groups.get(k) || { market: r.p.market, pick: r.p.pick, odds: r.p.odds, s: r.s, leg: r.p.leg || 0, who: [] as string[] }; if (!v.who.includes(r.p.analyst)) v.who.push(r.p.analyst); groups.set(k, v) }
   const [openUser, setOpen] = useState<boolean | null>(null);
   const open = openUser ?? g?.state === 'in';
   const sides = [...groups.values()].sort((a, b) => MK.indexOf(a.market) - MK.indexOf(b.market) || b.who.length - a.who.length);
@@ -83,7 +95,7 @@ function GameCard({ x }: { x: any }) {
     {!open && <button className="gm-more" onClick={() => setOpen(true)}>{sides.length} picks{boss ? ' · 👑 BOSS on it' : ''}{up || dn ? ' · ' + up + ' cashing · ' + dn + ' losing' : ''} ▾</button>}
     {open && <div className="gm-sides">{sides.map(sd => <div key={sd.market + sd.pick} className={'gm-side ' + (sd.s === 'W' || sd.s === 'up' ? 'win' : sd.s === 'L' || sd.s === 'down' ? 'lose' : '')}>
       <span className="gm-mark">{STATUS[sd.s] || '•'}</span>
-      <div className="gm-pick"><b><R t={sd.pick} s={x.sport}/></b> <small>{oddsText(sd.odds)} · {sd.market === 'ML' ? 'Moneyline' : sd.market}</small></div>
+      <div className="gm-pick"><b><R t={sd.pick} s={x.sport}/></b> <small>{sd.leg ? sd.leg + '-leg ticket · ' : oddsText(sd.odds) + ' · '}{sd.market === 'ML' ? 'Moneyline' : sd.market}</small></div>
       <div className="gm-who">{sd.who.map((n: string) => n === 'Johnny Biz' ? <span key={n} className="gm-boss"><DenCrown size={22}/><small>BOSS</small></span> : <img key={n} src={pic(n)} alt={SHORT[n]} title={SHORT[n]} />)}</div>
     </div>)}</div>}
   </section>;
