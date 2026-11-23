@@ -24,6 +24,7 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 ## Daily card
 - No scheduled morning run. Everything runs when Boss says **"get the crew's picks"**.
 - Same game set for everyone, DraftKings lines (from ESPN scoreboard odds).
+- **Slate orientation (Boss 11/23, `rules:slate_orientation`):** before saving `slate:<date>`, check every game's away/home against the ESPN scoreboard and flip any that don't match (neutral-site games are the usual culprits). Matchup strings in picks/locks must match ESPN.
 - Size: 125 picks (50 spreads, 50 totals, 25 ML) on a common 50-game slate, plus 12 locks. Cap is 150 per analyst and 50 per market.
 - Every Top 25 college game is always included.
 - Every Lions Den game (the Den's top 3 per sport in each of the 4 lists) is always included too (Boss 11/17, `rules:den_games`). Check the Den before building cards. When over the cap, keep Den + Top 25 games first.
@@ -50,7 +51,7 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
     - sitdown.tsx and unread.ts: the chat and its unread badge.
     - live.tsx: live score tags on locks.
     - logbet.tsx: bet logging (hidden from the menu).
-    - extra.css: Hova's styles.
+    - extra.css: Hova's styles (incl. the "Est 2026" banner over every page, art/banner-est-2026*.webp, Boss 11/23).
     - css.py: inlines the CSS.
     - index.template.html: page template.
 - **Build:** `bun build web/main.tsx --outfile docs/app.js --minify --target browser && python3 web/css.py`. The second step inlines the CSS and cache-busts `app.js?v=hash`. The app auto-reloads when the hash changes.
