@@ -46,7 +46,14 @@ async function fullPicks(n: number) {
   for (let off = 0; off < n; off += size) chunks.push(api('picks', { off, lim: size }));
   return ([] as any[]).concat(...(await Promise.all(chunks)));
 }
-async function loadAll(revision: number) {
+// Boss 11/23: pages can ask for the book at the same moment (state + numbers). Share one download instead of two.
+let loading: { rev: number; p: Promise<void> } | null = null;
+function loadAll(revision: number): Promise<void> {
+  if (loading && loading.rev === revision) return loading.p;
+  const p = loadAllOnce(revision).finally(() => { if (loading && loading.p === p) loading = null });
+  loading = { rev: revision, p }; return p;
+}
+async function loadAllOnce(revision: number) {
   const [sig, locks, settings, saved] = await Promise.all([api('sig'), api('locks'), api('settings'), kvGet('picks')]);
   let rows: any[];
   if (saved && saved.since && Array.isArray(saved.rows)) {

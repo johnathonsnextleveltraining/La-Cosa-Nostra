@@ -51,8 +51,12 @@ const LANES = ['Fav spread', 'Dog spread', 'Over', 'Under', 'ML fav', 'ML dog', 
 
 export default function Numbers({ sport, revision }: { sport: string; revision: any }) {
   const [range, setRange] = useState('30'), [d, setD] = useState<any>(null), [err, setErr] = useState('');
-  useEffect(() => { let live = true; setErr(''); fetch('/api/numbers?sport=' + encodeURIComponent(sport) + '&range=' + range).then(r => r.json()).then(v => { if (!live) return; if (v.error) setErr(v.error); else setD(v) }).catch(e => live && setErr(String(e))); return () => { live = false } }, [sport, range, revision]);
-  if (err) return <div className="empty-card"><h3>The numbers tripped</h3><p>{err}</p></div>;
+  useEffect(() => {
+    let live = true; setErr('');
+    const go = (tries: number) => fetch('/api/numbers?sport=' + encodeURIComponent(sport) + '&range=' + range).then(r => r.json()).then(v => { if (!live) return; if (v.error) { if (tries > 0) setTimeout(() => live && go(tries - 1), 2500); else setErr(v.error) } else setD(v) }).catch(e => { if (!live) return; if (tries > 0) setTimeout(() => live && go(tries - 1), 2500); else setErr(String(e)) });
+    go(3); return () => { live = false };
+  }, [sport, range, revision]);
+  if (err) return <div className="empty-card"><h3>The numbers tripped</h3><p>{err}</p><button className="primary" onClick={() => location.reload()}>Try again</button></div>;
   if (!d) return <div className="empty-card"><NumbersIcon size={28} /><h3>Running the numbers…</h3><p>Crunching every pick in the book.</p></div>;
   const crew = d.analysts.filter((a: any) => a.analyst !== 'Johnny Biz').sort((a: any, b: any) => b.net - a.net);
   const boss = d.analysts.find((a: any) => a.analyst === 'Johnny Biz');
