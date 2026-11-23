@@ -50,8 +50,10 @@ export function lockTerms(l: any) {
 export function findGame(games: Record<string, Game>, sport: string, matchup: string) {
   const [a, h] = matchup.split(/\s+at\s+/); if (!a || !h) return null;
   const k = sport + '|' + norm(a) + '|' + norm(h); if (games[k]) return games[k];
-  const na = norm(a), nh = norm(h);
-  return Object.entries(games).find(([key]) => key.startsWith(sport + '|') && (() => { const [, x, y] = key.split('|'); return (x.startsWith(na) || na.startsWith(x)) && (y.startsWith(nh) || nh.startsWith(y)) })())?.[1] || null;
+  const na = norm(a), nh = norm(h), m = (x: string, n: string) => x.startsWith(n) || n.startsWith(x);
+  // Boss 11/23: our slate sometimes has home/away flipped vs ESPN (Nevada at SF was really SF at Nevada) - match either way
+  const hit = (flip: boolean) => Object.entries(games).find(([key]) => key.startsWith(sport + '|') && (() => { const [, x, y] = key.split('|'); return flip ? m(x, nh) && m(y, na) : m(x, na) && m(y, nh) })())?.[1];
+  return games[sport + '|' + nh + '|' + na] || hit(false) || hit(true) || null;
 }
 /** 'W' | 'L' | 'Push' when final; 'up' | 'down' | 'even' while live; '' before tip or when it can't be read. */
 export function evalPick(pick: string, market: string, g: Game | null): string {
