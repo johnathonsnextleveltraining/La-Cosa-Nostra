@@ -465,10 +465,10 @@ h1{line-height:1.05}
 .ndl-row{grid-template-columns:28px 40px 1fr 92px;grid-template-areas:"r i n m" "w w w l";row-gap:8px}.ndl-row .ndl-rank{grid-area:r}.ndl-row>img{grid-area:i;width:40px;height:40px}.ndl-row .ndl-name{grid-area:n}.ndl-row .ndl-money{grid-area:m}.ndl-row .ndl-winbar{grid-area:w}.ndl-row .ndl-locks{grid-area:l;flex-direction:row;gap:6px;justify-content:flex-end;align-items:center}.ndl-row .ndl-spark{display:none}
 .ndl-agree{grid-template-columns:56px 1fr 42px 90px}.ndl-heat td{min-width:54px}}
 
-/* Boss 11/23: "Est 2026" banner frozen at the top of every page (cropped just above the lamp).
+/* Boss 11/23: "Est 2026" banner frozen at the top of every page (cropped right above the light).
    The menu button sits centered over the page name inside G's tank; refresh sits bottom-right of the picture.
-   --bw = picture width, --bh = banner height. Picture ratio after crop = 871/1672. */
-.shell{flex-wrap:wrap;--bw:min(100vw,560px);--st:0px;--bh:calc(var(--st) + var(--bw)*.5209);padding-top:var(--bh)}
+   --bw = picture width, --bh = banner height. Picture ratio after crop = 771/1672. */
+.shell{flex-wrap:wrap;--bw:min(100vw,560px);--st:0px;--bh:calc(var(--st) + var(--bw)*.4611);padding-top:var(--bh)}
 @media(min-width:801px){.shell{--bw:min(560px,100vw)}}
 @media(max-width:800px){.shell{--st:env(safe-area-inset-top)}}
 .lcn-banner{position:fixed;top:0;left:0;right:0;height:var(--bh);padding-top:var(--st);overflow:hidden;background:#080a0d url(art/banner-est-2026-sm.webp) center/cover;border-bottom:1px solid #3a3427;z-index:45}
@@ -477,10 +477,10 @@ h1{line-height:1.05}
 .lcn-banner img{display:block;margin:0 auto;width:var(--bw);height:auto}
 @media(min-width:801px){aside{position:sticky!important;top:var(--bh)!important;bottom:auto;left:auto;height:calc(100vh - var(--bh));overflow-y:auto;align-self:flex-start;flex:none}.workspace{margin-left:0!important;flex:1;min-width:0}}
 .shell .workspace{padding-top:0!important}
-.shell .workspace>header{position:fixed!important;z-index:46;top:var(--st)!important;left:50%!important;right:auto!important;margin-left:calc(var(--bw)/-2);width:var(--bw);height:calc(var(--bw)*.5209)!important;padding:0!important;border:0!important;background:transparent!important;backdrop-filter:none!important;pointer-events:none;display:block}
+.shell .workspace>header{position:fixed!important;z-index:46;top:var(--st)!important;left:50%!important;right:auto!important;margin-left:calc(var(--bw)/-2);width:var(--bw);height:calc(var(--bw)*.4611)!important;padding:0!important;border:0!important;background:transparent!important;backdrop-filter:none!important;pointer-events:none;display:block}
 .shell .workspace>header>*{pointer-events:auto}
-.shell .workspace>header .mobile-toggle{position:absolute;left:calc(var(--bw)*.13);top:calc(var(--bw)*.5209*.79);transform:translateX(-50%);padding:0;line-height:0;color:#f3dc9a;filter:drop-shadow(0 1px 3px #000)}
-.shell .workspace>header .breadcrumbs{position:absolute;left:calc(var(--bw)*.015);width:calc(var(--bw)*.23);top:calc(var(--bw)*.5209*.895);display:flex;justify-content:center;font-size:0;text-shadow:0 1px 3px #000,0 0 6px #000}
+.shell .workspace>header .mobile-toggle{position:absolute;left:calc(var(--bw)*.13);top:calc(var(--bw)*.4611*.763);transform:translateX(-50%);padding:0;line-height:0;color:#f3dc9a;filter:drop-shadow(0 1px 3px #000)}
+.shell .workspace>header .breadcrumbs{position:absolute;left:calc(var(--bw)*.015);width:calc(var(--bw)*.23);top:calc(var(--bw)*.4611*.882);display:flex;justify-content:center;font-size:0;text-shadow:0 1px 3px #000,0 0 6px #000}
 .shell .workspace>header .breadcrumbs svg{display:none}
 .shell .workspace>header .breadcrumbs span{font-size:clamp(7px,2vw,10px);letter-spacing:.6px;color:#f3dc9a;font-weight:700;white-space:normal;text-align:center;line-height:1.05;max-width:100%}
 .shell .workspace>header .header-right{position:absolute;right:6px;bottom:6px;margin:0;gap:6px}
@@ -492,6 +492,6 @@ h1{line-height:1.05}
 </head>
 <body>
 <div id="root"></div>
-<script src="app.js?v=62face4b"></script>
+<script src="app.js?v=b0fad8b7"></script>
 </body>
 </html>
