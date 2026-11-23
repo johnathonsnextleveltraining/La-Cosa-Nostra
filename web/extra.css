@@ -370,3 +370,12 @@ h1{line-height:1.05}
 @media (max-width:760px){.ndl-kpis{grid-template-columns:1fr 1fr}.ndl-callouts,.ndl-two{grid-template-columns:1fr}.ndl-ring{flex-direction:column;text-align:center}
 .ndl-row{grid-template-columns:28px 40px 1fr 92px;grid-template-areas:"r i n m" "w w w l";row-gap:8px}.ndl-row .ndl-rank{grid-area:r}.ndl-row>img{grid-area:i;width:40px;height:40px}.ndl-row .ndl-name{grid-area:n}.ndl-row .ndl-money{grid-area:m}.ndl-row .ndl-winbar{grid-area:w}.ndl-row .ndl-locks{grid-area:l;flex-direction:row;gap:6px;justify-content:flex-end;align-items:center}.ndl-row .ndl-spark{display:none}
 .ndl-agree{grid-template-columns:56px 1fr 42px 90px}.ndl-heat td{min-width:54px}}
+
+/* Boss 11/23: "Est 2026" banner hangs over every page, above the menu and everything else */
+.shell{flex-wrap:wrap}
+.lcn-banner{flex:0 0 100%;width:100%;position:relative;overflow:hidden;background:#080a0d url(art/banner-est-2026-sm.webp) center/cover;border-bottom:1px solid #3a3427;z-index:31}
+.lcn-banner::before{content:"";position:absolute;inset:0;backdrop-filter:blur(18px) brightness(.45);-webkit-backdrop-filter:blur(18px) brightness(.45)}
+.lcn-banner picture{position:relative;display:block;text-align:center}
+.lcn-banner img{display:block;margin:0 auto;width:100%;max-width:640px;height:auto;max-height:360px;object-fit:contain}
+@media(min-width:801px){aside{position:sticky;top:0;height:100vh;align-self:flex-start;flex:none}.workspace{margin-left:0!important;flex:1;min-width:0}}
+@media(max-width:800px){.lcn-banner img{max-width:100%;max-height:none}}
