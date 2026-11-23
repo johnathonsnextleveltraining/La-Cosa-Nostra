@@ -371,32 +371,26 @@ h1{line-height:1.05}
 .ndl-row{grid-template-columns:28px 40px 1fr 92px;grid-template-areas:"r i n m" "w w w l";row-gap:8px}.ndl-row .ndl-rank{grid-area:r}.ndl-row>img{grid-area:i;width:40px;height:40px}.ndl-row .ndl-name{grid-area:n}.ndl-row .ndl-money{grid-area:m}.ndl-row .ndl-winbar{grid-area:w}.ndl-row .ndl-locks{grid-area:l;flex-direction:row;gap:6px;justify-content:flex-end;align-items:center}.ndl-row .ndl-spark{display:none}
 .ndl-agree{grid-template-columns:56px 1fr 42px 90px}.ndl-heat td{min-width:54px}}
 
-/* Boss 11/23: "Est 2026" banner hangs over every page, above the menu and everything else */
-.shell{flex-wrap:wrap}
-.lcn-banner{flex:0 0 100%;width:100%;position:relative;overflow:hidden;background:#080a0d url(art/banner-est-2026-sm.webp) center/cover;border-bottom:1px solid #3a3427;z-index:31}
+/* Boss 11/23: "Est 2026" banner frozen at the top of every page (cropped just above the lamp).
+   The menu button sits centered over the page name inside G's tank; refresh sits bottom-right of the picture.
+   --bw = picture width, --bh = banner height. Picture ratio after crop = 871/1672. */
+.shell{flex-wrap:wrap;--bw:100vw;--st:0px;--bh:calc(var(--st) + var(--bw)*.5209);padding-top:var(--bh)}
+@media(min-width:801px){.shell{--bw:min(560px,100vw)}}
+@media(max-width:800px){.shell{--st:env(safe-area-inset-top)}}
+.lcn-banner{position:fixed;top:0;left:0;right:0;height:var(--bh);padding-top:var(--st);overflow:hidden;background:#080a0d url(art/banner-est-2026-sm.webp) center/cover;border-bottom:1px solid #3a3427;z-index:45}
 .lcn-banner::before{content:"";position:absolute;inset:0;backdrop-filter:blur(18px) brightness(.45);-webkit-backdrop-filter:blur(18px) brightness(.45)}
-.lcn-banner picture{position:relative;display:block;text-align:center}
-.lcn-banner img{display:block;margin:0 auto;width:100%;max-width:640px;height:auto;max-height:360px;object-fit:contain}
-@media(min-width:801px){aside{position:sticky;top:0;bottom:auto;left:auto;height:100vh;overflow-y:auto;align-self:flex-start;flex:none}.workspace{margin-left:0!important;flex:1;min-width:0}}
-@media(max-width:800px){.lcn-banner img{max-width:100%;max-height:none}}
-
-/* Boss 11/23: the menu bar (three lines, page name, refresh) lives INSIDE G's tank in the Est 2026 banner.
-   Tank in the art: x 1%-25%, y 73%-97% of the 1672x941 picture. --bw = banner picture width. */
-.shell{position:relative;--bw:100vw;--st:0px}
-@media(min-width:801px){.shell{--bw:min(640px,100vw)}}
-@media(max-width:800px){.shell{--st:env(safe-area-inset-top)}.lcn-banner{padding-top:var(--st)}}
-.shell .workspace>header{position:absolute!important;z-index:40;margin:0;border:0!important;background:transparent!important;backdrop-filter:none!important;
-  left:calc((100% - var(--bw))/2 + var(--bw)*.015);top:calc(var(--st) + var(--bw)*.5628*.745);
-  width:calc(var(--bw)*.235);height:calc(var(--bw)*.5628*.22)!important;padding:0!important;
-  display:flex;flex-wrap:wrap;align-content:center;align-items:center;justify-content:center;gap:1px 6px;right:auto}
+.lcn-banner picture{position:relative;display:block}
+.lcn-banner img{display:block;margin:0 auto;width:var(--bw);height:auto}
+@media(min-width:801px){aside{position:sticky!important;top:var(--bh)!important;bottom:auto;left:auto;height:calc(100vh - var(--bh));overflow-y:auto;align-self:flex-start;flex:none}.workspace{margin-left:0!important;flex:1;min-width:0}}
 .shell .workspace{padding-top:0!important}
-.shell .workspace>header .breadcrumbs{order:3;flex:0 0 100%;justify-content:center;gap:4px;font-size:clamp(6px,1.9vw,10px);letter-spacing:.6px;text-shadow:0 1px 3px #000,0 0 6px #000}
-.shell .workspace>header .breadcrumbs>*:not(span),.shell .workspace>header .breadcrumbs{color:#9fd7e8}
-.shell .workspace>header .breadcrumbs span{color:#f3dc9a;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.shell .workspace>header{position:fixed!important;z-index:46;top:var(--st)!important;left:50%!important;right:auto!important;margin-left:calc(var(--bw)/-2);width:var(--bw);height:calc(var(--bw)*.5209)!important;padding:0!important;border:0!important;background:transparent!important;backdrop-filter:none!important;pointer-events:none;display:block}
+.shell .workspace>header>*{pointer-events:auto}
+.shell .workspace>header .mobile-toggle{position:absolute;left:calc(var(--bw)*.13);top:calc(var(--bw)*.5209*.79);transform:translateX(-50%);padding:0;line-height:0;color:#f3dc9a;filter:drop-shadow(0 1px 3px #000)}
+.shell .workspace>header .breadcrumbs{position:absolute;left:calc(var(--bw)*.015);width:calc(var(--bw)*.23);top:calc(var(--bw)*.5209*.905);display:flex;justify-content:center;font-size:0;text-shadow:0 1px 3px #000,0 0 6px #000}
 .shell .workspace>header .breadcrumbs svg{display:none}
-.shell .workspace>header .breadcrumbs{font-size:0}.shell .workspace>header .breadcrumbs span{font-size:clamp(7px,2vw,11px)}
-.shell .workspace>header .mobile-toggle{order:1;padding:2px;filter:drop-shadow(0 1px 3px #000)}
-.shell .workspace>header .header-right{order:2;margin:0;gap:6px}
+.shell .workspace>header .breadcrumbs span{font-size:clamp(7px,2vw,11px);letter-spacing:.6px;color:#f3dc9a;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.shell .workspace>header .header-right{position:absolute;right:6px;bottom:6px;margin:0;gap:6px}
 .shell .workspace>header .header-right .private,.shell .workspace>header .header-right .revision{display:none}
-.shell .workspace>header .icon-button{color:#f3dc9a;filter:drop-shadow(0 1px 3px #000);padding:2px}
-.toolbar,.pif-sticky-heading{top:0!important}
+.shell .workspace>header .icon-button{color:#f3dc9a;background:#000a;border:1px solid #6b5a36;border-radius:50%;padding:6px;display:grid;place-items:center}
+.toolbar,.pif-sticky-heading{top:var(--bh)!important}
+.shell .workspace>header .mobile-toggle svg{width:clamp(18px,6vw,26px);height:clamp(18px,6vw,26px)}
