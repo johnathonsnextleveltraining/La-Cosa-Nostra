@@ -156,9 +156,11 @@ async function numbers(q: Record<string, string>) {
   const analysts = who.map(a => {
     const mine = inR.filter(p => p.analyst === a);
     const s = ndlSum(mine);
-    const settled = all.filter(p => p.analyst === a).sort((x, y) => x.date < y.date ? 1 : x.date > y.date ? -1 : 0);
-    const last10 = settled.slice(0, 10).map(p => p.result);
-    let streak = 0; const first = settled.find(p => p.result !== 'Push')?.result; for (const p of settled) { if (p.result === 'Push') continue; if (p.result === first) streak++; else break }
+    // Last 10 NIGHTS (not picks): green = that night made money, red = lost money.
+    const byNight = new Map<string, number>(); for (const p of all) if (p.analyst === a) byNight.set(p.date, (byNight.get(p.date) || 0) + (p.net || 0));
+    const nights = [...byNight.entries()].sort((x, y) => x[0] < y[0] ? 1 : -1).map(([, v]) => v > 0 ? 'W' : v < 0 ? 'L' : 'Push');
+    const last10 = nights.slice(0, 10).reverse();
+    let streak = 0; const first = nights.find(r => r !== 'Push'); for (const r of nights) { if (r === 'Push') continue; if (r === first) streak++; else break }
     const l7 = ndlSum(all.filter(p => p.analyst === a && p.date >= offset(t, -7))), p30 = ndlSum(all.filter(p => p.analyst === a && p.date < offset(t, -7) && p.date >= offset(t, -37)));
     let run = 0; const spark = days.map(d => { run += mine.filter(p => p.date === d).reduce((x, p) => x + (p.net || 0), 0); return Math.round(run / 100) });
     const locksS = ndlSum(lk.filter(l => l.analyst === a).map(l => ({ ...l, risk: l.risk ?? l.frozen?.risk ?? 20000 })));

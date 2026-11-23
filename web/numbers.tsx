@@ -70,7 +70,7 @@ export default function Numbers({ sport, revision }: { sport: string; revision: 
     </div>
 
     {best && worst && best !== worst && <div className="ndl-callouts">
-      <div className="green-edge"><img src={pic(best.analyst)} alt="" /><div><span>RUNNING THE TABLE</span><b>{SHORT[best.analyst]}</b><small>{money(best.net)} · {rec(best)} · ROI {pct(best.roi)}</small></div></div>
+      <div className="green-edge"><img src={pic(best.analyst)} alt="" /><div><span>{best.net > 0 ? 'RUNNING THE TABLE' : 'LEAST DAMAGE'}</span><b>{SHORT[best.analyst]}</b><small>{money(best.net)} · {rec(best)} · ROI {pct(best.roi)}</small></div></div>
       <div className="red-edge"><img src={pic(worst.analyst)} alt="" /><div><span>BLEEDING THE BOOK</span><b>{SHORT[worst.analyst]}</b><small>{money(worst.net)} · {rec(worst)} · ROI {pct(worst.roi)}</small></div></div>
     </div>}
 
@@ -79,13 +79,13 @@ export default function Numbers({ sport, revision }: { sport: string; revision: 
       <span className="ndl-rank">{a.analyst === 'Johnny Biz' ? '♛' : String(i + 1).padStart(2, '0')}</span>
       <img src={pic(a.analyst)} alt="" />
       <div className="ndl-name"><b>{SHORT[a.analyst]}</b><small>{rec(a)} · {pct(a.rate)}{a.hot != null && Math.abs(a.hot) >= 0.03 && <em className={a.hot > 0 ? 'green' : 'red'}> {a.hot > 0 ? '▲' : '▼'} {Math.abs(Math.round(a.hot * 100))}% last 7</em>}</small>
-        <div className="ndl-dots">{a.last10.map((r: string, j: number) => <i key={j} className={r === 'W' ? 'w' : r === 'L' ? 'l' : 'p'} />)}{a.streak && a.streak.n >= 3 && <em className={a.streak.r === 'W' ? 'green' : 'red'}>{a.streak.r === 'W' ? '🔥' : '🧊'} {a.streak.r}{a.streak.n}</em>}</div></div>
+        <div className="ndl-dots">{a.last10.map((r: string, j: number) => <i key={j} className={r === 'W' ? 'w' : r === 'L' ? 'l' : 'p'} />)}{a.streak && a.streak.n >= 3 && <em className={a.streak.r === 'W' ? 'green' : 'red'}>{a.streak.r === 'W' ? '🔥' : '🧊'} {a.streak.n} {a.streak.r === 'W' ? 'up' : 'down'} nights</em>}</div></div>
       <div className="ndl-winbar"><i style={{ width: pct(a.rate) }} className={(a.rate ?? 0) >= 0.524 ? 'g' : 'r'} /></div>
       <div className="ndl-money"><b className={tone(a.net)}>{money(a.net)}</b><small>ROI {pct(a.roi)}</small></div>
       <div className="ndl-locks"><small>LOCKS</small><b>{a.locks.n ? rec(a.locks) : '—'}</b><small className={tone(a.locks.net)}>{a.locks.n ? money(a.locks.net) : ''}</small></div>
       <Spark pts={a.spark} />
     </div>)}</div>
-    <p className="ndl-note">52.4% is break-even at −110. Green bar = beating the juice.</p>
+    <p className="ndl-note">Dots = last 10 nights (green made money, red lost). 52.4% is break-even at −110; the gold tick on the bar marks it.</p>
 
     <div className="section-title"><h2>Crew Money by Night <span>LAST {d.nightly.length} DAYS</span></h2></div>
     <div className="panel ndl-panel"><Bars rows={d.nightly} /></div>
