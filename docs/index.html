@@ -431,10 +431,43 @@ h1{line-height:1.05}
 .lg-main{min-width:0;flex:1}
 .den-cat-head{text-align:center;padding:10px 6px 12px;margin:-2px 0 10px;border-bottom:2px solid}.den-cat-head b{display:block;font-family:inherit;font-size:26px;font-weight:900;letter-spacing:1px;line-height:1.1}.den-cat-head small{display:block;font-size:14px;font-weight:800;letter-spacing:2px;margin-top:4px}.den-cat-head.bet{color:#3ecf6a;border-color:#3ecf6a}.den-cat-head.fade{color:#ff5a5a;border-color:#ff5a5a}
 .den-cat-groups{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 10px}.den-cat-group .den-cat-recs{grid-template-columns:1fr 1fr;margin:0}.den-cat-label{text-align:center;font-size:11px;font-weight:900;letter-spacing:1px;margin-bottom:5px}.den-cat-group.bet .den-cat-label{color:#3ecf6a}.den-cat-group.fade .den-cat-label{color:#ff5a5a}
+/* Numbers Don't Lie (Boss 11/23) */
+.ndl-title-icon{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#2a1f45,#3b2c12);border:1px solid #d2b77866;box-shadow:0 0 24px #a855f733}
+.ndl{display:flex;flex-direction:column;gap:18px}
+.ndl-chips{display:flex;gap:8px;flex-wrap:wrap}.ndl-chips button{background:var(--panel);border:1px solid var(--border);color:var(--muted);border-radius:999px;padding:7px 14px;font-weight:700;letter-spacing:.04em;cursor:pointer}.ndl-chips button.on{background:linear-gradient(135deg,#7c3aed,#d2b778);color:#fff;border-color:transparent}
+.ndl-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.ndl-ring,.ndl-kpi{background:linear-gradient(160deg,#171a2b,#12161c);border:1px solid #6d4bd633;border-radius:16px;padding:14px;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden}
+.ndl-ring svg text{fill:var(--text);font:700 18px 'Saira Stencil One',system-ui}.ndl-ring span,.ndl-kpi span{display:block;font-size:11px;letter-spacing:.12em;color:var(--muted);font-weight:700}.ndl-ring small,.ndl-kpi small{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+.ndl-kpi{flex-direction:column;align-items:flex-start;justify-content:center}.ndl-kpi strong{font:400 30px 'Saira Stencil One',system-ui}.ndl-kpi .ndl-spark{width:100%;height:30px;margin-top:6px}
+.ndl-kpi.boss{padding-left:84px}.ndl-kpi.boss img{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--gold)}
+.ndl-callouts{display:grid;grid-template-columns:1fr 1fr;gap:12px}.ndl-callouts>div{display:flex;gap:12px;align-items:center;background:var(--panel);border-radius:14px;padding:10px 14px;border-left:4px solid}.ndl-callouts .green-edge{border-color:var(--green)}.ndl-callouts .red-edge{border-color:var(--red)}
+.ndl-callouts img{width:52px;height:52px;border-radius:50%;object-fit:cover}.ndl-callouts span{font-size:11px;letter-spacing:.12em;color:var(--muted);font-weight:700;display:block}.ndl-callouts b{font:400 22px 'Saira Stencil One',system-ui;display:block}.ndl-callouts small{color:var(--muted)}
+.ndl-standings{display:flex;flex-direction:column;gap:8px}
+.ndl-row{display:grid;grid-template-columns:34px 48px minmax(150px,1.6fr) 1fr 110px 90px 120px;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:10px 14px}
+.ndl-row.boss{border-color:#d2b77866;background:linear-gradient(90deg,#2a2210,#12161c)}
+.ndl-rank{font:400 20px 'Saira Stencil One',system-ui;color:var(--gold)}.ndl-row>img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:1px solid var(--border)}
+.ndl-name b{font:400 19px 'Saira Stencil One',system-ui;display:block}.ndl-name small{color:var(--muted);font-size:12px}.ndl-name em{font-style:normal;font-weight:700}
+.ndl-dots{display:flex;gap:3px;align-items:center;margin-top:5px}.ndl-dots i{width:9px;height:9px;border-radius:50%;background:#555}.ndl-dots i.w{background:var(--green)}.ndl-dots i.l{background:var(--red)}.ndl-dots em{font-style:normal;font-size:12px;font-weight:800;margin-left:6px}
+.ndl-winbar{height:10px;background:#ffffff12;border-radius:6px;overflow:hidden;position:relative}.ndl-winbar:after{content:'';position:absolute;left:52.4%;top:-2px;bottom:-2px;width:2px;background:#d2b778aa}.ndl-winbar i{display:block;height:100%;border-radius:6px}.ndl-winbar i.g{background:linear-gradient(90deg,#3c8f6c,var(--green))}.ndl-winbar i.r{background:linear-gradient(90deg,#8f3c3c,var(--red))}
+.ndl-money,.ndl-locks{text-align:right;display:flex;flex-direction:column}.ndl-money b{font:400 20px 'Saira Stencil One',system-ui}.ndl-money small,.ndl-locks small{color:var(--muted);font-size:11px}.ndl-locks b{font-size:15px}
+.ndl-spark{width:120px;height:34px}
+.ndl-note{color:var(--muted);font-size:12px;margin:-8px 0 0}
+.ndl-panel{padding:16px}.ndl-panel h3{margin:0;font:400 22px 'Saira Stencil One',system-ui}.ndl-panel>p{color:var(--muted);font-size:12px;margin:2px 0 10px}
+.ndl-bars{display:flex;gap:3px;height:170px;align-items:stretch}.ndl-bar{flex:1;display:flex;flex-direction:column;min-width:0}.ndl-bar-up,.ndl-bar-dn{flex:1;display:flex}.ndl-bar-up{align-items:flex-end;border-bottom:1px solid #ffffff22}.ndl-bar-dn{align-items:flex-start}
+.ndl-bar i{display:block;width:100%;border-radius:3px}.ndl-bar-up i{background:linear-gradient(180deg,var(--green),#3c8f6c)}.ndl-bar-dn i{background:linear-gradient(180deg,#8f3c3c,var(--red))}.ndl-bar small{font-size:9px;color:var(--muted);text-align:center}
+.ndl-two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ndl-lane{display:grid;grid-template-columns:36px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--border)}.ndl-lane img{width:36px;height:36px;border-radius:50%;object-fit:cover}.ndl-lane b{font-size:14px;display:block}.ndl-lane small{color:var(--muted);font-size:12px}.ndl-lane strong{text-align:right;font:400 18px 'Saira Stencil One',system-ui}.ndl-lane strong small{display:block;font-family:inherit;font-size:11px}
+.ndl-heat table{width:100%;border-collapse:separate;border-spacing:4px}.ndl-heat th{font-size:11px;color:var(--muted);letter-spacing:.06em;font-weight:700;white-space:nowrap}.ndl-heat td{text-align:center;border-radius:8px;background:#ffffff08;padding:6px 4px;min-width:64px}.ndl-heat td b{display:block;font-size:15px}.ndl-heat td small{color:#ffffffaa;font-size:10px}
+.ndl-heat td.h3{background:#2f7d5a}.ndl-heat td.h2{background:#24563f}.ndl-heat td.h1{background:#3a3a2a}.ndl-heat td.c1{background:#5a2e2e}.ndl-heat td.c2{background:#8a3434}
+.ndl-agree{display:grid;grid-template-columns:70px 1fr 48px 110px;gap:10px;align-items:center;padding:7px 0;border-top:1px solid var(--border)}.ndl-agree span{font-weight:700}.ndl-agree b{text-align:right}.ndl-agree small{color:var(--muted);font-size:12px}.ndl-agree em{font-style:normal}
+.ndl-grade{font:400 22px 'Saira Stencil One',system-ui!important;color:var(--gold);text-align:center}
+@media (max-width:760px){.ndl-kpis{grid-template-columns:1fr 1fr}.ndl-callouts,.ndl-two{grid-template-columns:1fr}.ndl-ring{flex-direction:column;text-align:center}
+.ndl-row{grid-template-columns:28px 40px 1fr 92px;grid-template-areas:"r i n m" "w w w l";row-gap:8px}.ndl-row .ndl-rank{grid-area:r}.ndl-row>img{grid-area:i;width:40px;height:40px}.ndl-row .ndl-name{grid-area:n}.ndl-row .ndl-money{grid-area:m}.ndl-row .ndl-winbar{grid-area:w}.ndl-row .ndl-locks{grid-area:l;flex-direction:row;gap:6px;justify-content:flex-end;align-items:center}.ndl-row .ndl-spark{display:none}
+.ndl-agree{grid-template-columns:56px 1fr 42px 90px}.ndl-heat td{min-width:54px}}
 </style>
 </head>
 <body>
 <div id="root"></div>
-<script src="app.js?v=f45636b2"></script>
+<script src="app.js?v=33c98901"></script>
 </body>
 </html>

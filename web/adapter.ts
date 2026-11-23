@@ -126,6 +126,59 @@ async function ledger(q: Record<string, string>) {
   const form = (p: any) => { const last = (hist.get(p.analyst + '|' + p.sport + '|' + p.market) || []).filter(x => x.date < p.date).slice(0, 30); let w = 0, l = 0, push = 0; for (const x of last) { if (x.result === 'W') w++; else if (x.result === 'L') l++; else push++ } return { w, l, push, n: last.length, rate: w + l ? w / (w + l) : null } };
   return { count: rows.length, summary: sum, rows: rows.slice(page * 50, page * 50 + 50).map(p => ({ ...p, lock: lockIds.has(p.id), research: res.get(p.id) || null, form: form(p) })) };
 }
+// Boss 11/23 "Numbers Don't Lie": crew dashboard built from the cached book (live grades included).
+const NDL_CREW = ['Hova Da God', 'Nino Brown', "G' Money", 'Sharp Syndicate', 'Paulie Publix', 'Rithmm'];
+function ndlLane(p: any): string | null {
+  const pk = String(p.pick || '');
+  if (p.market === 'Total') return /^over/i.test(pk) ? 'Over' : /^under/i.test(pk) ? 'Under' : null;
+  if (p.market === 'ML') { const o = Number(p.odds); if (!o) return null; return o >= 400 ? 'ML longshot +400' : o > 0 ? 'ML dog' : o <= -300 ? 'ML chalk -300+' : 'ML fav' }
+  if (p.market === 'Spread') {
+    const m = pk.match(/([+-]\d+(?:\.\d+)?)\s*$/); if (!m) return null; const ln = Number(m[1]);
+    const parts = String(p.matchup || '').split(' at '); const where = parts.length === 2 ? (pk.startsWith(parts[1].trim()) ? 'home' : pk.startsWith(parts[0].trim()) ? 'road' : '') : '';
+    return (ln < 0 ? 'Fav' : 'Dog') + ' spread' + (where ? ' (' + where + ')' : '');
+  }
+  return null;
+}
+function ndlSum(rows: any[]) { let w = 0, l = 0, push = 0, net = 0, risk = 0; for (const p of rows) { if (p.result === 'W') w++; else if (p.result === 'L') l++; else push++; net += p.net || 0; risk += p.risk ?? (p.analyst !== 'Johnny Biz' ? 20000 : 0) } return { w, l, push, net, risk, roi: risk ? net / risk : null, rate: w + l ? w / (w + l) : null, n: w + l + push } }
+async function numbers(q: Record<string, string>) {
+  const rev = (await api('revision')).revision as number;
+  if (!cache || cache.revision !== rev) await loadAll(rev);
+  const copy = cache!.locks.map((l: any) => ({ ...l }));
+  const { picks, locks } = await provisional(cache!.picks, copy).catch(() => ({ picks: cache!.picks, locks: copy }));
+  const t = today(), range = q.range || '30', sp = q.sport || 'All';
+  const from = range === '7' ? offset(t, -7) : range === '30' ? offset(t, -30) : range === 'month' ? t.slice(0, 8) + '01' : '0000';
+  const ok = (p: any) => ['W', 'L', 'Push'].includes(p.result) && (sp === 'All' || p.sport === sp);
+  const who = [...NDL_CREW, 'Johnny Biz'];
+  const all = (picks as any[]).filter(p => ok(p) && who.includes(p.analyst) && !(p.analyst === 'Johnny Biz' && !['Spread', 'Total', 'ML', 'Parlay', 'Teaser'].includes(p.market)));
+  const inR = all.filter(p => p.date >= from && p.date <= t);
+  const lk = (locks as any[]).filter(l => ['W', 'L', 'Push'].includes(l.result) && (sp === 'All' || l.sport === sp) && String(l.date) >= from && String(l.date) <= t);
+  const days: string[] = []; { const start = range === 'all' ? offset(t, -30) : from > offset(t, -30) ? from : offset(t, -30); for (let d = start; d <= t; d = offset(d, 1)) { days.push(d); if (days.length > 40) break } }
+  const analysts = who.map(a => {
+    const mine = inR.filter(p => p.analyst === a);
+    const s = ndlSum(mine);
+    const settled = all.filter(p => p.analyst === a).sort((x, y) => x.date < y.date ? 1 : x.date > y.date ? -1 : 0);
+    const last10 = settled.slice(0, 10).map(p => p.result);
+    let streak = 0; const first = settled.find(p => p.result !== 'Push')?.result; for (const p of settled) { if (p.result === 'Push') continue; if (p.result === first) streak++; else break }
+    const l7 = ndlSum(all.filter(p => p.analyst === a && p.date >= offset(t, -7))), p30 = ndlSum(all.filter(p => p.analyst === a && p.date < offset(t, -7) && p.date >= offset(t, -37)));
+    let run = 0; const spark = days.map(d => { run += mine.filter(p => p.date === d).reduce((x, p) => x + (p.net || 0), 0); return Math.round(run / 100) });
+    const locksS = ndlSum(lk.filter(l => l.analyst === a).map(l => ({ ...l, risk: l.risk ?? l.frozen?.risk ?? 20000 })));
+    return { analyst: a, ...s, last10, streak: first ? { r: first, n: streak } : null, hot: l7.rate != null && p30.rate != null ? l7.rate - p30.rate : null, l7rate: l7.rate, spark, locks: locksS };
+  });
+  const crewRows = inR.filter(p => NDL_CREW.includes(p.analyst));
+  const crew = ndlSum(crewRows), crewLocks = ndlSum(lk.filter(l => NDL_CREW.includes(l.analyst)).map(l => ({ ...l, risk: l.risk ?? l.frozen?.risk ?? 20000 })));
+  const nightly = days.map(d => ({ d, net: Math.round(crewRows.filter(p => p.date === d).reduce((x, p) => x + (p.net || 0), 0) / 100) }));
+  const lanes = new Map<string, any[]>(), heat = new Map<string, any[]>();
+  for (const p of inR) { const ln = ndlLane(p); if (!ln) continue; const k = p.analyst + '|' + p.sport + '|' + ln; (lanes.get(k) || lanes.set(k, []).get(k)!).push(p); if (NDL_CREW.includes(p.analyst)) { const hk = p.sport + '|' + ln.replace(/ \((home|road)\)/, ''); (heat.get(hk) || heat.set(hk, []).get(hk)!).push(p) } }
+  const laneRows = [...lanes.entries()].map(([k, v]) => { const [analyst, sport, lane] = k.split('|'); return { analyst, sport, lane, ...ndlSum(v) } }).filter(r => r.w + r.l >= 15);
+  const eat = [...laneRows].filter(r => r.net > 0).sort((a, b) => (b.roi || 0) - (a.roi || 0)).slice(0, 8);
+  const bleed = [...laneRows].filter(r => r.net < 0).sort((a, b) => a.net - b.net).slice(0, 8);
+  const heatRows = [...heat.entries()].map(([k, v]) => { const [sport, lane] = k.split('|'); return { sport, lane, ...ndlSum(v) } });
+  const grp = new Map<string, { names: Set<string>; result: string }>();
+  for (const p of crewRows) { if (!['Spread', 'Total', 'ML'].includes(p.market)) continue; const side = p.market === 'Total' ? String(p.pick).split(' ')[0].toLowerCase() : String(p.pick).replace(/\s*([+-]\d+(\.\d+)?|ML)\s*$/i, '').toLowerCase().trim(); const k = p.date + '|' + p.matchup + '|' + p.market + '|' + side; const g = grp.get(k) || grp.set(k, { names: new Set(), result: p.result }).get(k)!; g.names.add(p.analyst) }
+  const agree: any = {}; for (const g of grp.values()) { const c = Math.min(g.names.size, 5); if (c < 2) continue; const a = agree[c] || (agree[c] = { w: 0, l: 0 }); if (g.result === 'W') a.w++; else if (g.result === 'L') a.l++ }
+  const grades: any = {}; for (const l of lk.filter(l => NDL_CREW.includes(l.analyst))) { const g = String(l.grade || '').charAt(0) || '—'; const x = grades[g] || (grades[g] = []); x.push({ ...l, risk: l.risk ?? l.frozen?.risk ?? 20000 }) }
+  return { date: t, from, range, sport: sp, crew, crewLocks, analysts, nightly, eat, bleed, heat: heatRows, agree, grades: Object.fromEntries(Object.entries(grades).map(([g, v]: any) => [g, ndlSum(v)])) };
+}
 async function state() {
   const rev = (await api('revision')).revision as number;
   if (!cache || cache.revision !== rev) await loadAll(rev);
@@ -155,6 +208,7 @@ const realFetch = window.fetch.bind(window);
     if (u.pathname === '/api/export') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); const cols = ['date', 'analyst', 'sport', 'market', 'matchup', 'pick', 'odds', 'risk', 'result', 'net']; const esc = (x: any) => { const t = x == null ? '' : String(x); return /[",\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t }; const body = [cols.join(',')].concat(cache!.picks.map((p: any) => cols.map(c => esc(c === 'risk' || c === 'net' ? (p[c] == null ? '' : p[c] / 100) : p[c])).join(','))).join('\n'); return new Response(body, { headers: { 'content-type': 'text/csv' } }) }
     if (u.pathname === '/api/backup') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); return new Response(JSON.stringify({ exported: new Date().toISOString(), revision: rev, picks: cache!.picks, locks: cache!.locks, settings: cache!.settings }), { headers: { 'content-type': 'application/json' } }) }
     if (u.pathname === '/api/together') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); const names = (u.searchParams.get('names') || '').split('|').filter(Boolean), sp = u.searchParams.get('sport'), mk = u.searchParams.get('market'); const side = (x: any) => String(x.pick || '').toLowerCase().replace(/[^a-z]/g, ''); const by = new Map<string, any[]>(); for (const x of cache!.picks as any[]) { if (!names.includes(x.analyst) || x.sport !== sp || x.market !== mk || !['W', 'L', 'Push'].includes(x.result)) continue; const k = x.date + '|' + x.matchup + '|' + side(x); const a = by.get(k) || []; a.push(x); by.set(k, a) } const games = [...by.values()].filter(a => names.every(n => a.some(x => x.analyst === n))).map(a => a[0]).sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : 0).slice(0, 10); return json(games) }
+    if (u.pathname === '/api/numbers') return json(await numbers(Object.fromEntries(u.searchParams)));
     if (u.pathname === '/api/ledger') return json(await ledger(Object.fromEntries(u.searchParams)));
     if (u.pathname === '/api/manage') return json({ error: 'Changes go through Hova now. Post it in The Sit-Down.' }, 403);
     return json({ error: 'Not available in this version.' }, 404);
