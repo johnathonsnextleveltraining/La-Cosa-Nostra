@@ -20,7 +20,7 @@ function Donut({ r, size = 150, label, sub }: { r: Rec; size?: number; label: st
     <svg viewBox="0 0 100 100" width={size} height={size}>
       <defs>
         <linearGradient id="slw" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#fbd791" /><stop offset=".45" stopColor="#b9a25a" /><stop offset="1" stopColor="#3f5a2e" /></linearGradient>
-        <linearGradient id="sll" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#e2a35e" /><stop offset=".5" stopColor="#a4482a" /><stop offset="1" stopColor="#452019" /></linearGradient>
+        <linearGradient id="sll" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#7d828b" /><stop offset=".5" stopColor="#4a4e56" /><stop offset="1" stopColor="#24272c" /></linearGradient>
         <linearGradient id="slp" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#f2e2c0" /><stop offset="1" stopColor="#8a6a45" /></linearGradient>
         
       </defs>
