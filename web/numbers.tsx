@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { art } from '../src/lib/engine';
 import { R } from './ranks.tsx';
+import Shortlist from './shortlist.tsx';
 
 const SHORT: Record<string, string> = { 'Hova Da God': 'Hova', 'Nino Brown': 'Nino', "G' Money": 'G’ Money', 'Sharp Syndicate': 'Sharps', 'Paulie Publix': 'Paulie', Rithmm: 'Rithmm', 'Johnny Biz': 'Johnny Biz' };
 const pic = (n: string) => 'art/jail-' + art[n] + (n === 'Nino Brown' ? '-diesel' : '') + '.webp';
@@ -132,6 +133,8 @@ export default function Numbers({ revision, footer }: { sport?: string; revision
       {cellData === 'loading' ? <p className="ndl-note">Pulling the games…</p> : cellData?.err ? <p className="ndl-note">{cellData.err}. Tap the box again.</p> : cellData && <>{(cellData.sum.n > 0 || cellData.pending > 0) && <p className="hm-sum">{cellData.sum.n ? <><b>{rec(cellData.sum)}</b> crew picks · <em className={tone(cellData.sum.net)}>{money(cellData.sum.net)}</em></> : null}{cellData.pending ? (cellData.sum.n ? ' · ' : '') + cellData.pending + ' pending' : ''}</p>}
         {cellData.games.map((g: any, i: number) => <div key={i} className="hm-game"><span className={'lg-mark ' + (g.result === 'W' ? 'w' : g.result === 'L' ? 'l' : 'p')}>{g.result === 'W' ? '✓' : g.result === 'L' ? '✕' : g.result === 'Push' ? '∞' : '•'}</span><div className="hm-main"><b><R t={g.pick} s={pick.s} /> <em>{g.odds > 0 ? '+' + g.odds : g.odds}</em></b><small><R t={g.matchup} s={pick.s} /></small></div><Faces names={g.names} /></div>)}
         {!cellData.games.length && <p className="ndl-note">Nobody {sel.length ? 'you picked ' : ''}had a {pick.s} {laneLabel(pick.l).toLowerCase()} {day === 'today' ? 'today' : 'last night'}.</p>}</>}</div>}
+
+    <Shortlist revision={revision} sports={sports} />
 
     {d.locks && <><div className="section-title"><h2>🔒 The Locks <span>{title.toUpperCase()}</span></h2></div>
       <div className="panel ndl2-locks"><div className="lk-head"><Gauge v={d.locks.rate} label="Lock win %" sub={rec(d.locks)} /><div><b className={tone(d.locks.net)}>{money(d.locks.net)}</b><small>ROI {pct(d.locks.roi)}</small>{['A', 'B', 'C'].map(g => d.locks.grades[g]?.n ? <div key={g} className="lk-grade"><span>{g}</span>{rec(d.locks.grades[g])} <em className={tone(d.locks.grades[g].net)}>{money(d.locks.grades[g].net)}</em></div> : null)}</div></div>
