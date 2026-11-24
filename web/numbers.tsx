@@ -88,10 +88,10 @@ export default function Numbers({ revision, footer }: { sport?: string; revision
   useEffect(() => {
     let live = true; setErr('');
     const q = new URLSearchParams({ range, sports: sports.join(','), who: sel.join(',') });
-    const go = (tries: number) => fetch('/api/ndl?' + q).then(r => r.json()).then(v => { if (!live) return; if (v.error) { if (tries > 0) setTimeout(() => live && go(tries - 1), 2500); else setErr(v.error) } else setD(v) }).catch(e => { if (!live) return; if (tries > 0) setTimeout(() => live && go(tries - 1), 2500); else setErr(String(e)) });
+    const go = (tries: number) => fetch('/api/ndl?' + q).then(r => r.json()).then(v => { if (!live) return; if (v.error || !v.sum) { if (tries > 0) setTimeout(() => live && go(tries - 1), 2500); else setErr(v.error) } else setD(v) }).catch(e => { if (!live) return; if (tries > 0) setTimeout(() => live && go(tries - 1), 2500); else setErr(String(e)) });
     go(3); return () => { live = false };
   }, [range, sports.join(), sel.join(), revision]);
-  useEffect(() => { if (!pick) { setCell(null); return } let live = true; setCell('loading'); fetch('/api/ndl-cell?' + new URLSearchParams({ day, sport: pick.s, lane: pick.l, who: sel.join(',') })).then(r => r.json()).then(v => live && setCell(v)).catch(() => live && setCell(null)); return () => { live = false } }, [pick?.s, pick?.l, day, sel.join(), revision]);
+  useEffect(() => { if (!pick) { setCell(null); return } let live = true; setCell('loading'); fetch('/api/ndl-cell?' + new URLSearchParams({ day, sport: pick.s, lane: pick.l, who: sel.join(',') })).then(r => r.json()).then(v => live && setCell(v && v.sum && Array.isArray(v.games) ? v : { err: v?.error || 'Could not pull those games' })).catch(e => live && setCell({ err: String(e) })); return () => { live = false } }, [pick?.s, pick?.l, day, sel.join(), revision]);
   const flip = (xs: string[], x: string) => xs.includes(x) ? xs.filter(y => y !== x) : [...xs, x];
   const bar = <div className="ndl2-sticky">
     <div className="ndl2-row">{R2.map(([k, t]) => <button key={k} className={'lg-chip' + (range === k ? ' on' : '')} onClick={() => setRange(k)}>{t}</button>)}</div>
@@ -100,6 +100,7 @@ export default function Numbers({ revision, footer }: { sport?: string; revision
   </div>;
   if (err) return <>{bar}<div className="empty-card"><h3>The numbers tripped</h3><p>{err}</p><button className="primary" onClick={() => location.reload()}>Try again</button></div></>;
   if (!d) return <>{bar}<div className="empty-card"><NumbersIcon size={28} /><h3>Running the numbers…</h3><p>Crunching every pick in the book.</p></div></>;
+  if (!d.sum) return <>{bar}<div className="empty-card"><NumbersIcon size={28} /><h3>Running the numbers…</h3></div></>;
   const S = d.sum, ranked = [...d.analysts].sort((a: any, b: any) => b.net - a.net), best = ranked[0], worst = ranked[ranked.length - 1];
   const heatSports = [...new Set<string>(d.heat.map((h: any) => h.sport))].sort();
   const cell = (s: string, l: string) => d.heat.find((h: any) => h.sport === s && h.lane === l);
@@ -128,7 +129,7 @@ export default function Numbers({ revision, footer }: { sport?: string; revision
     <p className="ndl-note">Big number = win %. Color = money: green made money, red lost it. Under 10 decisions stays gray.</p>
     <div className="hm-switch"><button className={'lg-chip' + (day === 'today' ? ' on' : '')} onClick={() => setDay('today')}>Today</button><button className={'lg-chip' + (day === 'yesterday' ? ' on' : '')} onClick={() => setDay('yesterday')}>Last Night</button><small>{pick ? '' : 'Tap a box on the heat map'}</small></div>
     {pick && <div className="panel hm-games"><div className="hm-head"><b>{pick.s} · {laneLabel(pick.l)} · {day === 'today' ? 'Today' : 'Last Night'}</b><button onClick={() => setPick(null)}>✕</button></div>
-      {cellData === 'loading' ? <p className="ndl-note">Pulling the games…</p> : cellData && <>{(cellData.sum.n > 0 || cellData.pending > 0) && <p className="hm-sum">{cellData.sum.n ? <><b>{rec(cellData.sum)}</b> crew picks · <em className={tone(cellData.sum.net)}>{money(cellData.sum.net)}</em></> : null}{cellData.pending ? (cellData.sum.n ? ' · ' : '') + cellData.pending + ' pending' : ''}</p>}
+      {cellData === 'loading' ? <p className="ndl-note">Pulling the games…</p> : cellData?.err ? <p className="ndl-note">{cellData.err}. Tap the box again.</p> : cellData && <>{(cellData.sum.n > 0 || cellData.pending > 0) && <p className="hm-sum">{cellData.sum.n ? <><b>{rec(cellData.sum)}</b> crew picks · <em className={tone(cellData.sum.net)}>{money(cellData.sum.net)}</em></> : null}{cellData.pending ? (cellData.sum.n ? ' · ' : '') + cellData.pending + ' pending' : ''}</p>}
         {cellData.games.map((g: any, i: number) => <div key={i} className="hm-game"><span className={'lg-mark ' + (g.result === 'W' ? 'w' : g.result === 'L' ? 'l' : 'p')}>{g.result === 'W' ? '✓' : g.result === 'L' ? '✕' : g.result === 'Push' ? '∞' : '•'}</span><div className="hm-main"><b><R t={g.pick} s={pick.s} /> <em>{g.odds > 0 ? '+' + g.odds : g.odds}</em></b><small><R t={g.matchup} s={pick.s} /></small></div><Faces names={g.names} /></div>)}
         {!cellData.games.length && <p className="ndl-note">Nobody {sel.length ? 'you picked ' : ''}had a {pick.s} {laneLabel(pick.l).toLowerCase()} {day === 'today' ? 'today' : 'last night'}.</p>}</>}</div>}
 
