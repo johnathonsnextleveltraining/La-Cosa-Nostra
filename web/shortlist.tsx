@@ -22,9 +22,9 @@ function Donut({ r, size = 150, label, sub }: { r: Rec; size?: number; label: st
         <linearGradient id="slw" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#fbd791" /><stop offset=".45" stopColor="#b9a25a" /><stop offset="1" stopColor="#3f5a2e" /></linearGradient>
         <linearGradient id="sll" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#e2a35e" /><stop offset=".5" stopColor="#a4482a" /><stop offset="1" stopColor="#452019" /></linearGradient>
         <linearGradient id="slp" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#f2e2c0" /><stop offset="1" stopColor="#8a6a45" /></linearGradient>
-        <radialGradient id="slc" cx=".5" cy=".3"><stop offset="0" stopColor="#5c3a21" /><stop offset=".6" stopColor="#2a2017" /><stop offset="1" stopColor="#18130e" /></radialGradient>
+        
       </defs>
-      <circle cx="50" cy="50" r={R0 - 7} fill="url(#slc)" />
+      <circle cx="50" cy="50" r={R0 - 7} fill="#1f1a14" />
       <circle cx="50" cy="50" r={R0} stroke="#3e3323" strokeWidth="13" fill="none" />
       {segs.map(([k, n]) => { const len = C * n / t, gap = segs.length > 1 ? 1.2 : 0; const el = <circle key={k} cx="50" cy="50" r={R0} fill="none" stroke={'url(#sl' + k + ')'} strokeWidth="13" strokeDasharray={Math.max(0, len - gap) + ' ' + C} strokeDashoffset={-at} transform="rotate(-90 50 50)" />; at += len; return el })}
       <text x="50" y="49" textAnchor="middle" className="sl-dn-big">{t ? r.w + '–' + r.l + (r.p ? '–' + r.p : '') : '—'}</text>
