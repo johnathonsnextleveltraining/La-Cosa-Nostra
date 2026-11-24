@@ -277,6 +277,7 @@ const realFetch = window.fetch.bind(window);
     if (u.pathname === '/api/export') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); const cols = ['date', 'analyst', 'sport', 'market', 'matchup', 'pick', 'odds', 'risk', 'result', 'net']; const esc = (x: any) => { const t = x == null ? '' : String(x); return /[",\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t }; const body = [cols.join(',')].concat(cache!.picks.map((p: any) => cols.map(c => esc(c === 'risk' || c === 'net' ? (p[c] == null ? '' : p[c] / 100) : p[c])).join(','))).join('\n'); return new Response(body, { headers: { 'content-type': 'text/csv' } }) }
     if (u.pathname === '/api/backup') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); return new Response(JSON.stringify({ exported: new Date().toISOString(), revision: rev, picks: cache!.picks, locks: cache!.locks, settings: cache!.settings }), { headers: { 'content-type': 'application/json' } }) }
     if (u.pathname === '/api/together') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); const names = (u.searchParams.get('names') || '').split('|').filter(Boolean), sp = u.searchParams.get('sport'), mk = u.searchParams.get('market'); const side = (x: any) => String(x.pick || '').toLowerCase().replace(/[^a-z]/g, ''); const by = new Map<string, any[]>(); for (const x of cache!.picks as any[]) { if (!names.includes(x.analyst) || x.sport !== sp || x.market !== mk || !['W', 'L', 'Push'].includes(x.result)) continue; const k = x.date + '|' + x.matchup + '|' + side(x); const a = by.get(k) || []; a.push(x); by.set(k, a) } const games = [...by.values()].filter(a => names.every(n => a.some(x => x.analyst === n))).map(a => a[0]).sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : 0).slice(0, 10); return json(games) }
+    if (u.pathname === '/api/sl-marks') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); return json(slMarks()) }
     if (u.pathname === '/api/ndl-cell') return json(await ndlCell(Object.fromEntries(u.searchParams)));
     if (u.pathname === '/api/ndl') return json(await numbers2(Object.fromEntries(u.searchParams)));
     if (u.pathname === '/api/numbers') return json(await numbers(Object.fromEntries(u.searchParams)));
@@ -285,3 +286,15 @@ const realFetch = window.fetch.bind(window);
     return json({ error: 'Not available in this version.' }, 404);
   } catch (e: any) { return json({ error: String(e && e.message || e) }, 503) }
 };
+
+// Boss 11/24: shortlist plays show the Lions Den lion and who has the play locked.
+function slMarks() {
+  const { picks, locks, settings } = cache!;
+  const byId = new Map<string, any>(picks.map((p: any) => [p.id, p]));
+  const from = offset(today(), -45);
+  const lk = (locks as any[]).filter(l => String(l.date || '') >= from).map(l => { const p = byId.get(l.pickId || l.pick_id || l.frozen?.id) || l.frozen || {}; return { date: l.date, analyst: l.analyst, matchup: p.matchup || '', market: p.market || '', pick: p.pick || '' } }).filter(x => x.matchup);
+  const snaps: Record<string, any> = { ...(settings.snaps || {}) }; if (settings.den?.date && settings.den?.den) snaps[settings.den.date] = settings.den.den;
+  const den: Record<string, any[]> = {};
+  for (const [d, sn] of Object.entries<any>(snaps)) { if (d < from) continue; const seen: Record<string, number> = {}; den[d] = ((sn?.['Den Nov8 Ranked']) || []).slice(1).filter((r: any) => (seen[r[0] + r[1]] = (seen[r[0] + r[1]] || 0) + 1) <= 3).map((r: any) => [r[0], String(r[1]), String(r[3]).replace(/^\d+\.\s*/, '')]) }
+  return { locks: lk, den };
+}
