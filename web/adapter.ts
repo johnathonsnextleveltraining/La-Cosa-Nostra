@@ -233,6 +233,21 @@ async function numbers2(q: Record<string, string>) {
   const together = sel.length >= 2 ? (() => { const v = games.filter(g => sel.every(n => g.names.includes(n))).map(g => g.p); return { ...ndlSum(v) } })() : null;
   return { range, sports: sps, who: sel, sum, byMarket, bySport, line, analysts, weeds, heat, locks: lockInfo, agree, withCrew, together, min: MIN };
 }
+// Heat map drill-down (Boss 11/23): one sport + bet type, today or last night, for the chosen analysts.
+async function ndlCell(q: Record<string, string>) {
+  const rev = (await api('revision')).revision as number;
+  if (!cache || cache.revision !== rev) await loadAll(rev);
+  const copy = cache!.locks.map((l: any) => ({ ...l }));
+  const { picks } = await provisional(cache!.picks, copy).catch(() => ({ picks: cache!.picks }));
+  const date = q.day === 'yesterday' ? offset(today(), -1) : today();
+  const sel = (q.who || '').split(',').filter(Boolean), names = sel.length ? sel : NDL_CREW;
+  const rows = (picks as any[]).filter(p => p.date === date && names.includes(p.analyst) && p.sport === q.sport && (ndlLane(p) || '').replace(/ \((home|road)\)/, '') === q.lane);
+  const by = new Map<string, any>();
+  for (const p of rows) { const k = p.matchup + '|' + p.pick; const g = by.get(k) || by.set(k, { matchup: p.matchup, pick: p.pick, odds: p.odds, result: p.result, names: [] as string[], net: 0 }).get(k); if (!g.names.includes(p.analyst)) g.names.push(p.analyst); g.net += p.net || 0 }
+  const games = [...by.values()].sort((a, b) => b.names.length - a.names.length || String(a.matchup).localeCompare(b.matchup));
+  const s = ndlSum(rows.filter(p => ['W', 'L', 'Push'].includes(p.result)));
+  return { date, games, sum: s, pending: rows.filter(p => !p.result).length };
+}
 async function state() {
   const rev = (await api('revision')).revision as number;
   if (!cache || cache.revision !== rev) await loadAll(rev);
@@ -262,6 +277,7 @@ const realFetch = window.fetch.bind(window);
     if (u.pathname === '/api/export') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); const cols = ['date', 'analyst', 'sport', 'market', 'matchup', 'pick', 'odds', 'risk', 'result', 'net']; const esc = (x: any) => { const t = x == null ? '' : String(x); return /[",\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t }; const body = [cols.join(',')].concat(cache!.picks.map((p: any) => cols.map(c => esc(c === 'risk' || c === 'net' ? (p[c] == null ? '' : p[c] / 100) : p[c])).join(','))).join('\n'); return new Response(body, { headers: { 'content-type': 'text/csv' } }) }
     if (u.pathname === '/api/backup') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); return new Response(JSON.stringify({ exported: new Date().toISOString(), revision: rev, picks: cache!.picks, locks: cache!.locks, settings: cache!.settings }), { headers: { 'content-type': 'application/json' } }) }
     if (u.pathname === '/api/together') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); const names = (u.searchParams.get('names') || '').split('|').filter(Boolean), sp = u.searchParams.get('sport'), mk = u.searchParams.get('market'); const side = (x: any) => String(x.pick || '').toLowerCase().replace(/[^a-z]/g, ''); const by = new Map<string, any[]>(); for (const x of cache!.picks as any[]) { if (!names.includes(x.analyst) || x.sport !== sp || x.market !== mk || !['W', 'L', 'Push'].includes(x.result)) continue; const k = x.date + '|' + x.matchup + '|' + side(x); const a = by.get(k) || []; a.push(x); by.set(k, a) } const games = [...by.values()].filter(a => names.every(n => a.some(x => x.analyst === n))).map(a => a[0]).sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : 0).slice(0, 10); return json(games) }
+    if (u.pathname === '/api/ndl-cell') return json(await ndlCell(Object.fromEntries(u.searchParams)));
     if (u.pathname === '/api/ndl') return json(await numbers2(Object.fromEntries(u.searchParams)));
     if (u.pathname === '/api/numbers') return json(await numbers(Object.fromEntries(u.searchParams)));
     if (u.pathname === '/api/ledger') return json(await ledger(Object.fromEntries(u.searchParams)));

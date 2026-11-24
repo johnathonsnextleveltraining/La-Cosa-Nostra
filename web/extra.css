@@ -418,3 +418,8 @@ h1{line-height:1.05}
 .agree-sel{display:flex;align-items:center;gap:10px;padding:8px;border:1px solid var(--gold);border-radius:10px;margin-bottom:10px}.agree-sel b{display:block}.agree-sel small em{font-style:normal;font-weight:800}
 .agree-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.agree-card{background:#0f1318;border:1px solid var(--border);border-radius:10px;overflow:hidden;text-align:center;padding-bottom:6px}.agree-card.on{border-color:var(--gold)}.agree-card img{width:100%;aspect-ratio:1;object-fit:cover;object-position:center 20%}.agree-card b{display:block;font-size:13px;margin-top:4px}.agree-card small{display:block;font-size:10px;opacity:.85}.agree-card em{font-style:normal;font-weight:800}
 .lk-head .g2 b{font-size:12px!important;font-weight:700}
+.hm-click{cursor:pointer}.hm-on{outline:2px solid var(--gold);outline-offset:-2px}
+.hm-switch{display:flex;gap:6px;align-items:center;margin:6px 0 8px}.hm-switch small{opacity:.6;font-size:11px;margin-left:4px}
+.hm-games{border-color:var(--gold)}.hm-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.hm-head b{color:var(--gold)}.hm-head button{background:none;border:0;color:#fff;font-size:16px;cursor:pointer}
+.hm-sum{margin:0 0 6px;font-size:13px}.hm-sum em{font-style:normal;font-weight:800}
+.hm-game{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid #ffffff10}.hm-game .lg-mark{width:22px;text-align:center;font-size:20px}.hm-main{flex:1;min-width:0}.hm-main b{font-size:13px;display:block}.hm-main b em{font-style:normal;opacity:.6;font-weight:500}.hm-main small{font-size:11px;opacity:.6;display:block}
