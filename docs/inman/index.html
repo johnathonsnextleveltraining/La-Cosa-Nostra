@@ -32,7 +32,7 @@ button{cursor:pointer}
 header.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
 .brand{display:flex;align-items:center;gap:8px}
 .brand img{width:34px;height:34px;border-radius:8px}
-.brand .t{font-size:17px;line-height:1;color:var(--blue)}
+.brand .t{font-size:15px;line-height:1;color:var(--blue)}
 .brand .s{font-size:10px;color:var(--muted);letter-spacing:1.5px;font-weight:700;margin-top:3px}
 .who{display:flex;background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:3px}
 .who button{border:0;background:transparent;padding:6px 14px;border-radius:999px;font-weight:700;letter-spacing:1px;color:var(--muted);font-size:13px}
@@ -375,9 +375,11 @@ function renderBoard(){
   const mk=Object.keys(cur.mus).sort((a,b)=>cur.mus[b]-cur.mus[a]);
   h += `<div class="sec">HARD SETS BY MUSCLE · WEEK ${w}</div><div class="card chart">${mk.length?hbarChart(mk, mk.map(k=>cur.mus[k]), meColor()):'<div class="empty">Nothing logged this week yet.</div>'}<div class="legend"><span><i style="background:#66DE8C;opacity:.35"></i>10–20 sets = the growth zone</span></div></div>`;
   // lift trend
-  const names={}; for(const e of entries(p)) if(stat(e).done && !stat(e).bw){ const k=keyOf(e.exercise); if(!names[k] || e.week>=names[k].week) names[k]={n:e.exercise, week:e.week}; }
-  const opts=Object.entries(names).sort((a,b)=> b[1].week-a[1].week || a[1].n.localeCompare(b[1].n));
-  let lk=S.lift[p]; if(!names[lk]) lk = opts[0]?.[0];
+  const names={}; for(const e of entries(p)) if(stat(e).done && !stat(e).bw){ const k=keyOf(e.exercise); if(!names[k]) names[k]={n:e.exercise, week:e.week, c:0}; names[k].c++; if(e.week>=names[k].week){ names[k].n=e.exercise; names[k].week=e.week; } }
+  // default to the lift you've logged the most weeks; list alphabetical
+  const opts=Object.entries(names).sort((a,b)=> a[1].n.localeCompare(b[1].n));
+  const most=Object.entries(names).sort((a,b)=> b[1].c-a[1].c || b[1].week-a[1].week)[0];
+  let lk=S.lift[p]; if(!names[lk]) lk = most?.[0];
   if(lk){
     const tw=ws.map(x=>{ const es=entries(p).filter(e=>e.week===x && keyOf(e.exercise)===lk && stat(e).done); return es.length? {t:Math.max(...es.map(e=>stat(e).top)), o:Math.round(Math.max(...es.map(e=>stat(e).orm)))} : null; });
     h += `<div class="sec">LIFT TREND</div><div class="card chart"><select class="sel" data-act="lift">${opts.map(([k,v])=>`<option value="${esc(k)}" ${k===lk?'selected':''}>${esc(v.n)}</option>`).join("")}</select>
