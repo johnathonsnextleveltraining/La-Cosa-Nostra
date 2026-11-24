@@ -59,7 +59,7 @@ export default function Shortlist({ revision, sports }: { revision: any; sports:
         {days.filter(s => s.date === shown).map(s => <div key={s.date} className="sl-plays">
           {s.plays.map((x, i) => <div key={i} className={'sl-play ' + (x.result === 'W' ? 'win' : x.result === 'L' ? 'lose' : '')}>
             <span className={'lg-mark ' + (x.result === 'W' ? 'w' : x.result === 'L' ? 'l' : 'p')}>{x.result === 'W' ? '✓' : x.result === 'L' ? '✕' : /^push$/i.test(x.result || '') ? '∞' : '•'}</span>
-            <div className="sl-main"><b><R t={x.pick} s={x.sport} /> <em>{x.odds > 0 ? '+' + x.odds : x.odds}</em></b><small>{x.sport}{x.matchup ? <> · <R t={x.matchup} s={x.sport} /></> : null}{x.tip_ct ? ' · ' + x.tip_ct : ''}</small>{x.final && <small className="sl-final">Final: {x.final}</small>}<p>{x.why}</p></div>
+            <div className="sl-main"><b><span className="sl-sport">{x.sport}</span> <R t={x.pick} s={x.sport} /> <em>{x.odds > 0 ? '+' + x.odds : x.odds}</em></b><small>{x.matchup ? <R t={x.matchup} s={x.sport} /> : null}{x.tip_ct ? ' · ' + x.tip_ct : ''}</small>{x.final && <small className="sl-final">Final: {x.final}</small>}<p>{x.why}</p></div>
             <strong className={tone(Number(x.net_cents) || 0)}>{x.result ? money(Number(x.net_cents) || 0) : 'Pending'}</strong>
           </div>)}
         </div>)}
