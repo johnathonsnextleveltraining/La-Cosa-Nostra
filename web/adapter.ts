@@ -188,6 +188,51 @@ async function numbers(q: Record<string, string>) {
   const grades: any = {}; for (const l of lk.filter(l => NDL_CREW.includes(l.analyst))) { const g = String(l.grade || '').charAt(0) || '—'; const x = grades[g] || (grades[g] = []); x.push({ ...l, risk: l.risk ?? l.frozen?.risk ?? 20000 }) }
   return { date: t, from, range, sport: sp, crew, crewLocks, analysts, nightly, eat, bleed, heat: heatRows, agree, grades: Object.fromEntries(Object.entries(grades).map(([g, v]: any) => [g, ndlSum(v)])) };
 }
+// Numbers Don't Lie v2 (Boss 11/23): multi-sport, multi-analyst (lumped), 7/30/90/all.
+async function numbers2(q: Record<string, string>) {
+  const rev = (await api('revision')).revision as number;
+  if (!cache || cache.revision !== rev) await loadAll(rev);
+  const copy = cache!.locks.map((l: any) => ({ ...l }));
+  const { picks, locks } = await provisional(cache!.picks, copy).catch(() => ({ picks: cache!.picks, locks: copy }));
+  const t = today(), range = q.range || '30', from = range === 'all' ? '0000' : offset(t, -Number(range));
+  const sps = (q.sports || '').split(',').filter(Boolean), sel = (q.who || '').split(',').filter(Boolean);
+  const okS = (s: string) => !sps.length || sps.includes(s);
+  const crewAll = (picks as any[]).filter(p => NDL_CREW.includes(p.analyst) && ['W', 'L', 'Push'].includes(p.result) && okS(p.sport) && p.date >= from && p.date <= t);
+  const mine = sel.length ? crewAll.filter(p => sel.includes(p.analyst)) : crewAll;
+  const MIN = range === '7' ? 5 : range === '30' ? 12 : 20;
+  const grp = (rows: any[], k: (p: any) => string | null) => { const m = new Map<string, any[]>(); for (const p of rows) { const key = k(p); if (key == null) continue; const a = m.get(key); a ? a.push(p) : m.set(key, [p]) } return m };
+  const sum = ndlSum(mine);
+  const byMarket = ['Spread', 'Total', 'ML'].map(m => ({ k: m, ...ndlSum(mine.filter(p => p.market === m)) }));
+  const bySport = [...grp(mine, p => p.sport).entries()].sort().map(([k, v]) => ({ k, ...ndlSum(v) }));
+  const byDay = [...grp(mine, p => p.date).entries()].sort((a, b) => a[0] < b[0] ? -1 : 1); let run = 0;
+  const line = byDay.map(([d, v]) => { const n = v.reduce((a: number, p: any) => a + (p.net || 0), 0); run += n; return { d, net: n, cum: run } });
+  const analysts = NDL_CREW.map(a => ({ analyst: a, ...ndlSum(crewAll.filter(p => p.analyst === a)) })).filter(a => a.n);
+  const laneName = (p: any) => { const l = ndlLane(p); return l ? l.replace(/ \((home|road)\)/, '') : null };
+  // games the crew agreed on: same date, game, bet type, side
+  const sideOf = (p: any) => p.market === 'Total' ? String(p.pick).split(' ')[0].toLowerCase() : String(p.pick).replace(/\s*([+-]\d+(\.\d+)?|ML)\s*$/i, '').toLowerCase().trim();
+  const games = [...grp(crewAll.filter(p => ['Spread', 'Total', 'ML'].includes(p.market)), p => p.date + '|' + p.matchup + '|' + p.market + '|' + sideOf(p)).values()].map(v => ({ names: [...new Set(v.map((p: any) => p.analyst))].sort() as string[], p: v[0] }));
+  let weeds: any;
+  if (sel.length) {
+    const rows = [...grp(mine, p => { const l = laneName(p); return l ? p.sport + '|' + l : null }).entries()].map(([k, v]) => { const [sport, lane] = k.split('|'); return { names: sel, sport, lane, ...ndlSum(v) } }).filter(r => r.w + r.l >= MIN);
+    weeds = { best: rows.filter(r => r.net > 0).sort((a, b) => b.net - a.net).slice(0, 5), worst: rows.filter(r => r.net < 0).sort((a, b) => a.net - b.net).slice(0, 5) };
+  } else {
+    const combos = new Map<string, any[]>();
+    for (const g of games) { const l = laneName(g.p); if (!l) continue; const n = g.names.slice(0, 6); for (let mask = 1; mask < 1 << n.length; mask++) { const sub = n.filter((_, i) => mask & 1 << i); if (sub.length > 4) continue; const k = sub.join('+') + '|' + g.p.sport + '|' + l; const a = combos.get(k); a ? a.push(g.p) : combos.set(k, [g.p]) } }
+    const rows = [...combos.entries()].map(([k, v]) => { const [nm, sport, lane] = k.split('|'); return { names: nm.split('+'), sport, lane, ...ndlSum(v) } }).filter(r => r.w + r.l >= MIN);
+    weeds = { best: rows.filter(r => r.net > 0).sort((a, b) => b.net - a.net || a.names.length - b.names.length).slice(0, 5), worst: rows.filter(r => r.net < 0).sort((a, b) => a.net - b.net || a.names.length - b.names.length).slice(0, 5) };
+  }
+  const heat = [...grp(mine, p => { const l = laneName(p); return l ? p.sport + '|' + l : null }).entries()].map(([k, v]) => { const [sport, lane] = k.split('|'); return { sport, lane, ...ndlSum(v) } });
+  let lockInfo: any = null;
+  if (sel.length) {
+    const lk = (locks as any[]).filter(l => sel.includes(l.analyst) && ['W', 'L', 'Push'].includes(l.result) && okS(l.sport) && String(l.date) >= from && String(l.date) <= t).map(l => ({ ...l, risk: l.risk ?? l.frozen?.risk ?? 20000 }));
+    const grades: any = {}; for (const l of lk) { const g = String(l.grade || '').charAt(0) || '—'; (grades[g] ||= []).push(l) }
+    lockInfo = { ...ndlSum(lk), grades: Object.fromEntries(Object.entries(grades).map(([g, v]: any) => [g, ndlSum(v)])), recent: lk.sort((a, b) => String(a.date) < String(b.date) ? 1 : -1).slice(0, 10).map(l => ({ analyst: l.analyst, date: l.date, result: l.result, net: l.net, card: String(l.card || '').split('\n')[0].replace(/^\d+\s*[•.]?\s*/, ''), sport: l.sport })) };
+  }
+  const agree: any = {}; for (const g of games) { const c = Math.min(g.names.length, 5); if (c < 2) continue; const a = agree[c] ||= { w: 0, l: 0 }; if (g.p.result === 'W') a.w++; else if (g.p.result === 'L') a.l++ }
+  const withCrew = NDL_CREW.map(a => { const w: any = { w: 0, l: 0 }, alone: any = { w: 0, l: 0 }; for (const g of games) { if (!g.names.includes(a)) continue; const x = g.names.length >= 2 ? w : alone; if (g.p.result === 'W') x.w++; else if (g.p.result === 'L') x.l++ } return { analyst: a, agree: w, alone } });
+  const together = sel.length >= 2 ? (() => { const v = games.filter(g => sel.every(n => g.names.includes(n))).map(g => g.p); return { ...ndlSum(v) } })() : null;
+  return { range, sports: sps, who: sel, sum, byMarket, bySport, line, analysts, weeds, heat, locks: lockInfo, agree, withCrew, together, min: MIN };
+}
 async function state() {
   const rev = (await api('revision')).revision as number;
   if (!cache || cache.revision !== rev) await loadAll(rev);
@@ -217,6 +262,7 @@ const realFetch = window.fetch.bind(window);
     if (u.pathname === '/api/export') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); const cols = ['date', 'analyst', 'sport', 'market', 'matchup', 'pick', 'odds', 'risk', 'result', 'net']; const esc = (x: any) => { const t = x == null ? '' : String(x); return /[",\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t }; const body = [cols.join(',')].concat(cache!.picks.map((p: any) => cols.map(c => esc(c === 'risk' || c === 'net' ? (p[c] == null ? '' : p[c] / 100) : p[c])).join(','))).join('\n'); return new Response(body, { headers: { 'content-type': 'text/csv' } }) }
     if (u.pathname === '/api/backup') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); return new Response(JSON.stringify({ exported: new Date().toISOString(), revision: rev, picks: cache!.picks, locks: cache!.locks, settings: cache!.settings }), { headers: { 'content-type': 'application/json' } }) }
     if (u.pathname === '/api/together') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); const names = (u.searchParams.get('names') || '').split('|').filter(Boolean), sp = u.searchParams.get('sport'), mk = u.searchParams.get('market'); const side = (x: any) => String(x.pick || '').toLowerCase().replace(/[^a-z]/g, ''); const by = new Map<string, any[]>(); for (const x of cache!.picks as any[]) { if (!names.includes(x.analyst) || x.sport !== sp || x.market !== mk || !['W', 'L', 'Push'].includes(x.result)) continue; const k = x.date + '|' + x.matchup + '|' + side(x); const a = by.get(k) || []; a.push(x); by.set(k, a) } const games = [...by.values()].filter(a => names.every(n => a.some(x => x.analyst === n))).map(a => a[0]).sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : 0).slice(0, 10); return json(games) }
+    if (u.pathname === '/api/ndl') return json(await numbers2(Object.fromEntries(u.searchParams)));
     if (u.pathname === '/api/numbers') return json(await numbers(Object.fromEntries(u.searchParams)));
     if (u.pathname === '/api/ledger') return json(await ledger(Object.fromEntries(u.searchParams)));
     if (u.pathname === '/api/manage') return json({ error: 'Changes go through Hova now. Post it in The Sit-Down.' }, 403);
