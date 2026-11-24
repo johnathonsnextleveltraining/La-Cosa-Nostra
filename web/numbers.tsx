@@ -93,8 +93,8 @@ export default function Numbers({ revision, footer }: { sport?: string; revision
   const flip = (xs: string[], x: string) => xs.includes(x) ? xs.filter(y => y !== x) : [...xs, x];
   const bar = <div className="ndl2-sticky">
     <div className="ndl2-row">{R2.map(([k, t]) => <button key={k} className={'lg-chip' + (range === k ? ' on' : '')} onClick={() => setRange(k)}>{t}</button>)}</div>
-    <div className="ndl2-row"><button className={'lg-chip' + (!sports.length ? ' on' : '')} onClick={() => setSports([])}>All Sports</button>{SPORTS.map(s => <button key={s} className={'lg-chip' + (sports.includes(s) ? ' on' : '')} onClick={() => setSports(flip(sports, s))}>{s}</button>)}</div>
-    <div className="ndl2-row ndl2-faces"><button className={'ndl2-all' + (!sel.length ? ' on' : '')} onClick={() => setSel([])}>The<br />Crew</button>{CREW.map(n => <button key={n} className={'ndl2-face' + (sel.includes(n) ? ' on' : '')} onClick={() => setSel(flip(sel, n))}><img src={SQ(n)} alt="" /><small>{SHORT[n]}</small></button>)}</div>
+    <div className="ndl2-row"><button className={'lg-chip' + (!sports.length ? ' on' : '')} onClick={() => setSports([])}>All Sports</button>{SPORTS.map(s => <button key={s} className={'lg-chip' + (sports.includes(s) ? ' on' : '')} onClick={() => setSports(x => flip(x, s))}>{s}</button>)}</div>
+    <div className="ndl2-row ndl2-faces"><button className={'ndl2-all' + (!sel.length ? ' on' : '')} onClick={() => setSel([])}>The<br />Crew</button>{CREW.map(n => <button key={n} className={'ndl2-face' + (sel.includes(n) ? ' on' : '')} onClick={() => setSel(x => flip(x, n))}><img src={SQ(n)} alt="" /><small>{SHORT[n]}</small></button>)}</div>
   </div>;
   if (err) return <>{bar}<div className="empty-card"><h3>The numbers tripped</h3><p>{err}</p><button className="primary" onClick={() => location.reload()}>Try again</button></div></>;
   if (!d) return <>{bar}<div className="empty-card"><NumbersIcon size={28} /><h3>Running the numbers…</h3><p>Crunching every pick in the book.</p></div></>;
