@@ -162,8 +162,10 @@ select.sel{width:100%;background:var(--card2);border:1px solid var(--line);borde
 
 .login{min-height:80vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:14px}
 .login img{width:96px;height:96px;border-radius:22px}
-.hero{position:sticky;top:env(safe-area-inset-top);z-index:20;display:flex;gap:8px;align-items:stretch;margin:0 -14px 10px;padding:8px 14px;background:#0b0d0e;border-bottom:1px solid var(--line)}
-body.her .hero{background:#00343A}
+.stick{position:sticky;top:env(safe-area-inset-top);z-index:20;margin:0 -14px 10px;padding:8px 14px;background:#0b0d0e;border-bottom:1px solid var(--line)}
+body.her .stick{background:#00343A}
+.stick header.top{margin-bottom:0}
+.hero{display:flex;gap:8px;align-items:stretch;margin:0 0 8px}
 body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top);background:#0b0d0e;z-index:40;pointer-events:none}
 body.her::before{background:#00343A}
 .hero .weekbar{flex:1;margin:0;min-width:0;padding:6px 2px}
@@ -384,7 +386,8 @@ function render(){
   if(!S.data){ app.innerHTML = head + `<div class="empty">Loading the house…</div>`; return; }
   let body="";
   if(S.tab==="log") body=renderLog(); else if(S.tab==="board") body=renderBoard(); else body=renderBody();
-  app.innerHTML = head + body;
+  const hero=S._hero||""; S._hero="";
+  app.innerHTML = `<div class="stick">${hero}${head}</div>` + body;
   fitNames();
 }
 function fitNames(){ if(S.who!=="him") return; document.querySelectorAll(".ex-name.fit").forEach(el=>{ let s=21; el.style.fontSize=s+"px"; while(el.scrollWidth>el.clientWidth && s>13){ s-=.5; el.style.fontSize=s+"px"; } }); }
@@ -394,7 +397,7 @@ const HERO={log:{him:["mirror-cover","p-mirror"],her:["cable-row-profile","p-cab
 function weekBar(p, w, withNew){
   const pic=(HERO[S.tab]||{})[p];
   const bar=weekBarInner(p,w,withNew);
-  return pic ? `<div class="hero">${bar}<img class="heroimg ${pic[1]}" src="pics/${pic[0]}.jpg" alt=""></div>` : bar;
+  if(pic){ S._hero=`<div class="hero">${bar}<img class="heroimg ${pic[1]}" src="pics/${pic[0]}.jpg" alt=""></div>`; return ""; } return bar;
 }
 function weekBarInner(p, w, withNew){
   const ws=weeksOf(p), i=ws.indexOf(w);
@@ -587,7 +590,7 @@ render();
 if(S.code){ load().then(render).catch(e=>{ if(/bad code/.test(e.message)) logout(); else showSave("Offline — showing saved copy","err"); }); flush(); }
 </script>
 <script>
-const APP_V="1795626892";
+const APP_V="1795627262";
 async function checkUpdate(){ try{ const r=await fetch("version.txt?t="+Date.now(),{cache:"no-store"}); const nv=(await r.text()).trim(); if(nv && nv!==APP_V){ location.replace(location.pathname+"?v="+nv); } }catch(e){} }
 checkUpdate(); document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkUpdate(); });
 </script>
