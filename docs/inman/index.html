@@ -172,7 +172,7 @@ body.her::before{background:#00343A}
 .hero .weekbar .arrow{width:24px;font-size:20px}
 .hero .heroimg{width:50%;height:136px;object-fit:cover;border-radius:12px;border:2px solid var(--line);display:block;flex:none}
 body.him .hero .heroimg{border-radius:6px;border-color:rgba(135,206,235,.5)}
-.hero .p-pool{object-position:50% 18%}.hero .p-world{object-position:50% 22%}
+.hero .p-pool{object-position:50% 18%}.hero .p-world{object-position:50% 6%}
 body.body-tab .hero .arrow{visibility:hidden}
 .hero .p-mirror{object-position:62% 30%}.hero .p-cable{object-position:50% 18%}.hero .p-flex{object-position:50% 35%}.hero .p-backpack{object-position:50% 25%}
 body.him .hero .weekbar .mid{flex-direction:column;gap:2px}
@@ -593,7 +593,7 @@ render();
 if(S.code){ load().then(render).catch(e=>{ if(/bad code/.test(e.message)) logout(); else showSave("Offline — showing saved copy","err"); }); flush(); }
 </script>
 <script>
-const APP_V="1795628608";
+const APP_V="1795628719";
 async function checkUpdate(){ try{ const r=await fetch("version.txt?t="+Date.now(),{cache:"no-store"}); const nv=(await r.text()).trim(); if(nv && nv!==APP_V){ location.replace(location.pathname+"?v="+nv); } }catch(e){} }
 checkUpdate(); document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkUpdate(); });
 </script>
