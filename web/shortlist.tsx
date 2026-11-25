@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { api } from './adapter.ts';
 import { R } from './ranks.tsx';
 import { sameTeam } from '../src/lib/den-lines';
+import { fetchGames, findGame, evalPick, useTick } from './live.tsx';
 
 const money = (c: number) => (c > 0 ? '+' : c < 0 ? '−' : '') + '$' + Math.round(Math.abs(c) / 100).toLocaleString('en-US');
 const tone = (n: number) => n > 0 ? 'green' : n < 0 ? 'red' : '';
@@ -56,10 +57,22 @@ function Donut({ r, size = 150, label, sub }: { r: Rec; size?: number; label: st
   </div>;
 }
 
+const mkt = (pick: string) => /\b(over|under)\b/i.test(pick) ? 'Total' : /\sML$/i.test(pick) ? 'ML' : 'Spread';
+async function liveGrade(rows: any[]) {
+  const recent = rows.filter(s => (s.plays || []).some((x: any) => !x.result));
+  const games: Record<string, any> = {}; await Promise.all(recent.map(async s => { try { games[s.date] = await fetchGames(s.date) } catch { } }));
+  return rows.map(s => !games[s.date] ? s : { ...s, plays: (s.plays || []).map((x: any) => {
+    if (x.result) return x; const pick = String(x.pick || ''), m = mkt(pick); const p2 = m === 'Total' ? (pick.match(/\b(over|under)\s+[\d.]+/i) || [pick])[0] : pick;
+    const r = evalPick(p2, m, findGame(games[s.date], x.sport, x.matchup) as any); if (!['W', 'L', 'Push'].includes(r)) return x;
+    const o = Number(x.odds) || -110, risk = Number(s.risk_cents) || 20000; const net = r === 'W' ? Math.round(o > 0 ? risk * o / 100 : risk * 100 / -o) : r === 'L' ? -risk : 0;
+    return { ...x, result: r, net_cents: net, live: true } }) });
+}
 export default function Shortlist({ revision, sports }: { revision: any; sports: string[] }) {
   const [rows, setRows] = useState<any[] | null>(null), [err, setErr] = useState(''), [open, setOpen] = useState(''), [marks, setMarks] = useState<any>(null);
   useEffect(() => { let live = true; fetch('/api/sl-marks').then(r => r.json()).then(v => live && v && !v.error && setMarks(v)).catch(() => { }); return () => { live = false } }, [revision]);
-  useEffect(() => { let live = true; api('shortlists').then(v => { if (!live) return; if (Array.isArray(v)) setRows(v); else setErr(v?.error || 'Could not load the shortlist') }).catch(e => live && setErr(String(e))); return () => { live = false } }, [revision]);
+  const tick = useTick();
+  // Boss 11/24: grade shortlist plays live from ESPN finals; the nightly grader makes them official.
+  useEffect(() => { let live = true; api('shortlists').then(async v => { if (!live) return; if (!Array.isArray(v)) { setErr(v?.error || 'Could not load the shortlist'); return } setRows(v); const out = await liveGrade(v); if (live) setRows(out) }).catch(e => live && setErr(String(e))); return () => { live = false } }, [revision, tick]);
   const head = <div className="section-title"><h2>📋 The Shortlist <span>HOVA'S STACKED PLAYS · ALL TIME</span></h2></div>;
   if (err) return <>{head}<p className="ndl-note">{err}</p></>;
   if (!rows) return <>{head}<p className="ndl-note">Pulling the shortlist…</p></>;
