@@ -447,3 +447,8 @@ h1.h1-one{white-space:nowrap;font-size:clamp(26px,8.2vw,64px)!important;line-hei
 .lk2-row{display:flex;align-items:center;gap:8px}.lk2-game{flex:1;min-width:0;font-size:12px;opacity:.8}.lk2-row .grade{flex:0 0 auto}
 .lk2-faces{display:flex;margin-top:6px}.lk2-faces img{width:34px;height:34px;object-fit:contain;margin-right:-6px;filter:drop-shadow(0 2px 3px #0008)}
 .lk2-lineup figcaption{font-size:9px!important;white-space:nowrap;overflow:hidden;text-overflow:clip;letter-spacing:0}.lk2-lineup{gap:3px!important}
+.lk2-prof{margin-top:6px;padding:6px 8px;border:1px solid var(--border);border-radius:10px;background:#12161c}
+.lk2-crowns{display:flex;justify-content:center;gap:10px;color:var(--gold);margin-bottom:2px}.lk2-crowns .crown-badge{display:inline-flex;flex-direction:column;align-items:center}.lk2-crowns small{font-size:9px;font-weight:800}
+.lk2-prof-row{display:flex;align-items:center;gap:10px}.lk2-prof-row img{width:62px;height:62px;object-fit:contain}.lk2-prof-row .jail-open{background:none;border:0;padding:0}
+.lk2-prof-name{flex:1;min-width:0}.lk2-prof-name span{font-size:9px;letter-spacing:2px;color:var(--gold)}.lk2-prof-name h2{margin:0;font-size:24px;line-height:1.05}.lk2-prof-name small{font-size:10px;opacity:.65}
+.lk2-prof-rec{text-align:right}.lk2-prof-rec b{display:block;font-size:22px;font-weight:900;line-height:1}.lk2-prof-rec small{display:block;font-size:9px;letter-spacing:1px;opacity:.65}.lk2-prof-rec strong{font-size:16px;font-weight:900}
