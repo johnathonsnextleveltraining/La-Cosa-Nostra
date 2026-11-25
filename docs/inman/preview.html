@@ -85,10 +85,62 @@ input{all:unset}
 .C .nav{display:flex;justify-content:space-between;margin-top:12px;font-size:12px;color:var(--sil)}
 .C .pr{display:inline-block;margin-top:10px;font-size:11px;letter-spacing:1.5px;color:var(--kelly);font-weight:600}
 .C .tabs{background:transparent;border-top:1px solid rgba(165,172,175,.25)}.C .tabs div{color:#7f8f91}.C .tabs .on{color:var(--wht)}
+
+/* ---------- D: A's layout, C's theme ---------- */
+.D{background:linear-gradient(180deg,var(--mid) 0%,var(--deep) 46%,var(--blk) 100%);font-family:Poppins,sans-serif}
+.D .bt{font-family:"Playfair Display";font-style:italic;font-weight:800;font-size:22px}
+.D.script .bt,.D.script .wk .n,.D.script .nm{font-family:"Dancing Script";font-style:normal;font-weight:700}
+.D.script .bt{font-size:25px}.D.script .wk .n{font-size:32px}.D.script .nm{font-size:23px}
+.D .who{border:1px solid var(--sil)}.D .who b{color:var(--sil)}.D .who b.on{background:var(--sil);color:var(--blk)}
+.D .wk{border:1px solid rgba(165,172,175,.45);border-radius:16px;text-align:center;padding:9px;margin-bottom:10px}
+.D .wk .n{font-family:"Playfair Display";font-style:italic;font-weight:800;font-size:28px;line-height:1.1}
+.D .wk .t{font-size:11px;letter-spacing:2px;color:var(--sil);text-transform:uppercase}
+.D .days{display:flex;gap:6px;margin-bottom:10px}
+.D .day{flex:1;border:1px solid rgba(165,172,175,.35);border-radius:12px;padding:6px 0;text-align:center;font-weight:600;font-size:12px;letter-spacing:1px;color:#b9c6c7}
+.D .day.on{background:var(--sil);color:var(--blk);border-color:var(--sil)}
+.D .card{border:1px solid rgba(165,172,175,.35);background:rgba(0,0,0,.18);border-radius:16px;padding:12px;margin-bottom:10px}
+.D .hd{display:flex;justify-content:space-between;align-items:center}
+.D .nm{font-family:"Playfair Display";font-style:italic;font-weight:700;font-size:21px;line-height:1.15}
+.D .pr{color:var(--kelly);border:1px solid var(--kelly);font-weight:600;font-size:10px;letter-spacing:1.2px;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.D .last{font-size:12px;color:#b9c6c7;margin:5px 0 8px}
+.D .sets{display:grid;grid-template-columns:22px 1fr 12px 1fr;gap:6px;align-items:center}
+.D .sets .i{font-size:12px;color:var(--sil);text-align:center}
+.D .box{background:rgba(0,0,0,.28);border:1px solid rgba(165,172,175,.35);border-radius:10px;text-align:center;padding:8px 0;font-weight:600;font-size:17px}
+.D .box.g{color:#6f8486;font-weight:500}
+.D .tabs{background:#070a0a;border-top:1px solid rgba(165,172,175,.25)}.D .tabs div{color:#7f8f91}.D .tabs .on{color:var(--wht)}
 </style></head>
 <body>
-<h1>ME VS ME · HER PAGE — PICK ONE</h1>
-<div class="sub">Eagles midnight green, silver and black. Same app, three looks. His side stays as is unless you say otherwise.</div>
+<h1>ME VS ME · THE BLEND</h1>
+<div class="sub">A's layout, C's green-to-black theme. Two font takes — pick one.</div>
+<div class="row">
+<div class="opt"><div class="lab">D1 · Classy (C's fonts)<span>Playfair italic titles · Poppins body</span></div>
+<div class="phone D"><div class="scr">
+  <div class="top"><div class="brand"><img src="icon-192.png" alt=""><div class="bt">Me vs Me</div></div><div class="who"><b>HIM</b><b class="on">HER</b></div></div>
+  <div class="wk"><div class="n">Week 11</div><div class="t">Fresh off Vacay</div></div>
+  <div class="days"><div class="day on">WED</div><div class="day">THU</div><div class="day">FRI</div><div class="day">SAT</div><div class="day">SUN</div></div>
+  <div class="card"><div class="hd"><div class="nm">Single arm machine rows</div><span class="pr">🔥 PR</span></div>
+    <div class="last">Last time: 45×15 · 55×12 · 65×12 · 65×10</div>
+    <div class="sets"><div class="i">1</div><div class="box">50</div><div class="i">×</div><div class="box">15</div>
+    <div class="i">2</div><div class="box">60</div><div class="i">×</div><div class="box">12</div>
+    <div class="i">3</div><div class="box g">65</div><div class="i">×</div><div class="box g">12</div>
+    <div class="i">4</div><div class="box g">65</div><div class="i">×</div><div class="box g">10</div></div></div>
+  <div class="card"><div class="hd"><div class="nm">Deadlifts</div></div><div class="last">Last time: 95×15 · 105×12 · 135×12 · 145×10</div></div>
+</div><div class="tabs"><div class="on"><i>🏋️</i>PROGRAM</div><div><i>📈</i>SCOREBOARD</div><div><i>⚖️</i>BODY</div></div></div></div>
+<div class="opt"><div class="lab">D2 · Script (A's fonts)<span>Dancing Script titles · Poppins body</span></div>
+<div class="phone D script"><div class="scr">
+  <div class="top"><div class="brand"><img src="icon-192.png" alt=""><div class="bt">Me vs Me</div></div><div class="who"><b>HIM</b><b class="on">HER</b></div></div>
+  <div class="wk"><div class="n">Week 11</div><div class="t">Fresh off Vacay</div></div>
+  <div class="days"><div class="day on">WED</div><div class="day">THU</div><div class="day">FRI</div><div class="day">SAT</div><div class="day">SUN</div></div>
+  <div class="card"><div class="hd"><div class="nm">Single arm machine rows</div><span class="pr">🔥 PR</span></div>
+    <div class="last">Last time: 45×15 · 55×12 · 65×12 · 65×10</div>
+    <div class="sets"><div class="i">1</div><div class="box">50</div><div class="i">×</div><div class="box">15</div>
+    <div class="i">2</div><div class="box">60</div><div class="i">×</div><div class="box">12</div>
+    <div class="i">3</div><div class="box g">65</div><div class="i">×</div><div class="box g">12</div>
+    <div class="i">4</div><div class="box g">65</div><div class="i">×</div><div class="box g">10</div></div></div>
+  <div class="card"><div class="hd"><div class="nm">Deadlifts</div></div><div class="last">Last time: 95×15 · 105×12 · 135×12 · 145×10</div></div>
+</div><div class="tabs"><div class="on"><i>🏋️</i>PROGRAM</div><div><i>📈</i>SCOREBOARD</div><div><i>⚖️</i>BODY</div></div></div></div>
+</div>
+<h1 style="margin-top:34px">THE ORIGINAL THREE</h1><div class="sub">For comparison</div>
 <div class="row">
 
 <!-- A -->
