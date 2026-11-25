@@ -14,7 +14,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Saira+Stencil+One&family=Playfair+Display:ital,wght@1,700;1,800&family=Poppins:wght@400;500;600;700&family=Bebas+Neue&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Saira+Stencil+One&family=Playfair+Display:ital,wght@1,700;1,800&family=Poppins:wght@400;500;600;700&family=Bebas+Neue&family=Barlow+Condensed:wght@500;600;700&family=Kanit:ital,wght@1,800;1,900&family=Righteous&family=Permanent+Marker&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0B1626; --card:#15233A; --card2:#0F1B2E; --line:#22344F;
@@ -22,27 +22,43 @@
   --green:#66DE8C; --red:#FF7373; --amber:#FFBF4D;
   --me:var(--blue);
 }
-body.him{--me:#87CEEB;--bg:#050709;--card:rgba(0,0,0,.38);--card2:rgba(0,0,0,.45);--line:rgba(135,206,235,.3);--muted:#9DBCCB;--text:#EEF6FA}
-body.him{background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .45 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"),linear-gradient(180deg,#1C5877 0%,#0E2B3B 46%,#050709 100%);background-attachment:fixed;font-family:"Barlow Condensed",Barlow,sans-serif;font-size:16px}
-html:has(body.him){background:#050709}
-body.him .brand .t{font-size:21px;color:#87CEEB;text-transform:uppercase}
-body.him .weekbar{border:2px solid rgba(135,206,235,.5);border-radius:6px;background:rgba(0,0,0,.25)}
-body.him .weekbar .wk{font-size:30px;letter-spacing:2px}
-body.him .weekbar .ttl{text-transform:uppercase;letter-spacing:3px;font-size:12px;color:#B8D6E3}
-body.him .day,body.him .sets input,body.him .ghost,body.him .tile,body.him .chip,body.him .status{border-radius:4px}
-body.him .day .d{font-size:14px;letter-spacing:1.5px}
+body.him{--me:#87CEEB;--bg:#0b0d0e;--card:rgba(0,0,0,.38);--card2:rgba(0,0,0,.5);--line:rgba(135,206,235,.32);--muted:#A9C3CF;--text:#EEF6FA}
+body.him{background:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cline x1='84' y1='214' x2='353' y2='214' stroke='white' stroke-opacity='0.08' stroke-width='1'/%3E%3Cline x1='245' y1='110' x2='243' y2='262' stroke='white' stroke-opacity='0.04' stroke-width='1.4'/%3E%3Cline x1='270' y1='120' x2='1' y2='7' stroke='white' stroke-opacity='0.06' stroke-width='1.4'/%3E%3Cline x1='219' y1='35' x2='74' y2='384' stroke='white' stroke-opacity='0.04' stroke-width='0.6'/%3E%3Cline x1='355' y1='21' x2='223' y2='378' stroke='white' stroke-opacity='0.06' stroke-width='1.4'/%3E%3Cline x1='226' y1='17' x2='168' y2='276' stroke='white' stroke-opacity='0.06' stroke-width='1.4'/%3E%3Cline x1='59' y1='332' x2='188' y2='11' stroke='white' stroke-opacity='0.04' stroke-width='1.4'/%3E%3Cline x1='45' y1='63' x2='10' y2='232' stroke='white' stroke-opacity='0.04' stroke-width='1.4'/%3E%3Cline x1='372' y1='175' x2='205' y2='248' stroke='white' stroke-opacity='0.04' stroke-width='0.6'/%3E%3Cline x1='340' y1='19' x2='240' y2='120' stroke='white' stroke-opacity='0.04' stroke-width='0.6'/%3E%3Cline x1='106' y1='344' x2='336' y2='386' stroke='white' stroke-opacity='0.08' stroke-width='1.4'/%3E%3Cline x1='36' y1='62' x2='286' y2='243' stroke='white' stroke-opacity='0.08' stroke-width='1'/%3E%3Cline x1='102' y1='174' x2='74' y2='274' stroke='white' stroke-opacity='0.06' stroke-width='1'/%3E%3Cline x1='186' y1='231' x2='256' y2='197' stroke='white' stroke-opacity='0.06' stroke-width='1'/%3E%3Cline x1='197' y1='136' x2='13' y2='47' stroke='white' stroke-opacity='0.04' stroke-width='1.4'/%3E%3Cline x1='366' y1='253' x2='1' y2='251' stroke='white' stroke-opacity='0.04' stroke-width='1.4'/%3E%3Cline x1='306' y1='383' x2='267' y2='113' stroke='white' stroke-opacity='0.08' stroke-width='1.4'/%3E%3Cline x1='163' y1='284' x2='318' y2='57' stroke='white' stroke-opacity='0.04' stroke-width='1.4'/%3E%3Cline x1='87' y1='320' x2='178' y2='170' stroke='white' stroke-opacity='0.06' stroke-width='1.4'/%3E%3Cline x1='156' y1='125' x2='52' y2='86' stroke='white' stroke-opacity='0.04' stroke-width='0.6'/%3E%3Cline x1='397' y1='219' x2='191' y2='81' stroke='white' stroke-opacity='0.08' stroke-width='0.6'/%3E%3Cline x1='346' y1='266' x2='336' y2='123' stroke='white' stroke-opacity='0.06' stroke-width='0.6'/%3E%3Cline x1='379' y1='302' x2='7' y2='177' stroke='white' stroke-opacity='0.06' stroke-width='1.4'/%3E%3Cline x1='192' y1='341' x2='126' y2='125' stroke='white' stroke-opacity='0.04' stroke-width='1.4'/%3E%3Cline x1='35' y1='224' x2='208' y2='396' stroke='white' stroke-opacity='0.08' stroke-width='1'/%3E%3Cline x1='29' y1='147' x2='26' y2='132' stroke='white' stroke-opacity='0.08' stroke-width='1'/%3E%3Cline x1='17' y1='214' x2='127' y2='87' stroke='white' stroke-opacity='0.06' stroke-width='0.6'/%3E%3Cline x1='173' y1='330' x2='74' y2='77' stroke='white' stroke-opacity='0.08' stroke-width='1.4'/%3E%3C/svg%3E"),url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='520'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012' numOctaves='5' seed='4' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .75  0 0 0 0 .78  0 0 0 0 .8  0.75 0 0 0 -.33'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23b)'/%3E%3C/svg%3E"),radial-gradient(85% 65% at 55% 40%,#2f3437 0%,#1e2224 45%,#0b0d0e 100%);background-attachment:fixed;font-family:"Barlow Condensed",Barlow,sans-serif;font-size:16px}
+html:has(body.him){background:#0b0d0e}
+body.him .brand img{display:none}
+body.him .brand .t{font-family:"Saira Stencil One";font-size:27px;color:#87CEEB;display:flex;align-items:center;letter-spacing:.5px}
+body.him .brand .t .tag{display:inline-block;background:#EEF6FA;color:#101213;font-family:"Barlow Condensed";font-weight:700;font-size:14px;padding:1px 5px;transform:rotate(-9deg);margin:0 5px;letter-spacing:0}
+body.him .who{border:2px solid #87CEEB;border-radius:4px;background:transparent}body.him .who button{border-radius:2px;color:#87CEEB}
+body.him .weekbar{border:2px solid rgba(135,206,235,.5);border-radius:6px;background:rgba(0,0,0,.28)}
+body.him .weekbar .mid{display:flex;align-items:center;justify-content:center;gap:6px}
+body.him .weekbar .wk{font-family:"Saira Stencil One";font-size:30px;letter-spacing:2px}
+body.him .weekbar .ttl{width:112px;height:60px;background:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 140 74'%3E%3Cpath d='M8 40 C5 14 60 3 98 9 C132 15 137 44 116 58 C92 73 32 72 15 57 C6 49 8 31 34 18' fill='none' stroke='%2387CEEB' stroke-width='3.2' stroke-linecap='round'/%3E%3C/svg%3E") center/100% 100% no-repeat;display:flex;align-items:center;justify-content:center;text-align:center;font-family:"Permanent Marker";font-size:13px;line-height:1.05;transform:rotate(-6deg);color:#EEF6FA;margin:0;padding:6px 12px;text-transform:uppercase;font-weight:400;letter-spacing:0}
+body.him .day{border-radius:4px;border-color:rgba(135,206,235,.4);background:rgba(0,0,0,.2)}
+body.him .day .d{font-family:Kanit;font-style:italic;font-weight:800;font-size:15px;letter-spacing:.5px}
+body.him .day .m{display:none}
+body.him .secrow{display:flex;align-items:center;gap:12px;margin:4px 0 12px}
+body.him .secrow .work{background:#87CEEB;color:#101213;font-family:"Saira Stencil One";font-size:18px;letter-spacing:1px;padding:3px 10px 2px;transform:rotate(-7deg);display:inline-block;white-space:nowrap}
+body.him .secrow .mus{font-family:Kanit;font-style:italic;font-weight:900;font-size:18px;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}body.him .secrow .mus b{color:#87CEEB;letter-spacing:-4px;margin-right:8px}
 body.him .card{border-radius:6px;border-left:4px solid #87CEEB}
-body.him .ex-name{font-family:"Bebas Neue",sans-serif;font-weight:400;font-size:26px;letter-spacing:.5px;line-height:1}
-body.him .sets input{font-size:20px;font-weight:700}
-body.him .sets .n{color:#87CEEB;font-size:14px}
-body.him .sets input::placeholder{color:#58707C}
+body.him .ex-head{align-items:center}
+body.him .ex-name{font-family:Righteous,sans-serif;font-weight:400;font-size:21px;white-space:nowrap;min-width:0;line-height:1.15;letter-spacing:0}
+body.him .ex-head .chip{display:none}
+body.him .sets input{font-family:Righteous,sans-serif;font-size:20px;font-weight:400;border-radius:4px;background:rgba(0,0,0,.5)}
+body.him .sets .n{color:#87CEEB;font-size:15px}
+body.him .sets input::placeholder{color:#5f7480}
 body.him .last{font-size:14px}
-body.him .s-pr{background:#87CEEB;color:#050709}
-body.him .day.on,body.him .pill.solid,body.him .sheet .btns .go{color:#050709}
-body.him nav.tabs{background:#050709;border-top:2px solid rgba(135,206,235,.35)}
-body.him nav.tabs button{font-size:12px}
-body.him .sec{font-size:14px;letter-spacing:2px}
-body.him .board .nm{font-family:"Bebas Neue";font-weight:400;font-size:21px;letter-spacing:.5px}
+body.him .s-pr{background:#87CEEB;color:#101213;transform:rotate(-6deg)}
+body.him .status,body.him .ghost,body.him .tile,body.him .chip{border-radius:4px}
+body.him .day.on,body.him .pill.solid,body.him .sheet .btns .go{color:#101213}
+body.him nav.tabs{background:#0c0e0f;border-top:2px solid rgba(135,206,235,.35)}
+body.him nav.tabs button{font-family:Kanit;font-style:italic;font-weight:800;font-size:12px;letter-spacing:1px}
+body.him .sec{font-family:Kanit;font-style:italic;font-weight:800;font-size:15px;letter-spacing:1px}
+body.him .board .nm{font-family:Righteous;font-weight:400;font-size:18px}
+body.him .tile .v{font-family:"Saira Stencil One"}
+body.him .addex{border-radius:6px}
+.newwk{width:100%;margin-top:10px;border:2px solid var(--me);background:transparent;color:var(--me);border-radius:6px;padding:12px;font-weight:800;letter-spacing:1px}
+nav.tabs .ic img{width:24px;height:24px;border-radius:6px;display:block;margin:0 auto}
+nav.tabs button:not(.on) .ic img{opacity:.55}
 body.her{--me:#A5ACAF;--bg:#0B0F10;--card:rgba(0,0,0,.2);--card2:rgba(0,0,0,.3);--line:rgba(165,172,175,.35);--muted:#B9C6C7;--text:#F4F6F6;--green:#4CBB17}
 body.her{background:linear-gradient(180deg,#004C54 0%,#00343A 46%,#0B0F10 100%) fixed;font-family:Poppins,system-ui,sans-serif}
 html:has(body.her){background:#0B0F10}
@@ -177,7 +193,7 @@ table.bt td:first-child,table.bt th:first-child{text-align:left}
 <div class="wrap" id="app"></div>
 <div class="savebar" id="savebar" style="opacity:0"></div>
 <nav class="tabs" id="tabs" style="display:none"><div class="in">
-  <button data-t="log"><span class="ic">🏋️</span>PROGRAM</button>
+  <button data-t="log"><span class="ic"><img src="tab-program.png" alt=""></span>PROGRAM</button>
   <button data-t="board"><span class="ic">📈</span>SCOREBOARD</button>
   <button data-t="body"><span class="ic">⚖️</span>BODY</button>
 </div></nav>
@@ -347,20 +363,23 @@ function render(){
   if(!S.code){ renderLogin(); return; }
   document.getElementById("tabs").style.display="";
   document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on", b.dataset.t===S.tab));
-  const head = `<header class="top"><div class="brand"><img src="icon-192.png" alt=""><div><div class="t stencil">Me vs Me</div></div></div>
+  const head = `<header class="top"><div class="brand"><img src="icon-192.png" alt=""><div>${S.who==="him" ? '<div class="t">ME<span class="tag">VS</span>ME</div>' : '<div class="t stencil">Me vs Me</div>'}</div></div>
     <div class="who"><button class="him ${S.who==='him'?'on':''}" data-who="him">HIM</button><button class="her ${S.who==='her'?'on':''}" data-who="her">HER</button></div></header>`;
   if(!S.data){ app.innerHTML = head + `<div class="empty">Loading the house…</div>`; return; }
   let body="";
   if(S.tab==="log") body=renderLog(); else if(S.tab==="board") body=renderBoard(); else body=renderBody();
   app.innerHTML = head + body;
+  fitNames();
 }
+function fitNames(){ if(S.who!=="him") return; document.querySelectorAll(".ex-name.fit").forEach(el=>{ let s=21; el.style.fontSize=s+"px"; while(el.scrollWidth>el.clientWidth && s>13){ s-=.5; el.style.fontSize=s+"px"; } }); }
+if(document.fonts) document.fonts.ready.then(()=>fitNames());
 
 function weekBar(p, w, withNew){
   const ws=weeksOf(p), i=ws.indexOf(w);
   const isLatest = w===latest(p);
   return `<div class="weekbar"><button class="arrow" data-wk="-1" ${i<=0?'disabled':''}>‹</button>
-    <div class="mid"><div class="wk stencil">WEEK ${w}</div><div class="ttl" data-act="title">${esc(titleOf(p,w)||"tap to name this block")}</div></div>
-    ${withNew && isLatest ? `<button class="pill solid" data-act="newweek">+ WEEK ${w+1}</button>` : `<button class="arrow" data-wk="1" ${i>=ws.length-1?'disabled':''}>›</button>`}</div>`;
+    <div class="mid"><div class="wk stencil">WEEK ${w}</div><div class="ttl" data-act="title">${esc(titleOf(p,w)||(S.who==="him"?"NAME IT":"tap to name this block"))}</div></div>
+    ${withNew && isLatest && S.who!=="him" ? `<button class="pill solid" data-act="newweek">+ WEEK ${w+1}</button>` : `<button class="arrow" data-wk="1" ${i>=ws.length-1?'disabled':''}>›</button>`}</div>`;
 }
 
 function renderLog(){
@@ -374,11 +393,12 @@ function renderLog(){
     const all = de.length && de.every(e=>stat(e).done>0);
     return `<button class="day ${x===d?'on':''}" data-day="${esc(x)}"><div class="d">${esc(x.slice(0,3).toUpperCase())}${all?'<span class="dot"></span>':''}</div><div class="m">${esc(mus)}</div></button>`; }).join("") + `</div>`;
   const list = es.filter(e=>(e.day||"Other")===d);
+  if(p==="him" && list.length){ const mus=[...new Set(list.map(e=>(e.muscle||"").toUpperCase()).filter(Boolean))].slice(0,3).join(" & "); h += `<div class="secrow"><span class="work">THE WORK</span><span class="mus"><b>»»»</b>${esc(mus)}</span></div>`; }
   if(!list.length) h += `<div class="empty">No exercises on this day yet.</div>`;
   for(const e of list){
     const prev=prevOf(p,w,e.exercise), ps=prev? setsOf(prev):null, s=stat(e), st=statusOf(p,e);
     const lastTxt = prev ? `Last time (Wk ${prev.week}): <b>${ps.map(([a,b])=> (a?fmt1(a):"BW")+"×"+(b??"–")).join(" · ")}</b>` : `First time logging this one`;
-    h += `<div class="card" data-id="${e.id}"><div class="ex-head"><div class="ex-name">${esc(e.exercise)}</div>
+    h += `<div class="card" data-id="${e.id}"><div class="ex-head"><div class="ex-name fit">${esc(e.exercise)}</div>
       ${s.done?`<span class="status s-${st[0]}">${st[1]}</span>`:''}<span class="chip">${esc(e.muscle||"")}</span><button class="more" data-act="edit">⋯</button></div>
       <div class="last">${lastTxt}</div><div class="sets">`;
     setsOf(e).forEach(([wt,r],i)=>{ const pw=ps?ps[i][0]:null, pr=ps?ps[i][1]:null;
@@ -387,6 +407,7 @@ function renderLog(){
     h += `</div><div class="ex-foot"><button class="ghost" data-act="copy" ${prev?'':'disabled'}>↺ Same as last time</button><div class="v">${s.vol?fmt(s.vol)+" lbs moved":(s.bw?s.reps+" reps":"")}</div></div></div>`;
   }
   h += `<button class="addex" data-act="add">+ ADD EXERCISE TO ${esc((d||"").toUpperCase())}</button>`;
+  if(p==="him" && w===latest(p)) h += `<button class="newwk" data-act="newweek">START WEEK ${w+1}</button>`;
   return h;
 }
 
