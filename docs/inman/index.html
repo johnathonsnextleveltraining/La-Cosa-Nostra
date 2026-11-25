@@ -196,6 +196,14 @@ body.her .hero .weekbar .wk{font-size:22px}
 .sheet label{display:block;font-size:11px;font-weight:800;letter-spacing:1.2px;color:var(--muted);margin:10px 0 5px}
 .sheet input,.sheet select{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:11px;font-size:16px}
 .sheet .btns{display:flex;gap:8px;margin-top:16px}
+.wk[data-act]{cursor:pointer}.wk .caret{font-family:Barlow,sans-serif;font-size:.5em;margin-left:5px;vertical-align:middle;opacity:.8;font-style:normal}
+.wklist{max-height:58vh;overflow:auto;display:flex;flex-direction:column;gap:8px;margin:0 -2px;padding:0 2px}
+.wkrow{display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card2)}
+.wkrow b{font-family:"Saira Stencil One";font-weight:400;font-size:19px;color:var(--me);letter-spacing:.5px}
+.wkrow .tt{font-size:13px;color:var(--muted);margin-top:2px}.wkrow .vv{font-size:13px;color:var(--muted);text-align:right;white-space:nowrap}
+.wkrow.on{border-color:var(--me);border-width:2px}.wkrow .now{display:inline-block;margin-left:6px;font-size:10px;font-weight:800;letter-spacing:1px;padding:2px 6px;border-radius:4px;background:var(--me);color:#0b0d0e;vertical-align:middle}
+body.her .wkrow b{font-family:"Playfair Display",serif;font-style:italic;font-weight:800}
+body.him .wkrow{border-radius:6px}
 .sheet .btns button{flex:1;padding:12px;border-radius:12px;font-weight:800;letter-spacing:.5px;border:1px solid var(--line);background:var(--card2)}
 .sheet .btns .go{background:var(--me);border-color:var(--me);color:#0B1626}
 .sheet .btns .del{color:var(--red);border-color:var(--red);background:transparent}
@@ -406,7 +414,7 @@ function weekBarInner(p, w, withNew){
   const ws=weeksOf(p), i=ws.indexOf(w);
   const isLatest = w===latest(p);
   return `<div class="weekbar"><button class="arrow" data-wk="-1" ${i<=0?'disabled':''}>‹</button>
-    <div class="mid"><div class="wk stencil">WEEK ${w}</div><div class="ttl" data-act="title">${esc(titleOf(p,w)||(S.who==="him"?"NAME IT":"tap to name this block"))}</div></div>
+    <div class="mid"><div class="wk stencil" data-act="weeks">WEEK ${w}<span class="caret">▾</span></div><div class="ttl" data-act="title">${esc(titleOf(p,w)||(S.who==="him"?"NAME IT":"tap to name this block"))}</div></div>
     ${false && withNew && isLatest ? `<button class="pill solid" data-act="newweek">+ WEEK ${w+1}</button>` : `<button class="arrow" data-wk="1" ${i>=ws.length-1?'disabled':''}>›</button>`}</div>`;
 }
 
@@ -488,7 +496,7 @@ function renderBoard(){
 }
 
 function renderBody(){
-  const p=S.who, w=latest(p);
+  const p=S.who, w=curWeek(p);
   const b=(S.data.body||[]).filter(x=>x.person===p).sort((a,c)=>a.week-c.week);
   const cur=b.find(x=>x.week===w)||{};
   weekBar(p,w,false);
@@ -561,6 +569,10 @@ document.addEventListener("click", async ev=>{
   if(act==="addgo"){ const n=document.getElementById("an").value.trim(); if(!n) return;
     try{ const r=await api("add",{person:S.who, week:curWeek(S.who), day:document.getElementById("ad").value, muscle:document.getElementById("am").value, exercise:n});
       S.data.entries.push(r); S.day[S.who+r.week]=r.day; store.set("data",S.data); closeSheet(); render(); }catch(err){ showSave("Couldn't add — no signal","err"); } return; }
+  if(act==="weeks"){ const p=S.who, cw=curWeek(p), L=latest(p);
+    const rows=[...weeksOf(p)].reverse().map(w=>{ const st=weekStats(p,w); return `<button class="wkrow ${w===cw?'on':''}" data-act="pickwk" data-w="${w}"><div><b>WEEK ${w}</b>${w===L?'<span class="now">NOW</span>':''}<div class="tt">${esc(titleOf(p,w)||"—")}</div></div><div class="vv">${st.vol?fmt(st.vol)+" lbs":"not logged yet"}</div></button>`; }).join("");
+    sheet(`<h3>PICK A WEEK</h3><div class="wklist">${rows}</div><div class="btns"><button data-act="close">CLOSE</button></div>`); return; }
+  if(act==="pickwk"){ S.week[S.who]=+t.dataset.w; closeSheet(); render(); window.scrollTo(0,0); return; }
   if(act==="title"){ const w=curWeek(S.who);
     sheet(`<h3>NAME WEEK ${w}</h3><label>BLOCK NAME</label><input id="tn" value="${esc(titleOf(S.who,w))}" placeholder="Off the Bullshit">
       <div class="btns"><button data-act="close">CANCEL</button><button class="go" data-act="titlego">SAVE</button></div>`); return; }
@@ -572,7 +584,7 @@ document.addEventListener("click", async ev=>{
       <div class="btns"><button data-act="close">CANCEL</button><button class="go" data-act="newgo">START IT</button></div>`); return; }
   if(act==="newgo"){ try{ await flush(); const r=await api("newweek",{person:S.who, title:document.getElementById("nt").value.trim()}); await load(); S.week[S.who]=r.week; closeSheet(); S.tab="log"; render(); window.scrollTo(0,0); }catch(err){ showSave("Couldn't start week — no signal","err"); } return; }
   if(act==="savebody"){ const g=id=>{ const v=document.getElementById(id).value.trim(); return v===""?null:+v; };
-    const a={person:S.who, week:latest(S.who), weight:g("bw"), bf:g("bf"), mm:g("mm")};
+    const a={person:S.who, week:curWeek(S.who), weight:g("bw"), bf:g("bf"), mm:g("mm")};
     try{ await api("body",a); const B=S.data.body; const x=B.find(y=>y.person===a.person&&y.week===a.week); if(x) Object.assign(x,a); else B.push(a); store.set("data",S.data); showSave("Weigh-in saved ✓","ok"); render(); }
     catch(err){ showSave("Couldn't save — no signal","err"); } return; }
 });
@@ -594,7 +606,7 @@ render();
 if(S.code){ load().then(render).catch(e=>{ if(/bad code/.test(e.message)) logout(); else showSave("Offline — showing saved copy","err"); }); flush(); }
 </script>
 <script>
-const APP_V="1795629014";
+const APP_V="1795629444";
 async function checkUpdate(){ try{ const r=await fetch("version.txt?t="+Date.now(),{cache:"no-store"}); const nv=(await r.text()).trim(); if(nv && nv!==APP_V){ location.replace(location.pathname+"?v="+nv); } }catch(e){} }
 checkUpdate(); document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkUpdate(); });
 </script>
