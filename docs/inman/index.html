@@ -162,6 +162,19 @@ select.sel{width:100%;background:var(--card2);border:1px solid var(--line);borde
 
 .login{min-height:80vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:14px}
 .login img{width:96px;height:96px;border-radius:22px}
+.hero{position:sticky;top:0;z-index:20;display:flex;gap:8px;align-items:stretch;margin:0 -14px 10px;padding:8px 14px;background:rgba(5,7,9,.94);border-bottom:1px solid var(--line)}
+body.her .hero{background:rgba(0,40,45,.96)}
+.hero .weekbar{flex:1;margin:0;min-width:0;padding:6px 2px}
+.hero .weekbar .arrow{width:24px;font-size:20px}
+.hero .heroimg{width:50%;height:136px;object-fit:cover;border-radius:12px;border:2px solid var(--line);display:block;flex:none}
+body.him .hero .heroimg{border-radius:6px;border-color:rgba(135,206,235,.5)}
+.hero .p-mirror{object-position:62% 30%}.hero .p-cable{object-position:50% 18%}.hero .p-flex{object-position:50% 35%}.hero .p-backpack{object-position:50% 25%}
+body.him .hero .weekbar .mid{flex-direction:column;gap:2px}
+body.him .hero .weekbar .wk{font-size:24px;letter-spacing:1px}
+body.him .hero .weekbar .ttl{width:104px;height:54px;font-size:12px;padding:5px 10px}
+body.her .hero .weekbar .wk{font-size:22px}
+.login img.welcome{width:100%;max-width:330px;height:auto;border-radius:16px;border:2px solid var(--line)}
+
 .login h1{font-family:"Saira Stencil One";color:var(--blue);margin:0;font-size:28px;font-weight:400}
 .login input{width:240px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px;text-align:center;font-size:18px}
 .login .err{color:var(--red);font-size:13px;min-height:18px}
@@ -375,12 +388,18 @@ function render(){
 function fitNames(){ if(S.who!=="him") return; document.querySelectorAll(".ex-name.fit").forEach(el=>{ let s=21; el.style.fontSize=s+"px"; while(el.scrollWidth>el.clientWidth && s>13){ s-=.5; el.style.fontSize=s+"px"; } }); }
 if(document.fonts) document.fonts.ready.then(()=>fitNames());
 
+const HERO={log:{him:["mirror-cover","p-mirror"],her:["cable-row-profile","p-cable"]},board:{him:["flex-and-hug","p-flex"],her:["backpack-dashboard","p-backpack"]}};
 function weekBar(p, w, withNew){
+  const pic=(HERO[S.tab]||{})[p];
+  const bar=weekBarInner(p,w,withNew);
+  return pic ? `<div class="hero">${bar}<img class="heroimg ${pic[1]}" src="pics/${pic[0]}.jpg" alt=""></div>` : bar;
+}
+function weekBarInner(p, w, withNew){
   const ws=weeksOf(p), i=ws.indexOf(w);
   const isLatest = w===latest(p);
   return `<div class="weekbar"><button class="arrow" data-wk="-1" ${i<=0?'disabled':''}>‹</button>
     <div class="mid"><div class="wk stencil">WEEK ${w}</div><div class="ttl" data-act="title">${esc(titleOf(p,w)||(S.who==="him"?"NAME IT":"tap to name this block"))}</div></div>
-    ${withNew && isLatest && S.who!=="him" ? `<button class="pill solid" data-act="newweek">+ WEEK ${w+1}</button>` : `<button class="arrow" data-wk="1" ${i>=ws.length-1?'disabled':''}>›</button>`}</div>`;
+    ${false && withNew && isLatest ? `<button class="pill solid" data-act="newweek">+ WEEK ${w+1}</button>` : `<button class="arrow" data-wk="1" ${i>=ws.length-1?'disabled':''}>›</button>`}</div>`;
 }
 
 function renderLog(){
@@ -408,7 +427,7 @@ function renderLog(){
     h += `</div><div class="ex-foot"><button class="ghost" data-act="copy" ${prev?'':'disabled'}>↺ Same as last time</button><div class="v">${s.vol?fmt(s.vol)+" lbs moved":(s.bw?s.reps+" reps":"")}</div></div></div>`;
   }
   h += `<button class="addex" data-act="add">+ ADD EXERCISE TO ${esc((d||"").toUpperCase())}</button>`;
-  if(p==="him" && w===latest(p)) h += `<button class="newwk" data-act="newweek">START WEEK ${w+1}</button>`;
+  if(w===latest(p)) h += `<button class="newwk" data-act="newweek">START WEEK ${w+1}</button>`;
   return h;
 }
 
@@ -482,7 +501,7 @@ function renderBody(){
 
 function renderLogin(){
   document.getElementById("tabs").style.display="none";
-  app.innerHTML = `<div class="login"><img src="icon-192.png" alt=""><h1>ME VS ME</h1>
+  app.innerHTML = `<div class="login"><img class="welcome" id="welcome" src="pics/${S.who==='her'?'eagles-green':'matching-blue'}-welcome.jpg" alt=""><h1>ME VS ME</h1>
     <div style="color:var(--muted)">Who's lifting?</div>
     <div class="bigwho"><button class="him ${S.who==='him'?'on':''}" data-pick="him">HIM</button><button class="her ${S.who==='her'?'on':''}" data-pick="her">HER</button></div>
     <input id="code" type="password" placeholder="House code" autocomplete="current-password">
@@ -501,7 +520,7 @@ document.addEventListener("click", async ev=>{
   const act=t.dataset.act;
   if(t.dataset.t){ S.tab=t.dataset.t; store.set("tab",S.tab); render(); window.scrollTo(0,0); return; }
   if(t.dataset.who){ S.who=t.dataset.who; store.set("who",S.who); render(); return; }
-  if(t.dataset.pick){ S.who=t.dataset.pick; store.set("who",S.who); document.querySelectorAll(".bigwho button").forEach(b=>b.classList.toggle("on", b.dataset.pick===S.who)); document.body.className=S.who; return; }
+  if(t.dataset.pick){ S.who=t.dataset.pick; store.set("who",S.who); document.querySelectorAll(".bigwho button").forEach(b=>b.classList.toggle("on", b.dataset.pick===S.who)); document.body.className=S.who; const wi=document.getElementById("welcome"); if(wi) wi.src="pics/"+(S.who==="her"?"eagles-green":"matching-blue")+"-welcome.jpg"; return; }
   if(t.dataset.wk){ const ws=weeksOf(S.who), i=ws.indexOf(curWeek(S.who))+(+t.dataset.wk); if(ws[i]!=null){ S.week[S.who]=ws[i]; render(); } return; }
   if(t.dataset.day){ S.day[S.who+curWeek(S.who)]=t.dataset.day; render(); return; }
   if(act==="login"){
