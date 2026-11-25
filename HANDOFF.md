@@ -163,3 +163,10 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 **Shortlist live grades (11/24):** web/shortlist.tsx grades pending plays from ESPN finals (`liveGrade`, market inferred from the pick text) and re-pulls on `useTick()`. The nightly grader still writes the official result into shortlist:<date>.
 **Locked & Loaded v2 (Boss 11/24):** no sport bar; sticky jail lineup (7 incl. Boss) under the banner, tap one = only that analyst’s locks; yard pic (docs/art/yard-crew.webp) = locks 3+ crew members share, with their jail pics. Lock cards: sport · start time (ESPN) / the bet / the game + grade + result + live tag. Today/Last Night toggle kept. Default view = the yard.
 **Hova LOCK RULES v2 (Boss 11/24):** rule 7 in `rules:hova_card`. No favorite locks in any sport; lock pool = dogs (NBA/CBB/CFB spread dogs, CBB ML dogs +100 to +250) + NBA Unders; rank by system angles + agreement, not gut; lock fewer than 12 rather than fill with favorites. Starts 11/25.
+
+## 11/24 night — Rule 8: Money lanes / Burner lanes (lcn.settings rules:hova_card)
+Boss: "do what makes you the most money, and stay away from the shit that keeps fucking you up."
+Rule 7a's blanket "no favorite locks" replaced by a favorite whitelist (applies to card AND locks from the 11/25 card on):
+- MONEY LANES: CBB ML -251 to -400; CFB spread favs 0-3 w/ Sharps; CFB ML -101 to -150; NFL favs 0-3; NBA favs -3.5 to -7.5; NBA ML -151 to -250 w/ Sharps.
+- BURNERS (banned): CBB favs 0-3 and -8 to -12.5; CBB ML -101 to -150; CFB ML -151 to -250; CFB favs -3.5 to -7.5; NBA favs 0-3; any ML worse than -400.
+- Burner spread games flip to the dog (coverage stays); burner MLs not posted. Track closing line on locks; injury/rest check on every favorite lock. Review 12/3.
