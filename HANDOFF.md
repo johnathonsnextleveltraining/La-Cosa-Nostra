@@ -170,3 +170,5 @@ Rule 7a's blanket "no favorite locks" replaced by a favorite whitelist (applies 
 - MONEY LANES: CBB ML -251 to -400; CFB spread favs 0-3 w/ Sharps; CFB ML -101 to -150; NFL favs 0-3; NBA favs -3.5 to -7.5; NBA ML -151 to -250 w/ Sharps.
 - BURNERS (banned): CBB favs 0-3 and -8 to -12.5; CBB ML -101 to -150; CFB ML -151 to -250; CFB favs -3.5 to -7.5; NBA favs 0-3; any ML worse than -400.
 - Burner spread games flip to the dog (coverage stays); burner MLs not posted. Track closing line on locks; injury/rest check on every favorite lock. Review 12/3.
+
+- Me vs Me auto-update: docs/inman/version.txt must ALWAYS equal APP_V in docs/inman/index.html. To force phones to update, change both to the same new value in one commit. Mismatch = endless reload loop.
