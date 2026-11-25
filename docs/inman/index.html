@@ -3,18 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
-<title>Inman &amp; Inman Inc.</title>
+<title>Me vs Me</title>
 <meta name="theme-color" content="#0B1626">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Inman Inc.">
+<meta name="apple-mobile-web-app-title" content="Me vs Me">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Saira+Stencil+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Saira+Stencil+One&family=Playfair+Display:ital,wght@1,700;1,800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0B1626; --card:#15233A; --card2:#0F1B2E; --line:#22344F;
@@ -22,7 +22,20 @@
   --green:#66DE8C; --red:#FF7373; --amber:#FFBF4D;
   --me:var(--blue);
 }
-body.her{--me:var(--purple)}
+body.her{--me:#A5ACAF;--bg:#0B0F10;--card:rgba(0,0,0,.2);--card2:rgba(0,0,0,.3);--line:rgba(165,172,175,.35);--muted:#B9C6C7;--text:#F4F6F6;--green:#4CBB17}
+body.her{background:linear-gradient(180deg,#004C54 0%,#00343A 46%,#0B0F10 100%) fixed;font-family:Poppins,system-ui,sans-serif}
+html:has(body.her){background:#0B0F10}
+body.her .stencil,body.her .ex-name,body.her .login h1,body.her .sheet h3{font-family:"Playfair Display",serif;font-style:italic;font-weight:800;letter-spacing:0}
+body.her .ex-name{font-size:20px;font-weight:700}
+body.her .weekbar .wk{font-size:28px}
+body.her .brand .t{font-size:22px;color:#F4F6F6}
+body.her .weekbar .ttl{text-transform:uppercase;letter-spacing:2px;font-size:11px}
+body.her .day.on,body.her .pill.solid,body.her .sheet .btns .go{color:#0B0F10}
+body.her .s-pr{background:transparent;color:#4CBB17;border:1px solid #4CBB17}
+body.her nav.tabs{background:#070a0a}
+body.her .chip{background:rgba(0,0,0,.3)}
+body.her .sets input{background:rgba(0,0,0,.28)}
+body.her .sets input::placeholder{color:#6f8486}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--text);font-family:Barlow,system-ui,sans-serif;font-size:15px}
 button,input,select{font-family:inherit;font-size:inherit;color:inherit}
@@ -37,7 +50,7 @@ header.top{display:flex;align-items:center;justify-content:space-between;gap:10p
 .who{display:flex;background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:3px}
 .who button{border:0;background:transparent;padding:6px 14px;border-radius:999px;font-weight:700;letter-spacing:1px;color:var(--muted);font-size:13px}
 .who button.on.him{background:var(--blue);color:#0B1626}
-.who button.on.her{background:var(--purple);color:#0B1626}
+.who button.on.her{background:#A5ACAF;color:#0B0F10}
 
 .weekbar{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 6px;margin-bottom:10px}
 .weekbar .arrow{border:0;background:transparent;font-size:22px;color:var(--me);width:40px;height:40px}
@@ -117,7 +130,7 @@ select.sel{width:100%;background:var(--card2);border:1px solid var(--line);borde
 .bigwho{display:flex;gap:10px}
 .bigwho button{width:115px;padding:14px 0;border-radius:14px;border:2px solid var(--line);background:var(--card);font-weight:800;letter-spacing:1.5px}
 .bigwho button.him.on{border-color:var(--blue);color:var(--blue)}
-.bigwho button.her.on{border-color:var(--purple);color:var(--purple)}
+.bigwho button.her.on{border-color:#A5ACAF;color:#A5ACAF}
 
 .modal{position:fixed;inset:0;background:rgba(4,9,17,.72);display:flex;align-items:flex-end;justify-content:center;z-index:20}
 .sheet{background:var(--card);border:1px solid var(--line);border-radius:18px 18px 0 0;width:100%;max-width:560px;padding:18px 16px calc(env(safe-area-inset-bottom) + 18px)}
@@ -143,7 +156,7 @@ table.bt td:first-child,table.bt th:first-child{text-align:left}
 <div class="wrap" id="app"></div>
 <div class="savebar" id="savebar" style="opacity:0"></div>
 <nav class="tabs" id="tabs" style="display:none"><div class="in">
-  <button data-t="log"><span class="ic">🏋️</span>LOG</button>
+  <button data-t="log"><span class="ic">🏋️</span>PROGRAM</button>
   <button data-t="board"><span class="ic">📈</span>SCOREBOARD</button>
   <button data-t="body"><span class="ic">⚖️</span>BODY</button>
 </div></nav>
@@ -267,7 +280,8 @@ function lineChart(labels, series){
     s+=`<path d="${d}" fill="none" stroke="${se.color}" stroke-width="${se.dash?2:3}" ${se.dash?'stroke-dasharray="6 5"':''} stroke-linejoin="round"/>`+pts; }
   return `<svg viewBox="0 0 ${W} ${H}">${s}</svg>`;
 }
-const meColor = () => S.who==="her" ? "#A78BFA" : "#89CFF0";
+const HIM_C="#89CFF0", HER_C="#C9D1D3";
+const meColor = () => S.who==="her" ? HER_C : HIM_C;
 
 // ---------- saving (queued so gym wifi can't eat a set) ----------
 let saveTimer=null;
@@ -312,7 +326,7 @@ function render(){
   if(!S.code){ renderLogin(); return; }
   document.getElementById("tabs").style.display="";
   document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on", b.dataset.t===S.tab));
-  const head = `<header class="top"><div class="brand"><img src="icon-192.png" alt=""><div><div class="t stencil">INMAN &amp; INMAN INC.</div><div class="s">STRENGTH · FAT LOSS</div></div></div>
+  const head = `<header class="top"><div class="brand"><img src="icon-192.png" alt=""><div><div class="t stencil">Me vs Me</div></div></div>
     <div class="who"><button class="him ${S.who==='him'?'on':''}" data-who="him">HIM</button><button class="her ${S.who==='her'?'on':''}" data-who="her">HER</button></div></header>`;
   if(!S.data){ app.innerHTML = head + `<div class="empty">Loading the house…</div>`; return; }
   let body="";
@@ -398,8 +412,8 @@ function renderBoard(){
   const all=[...new Set([...weeksOf("him"),...weeksOf("her")])].sort((a,b)=>a-b);
   h += `<div class="sec">HIM vs HER · WEEKLY VOLUME</div><div class="card chart">${lineChart(all.map(x=>"Wk"+x), [
       {color:"#89CFF0", values:all.map(x=>weeksOf("him").includes(x)?weekStats("him",x).vol:null)},
-      {color:"#A78BFA", values:all.map(x=>weeksOf("her").includes(x)?weekStats("her",x).vol:null)}])}
-    <div class="legend"><span><i style="background:#89CFF0"></i>Him</span><span><i style="background:#A78BFA"></i>Her</span></div></div>`;
+      {color:HER_C, values:all.map(x=>weeksOf("her").includes(x)?weekStats("her",x).vol:null)}])}
+    <div class="legend"><span><i style="background:#89CFF0"></i>Him</span><span><i style="background:#C9D1D3"></i>Her</span></div></div>`;
   return h;
 }
 
@@ -425,7 +439,7 @@ function renderBody(){
 
 function renderLogin(){
   document.getElementById("tabs").style.display="none";
-  app.innerHTML = `<div class="login"><img src="icon-192.png" alt=""><h1>INMAN &amp; INMAN INC.</h1>
+  app.innerHTML = `<div class="login"><img src="icon-192.png" alt=""><h1>ME VS ME</h1>
     <div style="color:var(--muted)">Who's lifting?</div>
     <div class="bigwho"><button class="him ${S.who==='him'?'on':''}" data-pick="him">HIM</button><button class="her ${S.who==='her'?'on':''}" data-pick="her">HER</button></div>
     <input id="code" type="password" placeholder="House code" autocomplete="current-password">
