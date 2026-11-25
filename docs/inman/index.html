@@ -14,7 +14,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Saira+Stencil+One&family=Playfair+Display:ital,wght@1,700;1,800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Saira+Stencil+One&family=Playfair+Display:ital,wght@1,700;1,800&family=Poppins:wght@400;500;600;700&family=Bebas+Neue&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0B1626; --card:#15233A; --card2:#0F1B2E; --line:#22344F;
@@ -22,6 +22,27 @@
   --green:#66DE8C; --red:#FF7373; --amber:#FFBF4D;
   --me:var(--blue);
 }
+body.him{--me:#87CEEB;--bg:#050709;--card:rgba(0,0,0,.38);--card2:rgba(0,0,0,.45);--line:rgba(135,206,235,.3);--muted:#9DBCCB;--text:#EEF6FA}
+body.him{background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .45 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"),linear-gradient(180deg,#1C5877 0%,#0E2B3B 46%,#050709 100%);background-attachment:fixed;font-family:"Barlow Condensed",Barlow,sans-serif;font-size:16px}
+html:has(body.him){background:#050709}
+body.him .brand .t{font-size:21px;color:#87CEEB}
+body.him .weekbar{border:2px solid rgba(135,206,235,.5);border-radius:6px;background:rgba(0,0,0,.25)}
+body.him .weekbar .wk{font-size:30px;letter-spacing:2px}
+body.him .weekbar .ttl{text-transform:uppercase;letter-spacing:3px;font-size:12px;color:#B8D6E3}
+body.him .day,body.him .sets input,body.him .ghost,body.him .tile,body.him .chip,body.him .status{border-radius:4px}
+body.him .day .d{font-size:14px;letter-spacing:1.5px}
+body.him .card{border-radius:6px;border-left:4px solid #87CEEB}
+body.him .ex-name{font-family:"Bebas Neue",sans-serif;font-weight:400;font-size:26px;letter-spacing:.5px;line-height:1}
+body.him .sets input{font-size:20px;font-weight:700}
+body.him .sets .n{color:#87CEEB;font-size:14px}
+body.him .sets input::placeholder{color:#58707C}
+body.him .last{font-size:14px}
+body.him .s-pr{background:#87CEEB;color:#050709}
+body.him .day.on,body.him .pill.solid,body.him .sheet .btns .go{color:#050709}
+body.him nav.tabs{background:#050709;border-top:2px solid rgba(135,206,235,.35)}
+body.him nav.tabs button{font-size:12px}
+body.him .sec{font-size:14px;letter-spacing:2px}
+body.him .board .nm{font-family:"Bebas Neue";font-weight:400;font-size:21px;letter-spacing:.5px}
 body.her{--me:#A5ACAF;--bg:#0B0F10;--card:rgba(0,0,0,.2);--card2:rgba(0,0,0,.3);--line:rgba(165,172,175,.35);--muted:#B9C6C7;--text:#F4F6F6;--green:#4CBB17}
 body.her{background:linear-gradient(180deg,#004C54 0%,#00343A 46%,#0B0F10 100%) fixed;font-family:Poppins,system-ui,sans-serif}
 html:has(body.her){background:#0B0F10}
@@ -49,7 +70,7 @@ header.top{display:flex;align-items:center;justify-content:space-between;gap:10p
 .brand .s{font-size:10px;color:var(--muted);letter-spacing:1.5px;font-weight:700;margin-top:3px}
 .who{display:flex;background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:3px}
 .who button{border:0;background:transparent;padding:6px 14px;border-radius:999px;font-weight:700;letter-spacing:1px;color:var(--muted);font-size:13px}
-.who button.on.him{background:var(--blue);color:#0B1626}
+.who button.on.him{background:#87CEEB;color:#050709}
 .who button.on.her{background:#A5ACAF;color:#0B0F10}
 
 .weekbar{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 6px;margin-bottom:10px}
@@ -129,7 +150,7 @@ select.sel{width:100%;background:var(--card2);border:1px solid var(--line);borde
 .login .err{color:var(--red);font-size:13px;min-height:18px}
 .bigwho{display:flex;gap:10px}
 .bigwho button{width:115px;padding:14px 0;border-radius:14px;border:2px solid var(--line);background:var(--card);font-weight:800;letter-spacing:1.5px}
-.bigwho button.him.on{border-color:var(--blue);color:var(--blue)}
+.bigwho button.him.on{border-color:#87CEEB;color:#87CEEB}
 .bigwho button.her.on{border-color:#A5ACAF;color:#A5ACAF}
 
 .modal{position:fixed;inset:0;background:rgba(4,9,17,.72);display:flex;align-items:flex-end;justify-content:center;z-index:20}
@@ -280,7 +301,7 @@ function lineChart(labels, series){
     s+=`<path d="${d}" fill="none" stroke="${se.color}" stroke-width="${se.dash?2:3}" ${se.dash?'stroke-dasharray="6 5"':''} stroke-linejoin="round"/>`+pts; }
   return `<svg viewBox="0 0 ${W} ${H}">${s}</svg>`;
 }
-const HIM_C="#89CFF0", HER_C="#C9D1D3";
+const HIM_C="#87CEEB", HER_C="#C9D1D3";
 const meColor = () => S.who==="her" ? HER_C : HIM_C;
 
 // ---------- saving (queued so gym wifi can't eat a set) ----------
@@ -411,9 +432,9 @@ function renderBoard(){
   // him vs her
   const all=[...new Set([...weeksOf("him"),...weeksOf("her")])].sort((a,b)=>a-b);
   h += `<div class="sec">HIM vs HER · WEEKLY VOLUME</div><div class="card chart">${lineChart(all.map(x=>"Wk"+x), [
-      {color:"#89CFF0", values:all.map(x=>weeksOf("him").includes(x)?weekStats("him",x).vol:null)},
+      {color:HIM_C, values:all.map(x=>weeksOf("him").includes(x)?weekStats("him",x).vol:null)},
       {color:HER_C, values:all.map(x=>weeksOf("her").includes(x)?weekStats("her",x).vol:null)}])}
-    <div class="legend"><span><i style="background:#89CFF0"></i>Him</span><span><i style="background:#C9D1D3"></i>Her</span></div></div>`;
+    <div class="legend"><span><i style="background:#87CEEB"></i>Him</span><span><i style="background:#C9D1D3"></i>Her</span></div></div>`;
   return h;
 }
 
