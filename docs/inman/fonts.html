@@ -10,8 +10,8 @@ iframe{width:390px;height:760px;border:2px solid #333;border-radius:14px;backgro
 </div>
 <script>
 document.querySelectorAll('iframe').forEach(f=>f.addEventListener('load',()=>{const d=f.contentDocument,ff=f.dataset.f;
-const st=d.createElement('style');let css='.brand img{display:none!important}';
+const st=d.createElement('style');let css='.brand img,body>h1,body>.sub{display:none!important}body{padding-top:6px!important}';
 if(ff){const l=d.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Rubik+Dirt&family=Rubik+Distressed&display=swap';d.head.appendChild(l);
-css+=`.ttl,.wk .n,.work,.days .day{font-family:"${ff}",sans-serif!important;font-style:normal!important;font-weight:400!important}.wk .n{font-size:34px!important}.work{font-size:20px!important}.ttl{font-size:30px!important}.ttl .tag{font-family:"Barlow Condensed"!important;font-weight:700!important}`;}
+css+=`.ttl,.wk .n,.work,.days .day{font-family:"${ff}",sans-serif!important;font-style:normal!important;font-weight:400!important}.wk .n{font-size:27px!important;white-space:nowrap}.work{font-size:20px!important}.ttl{font-size:30px!important}.ttl .tag{font-family:"Barlow Condensed"!important;font-weight:700!important}`;}
 st.textContent=css;d.head.appendChild(st);}));
 </script></body></html>
