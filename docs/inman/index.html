@@ -196,7 +196,7 @@ body.her .hero .weekbar .wk{font-size:22px}
 .sheet label{display:block;font-size:11px;font-weight:800;letter-spacing:1.2px;color:var(--muted);margin:10px 0 5px}
 .sheet input,.sheet select{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:11px;font-size:16px}
 .sheet .btns{display:flex;gap:8px;margin-top:16px}
-.wk[data-act]{cursor:pointer}.wk .caret{font-family:Barlow,sans-serif;font-size:.5em;margin-left:5px;vertical-align:middle;opacity:.8;font-style:normal}
+.wk[data-act]{cursor:pointer;white-space:nowrap}.wk .caret{font-family:Barlow,sans-serif;font-size:.5em;margin-left:5px;vertical-align:middle;opacity:.8;font-style:normal}
 .wklist{max-height:58vh;overflow:auto;display:flex;flex-direction:column;gap:8px;margin:0 -2px;padding:0 2px}
 .wkrow{display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card2)}
 .wkrow b{font-family:"Saira Stencil One";font-weight:400;font-size:19px;color:var(--me);letter-spacing:.5px}
@@ -606,7 +606,7 @@ render();
 if(S.code){ load().then(render).catch(e=>{ if(/bad code/.test(e.message)) logout(); else showSave("Offline — showing saved copy","err"); }); flush(); }
 </script>
 <script>
-const APP_V="1795629444";
+const APP_V="1795629559";
 async function checkUpdate(){ try{ const r=await fetch("version.txt?t="+Date.now(),{cache:"no-store"}); const nv=(await r.text()).trim(); if(nv && nv!==APP_V){ location.replace(location.pathname+"?v="+nv); } }catch(e){} }
 checkUpdate(); document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkUpdate(); });
 </script>
