@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Me vs Me — her page options</title>
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500;600;700&family=Pacifico&family=Nunito:wght@600;700;800&family=Playfair+Display:ital,wght@1,700;1,800&family=Poppins:wght@400;500;600&family=Rubik+Dirt&family=Black+Ops+One&family=Bebas+Neue&family=Saira+Stencil+One&family=Barlow+Condensed:wght@500;600;700&family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500;600;700&family=Pacifico&family=Nunito:wght@600;700;800&family=Playfair+Display:ital,wght@1,700;1,800&family=Poppins:wght@400;500;600&family=Rubik+Dirt&family=Black+Ops+One&family=Bebas+Neue&family=Kanit:ital,wght@1,800;1,900&family=Righteous&family=Permanent+Marker&family=Teko:wght@500;600&family=Saira+Stencil+One&family=Barlow+Condensed:wght@500;600;700&family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--mid:#004C54;--deep:#00343A;--blk:#0B0F10;--sil:#A5ACAF;--wht:#F4F6F6;--kelly:#4CBB17;--red:#E5484D}
 *{box-sizing:border-box}
@@ -161,25 +161,52 @@ input{all:unset}
 .V .st.g .w,.V .st.g .r{color:#5a7280}
 .V .last{font-size:12px;color:#8aa6b4;margin-top:3px}
 .V .tabs{background:#050709;border-top:2px solid rgba(135,206,235,.35)}.V .tabs div{color:#5d7480;font-size:12px}.V .tabs .on{color:var(--sky)}
+
+/* ---------- W: slides 12/16/19 ---------- */
+.W{--sky:#87CEEB;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.6' numOctaves='5' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .13 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"),radial-gradient(90% 60% at 50% 35%,#2a3338 0%,#14191c 55%,#07090a 100%);color:#EEF6FA;font-family:Righteous,sans-serif}
+.W .stripes{position:absolute;height:16px;transform:skewX(-35deg);background:repeating-linear-gradient(90deg,var(--sky) 0 18px,transparent 18px 26px,#EEF6FA 26px 44px,transparent 44px 52px,#4d6b7a 52px 70px,transparent 70px 78px)}
+.W .s1{top:0;left:-20px;width:190px}.W .s2{bottom:66px;right:-30px;width:170px}
+.W .scr{position:relative;padding-top:24px}
+.W .hdr{display:flex;justify-content:space-between;align-items:flex-start}
+.W .ttl{font-family:Kanit;font-style:italic;font-weight:900;font-size:34px;line-height:.95;letter-spacing:-.5px}
+.W .ttl .a{color:var(--sky)}.W .ttl .b{color:#EEF6FA;font-size:24px;margin:0 4px}
+.W .who{display:flex;font-family:Kanit;font-style:italic;font-weight:800;font-size:14px;gap:10px;margin-top:6px}
+.W .who span{color:#6f8794}.W .who .on{color:var(--sky);border-bottom:3px solid var(--sky)}
+.W .wkrow{display:flex;justify-content:space-between;align-items:center;margin:14px 0 4px}
+.W .wk{font-family:Teko;font-weight:600;font-size:46px;line-height:.8;letter-spacing:3px;color:var(--sky)}
+.W .wk small{display:block;font-family:Teko;font-weight:500;font-size:15px;letter-spacing:7px;color:#EEF6FA;margin-top:6px}
+.W .stamp{width:108px;height:64px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 70'><path d='M8 38 C6 14 52 4 86 9 C114 14 118 40 100 54 C80 68 30 68 14 54 C6 47 8 30 30 18' fill='none' stroke='%23EEF6FA' stroke-width='3' stroke-linecap='round'/></svg>") center/100% 100% no-repeat;display:flex;align-items:center;justify-content:center;text-align:center;font-family:"Permanent Marker";font-size:15px;line-height:1;transform:rotate(-6deg)}
+.W .days{display:flex;justify-content:space-between;margin:12px 0 4px;font-family:Kanit;font-style:italic;font-weight:800;font-size:16px}
+.W .days span{color:#5f7480}.W .days .on{color:#EEF6FA}.W .days .on::before{content:"»";color:var(--sky);margin-right:3px}
+.W .phase{font-family:Teko;font-weight:600;font-size:34px;letter-spacing:2px;line-height:1;margin:12px 0 4px}
+.W .phase .a{color:var(--sky)}.W .phase .b{color:#EEF6FA}
+.W .ex{display:grid;grid-template-columns:54px 1fr;column-gap:8px;padding:7px 0;border-top:1px dashed rgba(238,246,250,.15)}
+.W .num{font-family:Righteous;font-size:30px;color:var(--sky);line-height:1;text-align:right}
+.W .num small{display:block;font-size:9px;letter-spacing:1.5px;color:#7f97a3;margin-top:2px}
+.W .nm{font-size:20px;line-height:1.05}
+.W .nm .pr{font-family:"Permanent Marker";font-size:13px;color:#ff6b6b;margin-left:6px;display:inline-block;transform:rotate(-6deg)}
+.W .rs{font-family:Teko;font-size:16px;letter-spacing:2px;color:#8fa9b5}
+.W .sets{grid-column:2;display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:5px}
+.W .st{border:1px solid rgba(135,206,235,.45);background:rgba(0,0,0,.35);text-align:center;padding:3px 0 2px}
+.W .st .w{font-size:17px}.W .st .r{font-family:Teko;font-size:14px;color:#9dbccb;letter-spacing:1px}
+.W .st.g .w,.W .st.g .r{color:#55697a}
+.W .tabs{background:#07090a;border-top:2px solid rgba(135,206,235,.35)}.W .tabs div{color:#5d7480;font-family:Kanit;font-style:italic;font-weight:800;font-size:12px}.W .tabs .on{color:var(--sky)}
 </style></head>
 <body>
-<h1>ME VS ME · YOUR CANVA VIBE</h1>
-<div class="sub">Your side in the style of "Workout Vibes 2", kept in sky blue + black.</div>
+<h1>ME VS ME · SLIDES 12, 16 &amp; 19</h1>
+<div class="sub">Your side, sky blue + black.</div>
 <div class="row">
-<div class="opt" style="width:380px"><div class="lab" style="all:unset;display:block;font-weight:800;font-size:15px;margin:0 0 8px 4px">V · "Workout Vibes"<span style="display:block;color:var(--sil);font-weight:500;font-size:12px;margin-top:2px">Built off your Canva: two-tone titles, paint swipes, tilted stickers, chevrons, grit</span></div>
-<div class="phone V" style="width:380px"><div class="splat"></div><div class="scr" style="position:relative">
-  <div class="top"><div class="ttl"><span class="a">ME</span><span class="b">vs</span><span class="c">ME</span></div><div class="who"><b class="on">HIM</b><b>HER</b></div></div>
-  <div class="wkrow"><div class="brush">WEEK 11</div><div class="sticker">FRESH OFF VACAY</div></div>
-  <div class="days"><div class="day on">WED</div><div class="day">THU</div><div class="day">FRI</div><div class="day">SAT</div><div class="day">SUN</div></div>
-  <div class="dayhead"><span class="a">BACK</span> <span class="b">&amp; ARMS</span></div>
-  <div class="lab">THE WORK</div>
-  <div class="ex"><div class="exn"><span class="reps">15·12·12·10</span><span class="nm">SINGLE ARM MACHINE ROWS</span><span class="pr">PR!</span></div>
-    <div class="sets"><div class="st"><div class="w">95</div><div class="r">× 15</div></div><div class="st"><div class="w">120</div><div class="r">× 12</div></div><div class="st g"><div class="w">135</div><div class="r">× 12</div></div><div class="st g"><div class="w">170</div><div class="r">× 10</div></div></div>
-    <div class="last"><span class="chev">»»</span>Last time 90×15 · 115×12 · 135×12 · 170×10</div></div>
-  <div class="ex"><div class="exn"><span class="reps">15·12·12·10</span><span class="nm">PULL UPS</span></div>
+<div class="opt" style="width:380px"><div style="font-weight:800;font-size:15px;margin:0 0 8px 4px">W · "Reload the Gunz / Todo Me Duele"<span style="display:block;color:#A5ACAF;font-weight:500;font-size:12px;margin-top:2px">Off slides 12, 16 &amp; 19: chalkboard grit, diagonal stripes, italic heavy title, Phase-style headers, big numbers + rounded lift names, marker stamp</span></div>
+<div class="phone W" style="width:380px"><div class="stripes s1"></div><div class="stripes s2"></div><div class="scr">
+  <div class="hdr"><div class="ttl"><span class="a">ME</span><span class="b">VS</span><span class="a">ME</span></div><div class="who"><span class="on">HIM</span><span>HER</span></div></div>
+  <div class="wkrow"><div class="wk">WEEK 11<small>FRESH OFF VACAY</small></div><div class="stamp">START<br>WEEK 12</div></div>
+  <div class="days"><span class="on">WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span></div>
+  <div class="phase"><span class="a">BACK</span> <span class="b">&amp; ARMS</span></div>
+  <div class="ex"><div class="num">170<small>TO BEAT</small></div><div><div class="nm">Single Arm Machine Rows<span class="pr">PR!</span></div><div class="rs">15 · 12 · 12 · 10</div></div>
+    <div class="sets"><div class="st"><div class="w">95</div><div class="r">× 15</div></div><div class="st"><div class="w">120</div><div class="r">× 12</div></div><div class="st g"><div class="w">135</div><div class="r">× 12</div></div><div class="st g"><div class="w">170</div><div class="r">× 10</div></div></div></div>
+  <div class="ex"><div class="num">49<small>REPS</small></div><div><div class="nm">Pull Ups</div><div class="rs">15 · 12 · 12 · 10</div></div>
     <div class="sets"><div class="st g"><div class="w">BW</div><div class="r">× 15</div></div><div class="st g"><div class="w">BW</div><div class="r">× 12</div></div><div class="st g"><div class="w">BW</div><div class="r">× 12</div></div><div class="st g"><div class="w">BW</div><div class="r">× 10</div></div></div></div>
-  <div class="ex"><div class="exn"><span class="reps">15·12·12·10</span><span class="nm">DEADLIFTS</span></div>
-    <div class="sets"><div class="st g"><div class="w">135</div><div class="r">× 15</div></div><div class="st g"><div class="w">165</div><div class="r">× 12</div></div><div class="st g"><div class="w">195</div><div class="r">× 12</div></div><div class="st g"><div class="w">225</div><div class="r">× 10</div></div></div></div>
+  <div class="ex"><div class="num">225<small>TO BEAT</small></div><div><div class="nm">Deadlifts</div><div class="rs">15 · 12 · 12 · 10</div></div></div>
 </div><div class="tabs"><div class="on"><i>🏋️</i>PROGRAM</div><div><i>📈</i>SCOREBOARD</div><div><i>⚖️</i>BODY</div></div></div></div>
 </div>
 <h1 style="margin-top:34px">EARLIER OPTIONS</h1>
