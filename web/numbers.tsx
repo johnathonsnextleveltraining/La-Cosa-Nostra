@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { art } from '../src/lib/engine';
 import { R } from './ranks.tsx';
+import { useTick } from './live.tsx';
 import Shortlist from './shortlist.tsx';
 
 const SHORT: Record<string, string> = { 'Hova Da God': 'Hova', 'Nino Brown': 'Nino', "G' Money": 'G’ Money', 'Sharp Syndicate': 'Sharps', 'Paulie Publix': 'Paulie', Rithmm: 'Rithmm', 'Johnny Biz': 'Johnny Biz' };
@@ -85,14 +86,15 @@ const Faces = ({ names }: { names: string[] }) => <span className="wd-faces">{na
 const who = (names: string[]) => names.map(n => SHORT[n]).join(' + ');
 
 export default function Numbers({ revision, footer }: { sport?: string; revision: any; footer?: (sports: string[]) => any }) {
+  const tick = useTick();
   const [range, setRange] = useState('30'), [sports, setSports] = useState<string[]>([]), [sel, setSel] = useState<string[]>([]), [d, setD] = useState<any>(null), [err, setErr] = useState(''), [day, setDay] = useState('today'), [pick, setPick] = useState<any>(null), [cellData, setCell] = useState<any>(null);
   useEffect(() => {
     let live = true; setErr('');
     const q = new URLSearchParams({ range, sports: sports.join(','), who: sel.join(',') });
     const go = (tries: number) => fetch('/api/ndl?' + q).then(r => r.json()).then(v => { if (!live) return; if (v.error || !v.sum) { if (tries > 0) setTimeout(() => live && go(tries - 1), 2500); else setErr(v.error) } else setD(v) }).catch(e => { if (!live) return; if (tries > 0) setTimeout(() => live && go(tries - 1), 2500); else setErr(String(e)) });
     go(3); return () => { live = false };
-  }, [range, sports.join(), sel.join(), revision]);
-  useEffect(() => { if (!pick) { setCell(null); return } let live = true; setCell('loading'); fetch('/api/ndl-cell?' + new URLSearchParams({ day, sport: pick.s, lane: pick.l, who: sel.join(',') })).then(r => r.json()).then(v => live && setCell(v && v.sum && Array.isArray(v.games) ? v : { err: v?.error || 'Could not pull those games' })).catch(e => live && setCell({ err: String(e) })); return () => { live = false } }, [pick?.s, pick?.l, day, sel.join(), revision]);
+  }, [range, sports.join(), sel.join(), revision, tick]);
+  useEffect(() => { if (!pick) { setCell(null); return } let live = true; setCell('loading'); fetch('/api/ndl-cell?' + new URLSearchParams({ day, sport: pick.s, lane: pick.l, who: sel.join(',') })).then(r => r.json()).then(v => live && setCell(v && v.sum && Array.isArray(v.games) ? v : { err: v?.error || 'Could not pull those games' })).catch(e => live && setCell({ err: String(e) })); return () => { live = false } }, [pick?.s, pick?.l, day, sel.join(), revision, tick]);
   const flip = (xs: string[], x: string) => xs.includes(x) ? xs.filter(y => y !== x) : [...xs, x];
   const bar = <div className="ndl2-sticky">
     <div className="ndl2-row">{R2.map(([k, t]) => <button key={k} className={'lg-chip' + (range === k ? ' on' : '')} onClick={() => setRange(k)}>{t}</button>)}</div>

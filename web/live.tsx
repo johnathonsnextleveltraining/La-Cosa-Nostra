@@ -94,3 +94,10 @@ export function LiveStrip({ locks, games }: { locks: any[]; games: Record<string
     <small className="muted">Unofficial until the 1:30 AM grader settles it.</small>
   </div>;
 }
+
+/** Boss 11/24: pages re-pull as games go final. Ticks every 2 minutes on the clock and when the app comes back to the front. */
+export function useTick(every = 120000) {
+  const [n, set] = useState(0);
+  useEffect(() => { let t: any; const next = () => { t = setTimeout(() => { if (document.visibilityState === 'visible') set(x => x + 1); next() }, every - Date.now() % every + 1500) }; next(); const v = () => { if (document.visibilityState === 'visible') set(x => x + 1) }; document.addEventListener('visibilitychange', v); return () => { clearTimeout(t); document.removeEventListener('visibilitychange', v) } }, [every]);
+  return n;
+}
