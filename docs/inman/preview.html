@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Me vs Me — her page options</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@500;600;700&family=Pacifico&family=Nunito:wght@600;700;800&family=Playfair+Display:ital,wght@1,700;1,800&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--mid:#004C54;--deep:#00343A;--blk:#0B0F10;--sil:#A5ACAF;--wht:#F4F6F6;--kelly:#4CBB17;--red:#E5484D}
+*{box-sizing:border-box}
+body{margin:0;background:#1d2122;color:var(--wht);font-family:system-ui,sans-serif;padding:18px 10px}
+h1{text-align:center;font-size:18px;margin:0 0 4px;letter-spacing:1px}
+.sub{text-align:center;color:var(--sil);font-size:13px;margin-bottom:18px}
+.row{display:flex;gap:22px;justify-content:center;flex-wrap:wrap}
+.opt{width:360px}
+.lab{font-weight:800;font-size:15px;margin:0 0 8px 4px}.lab span{color:var(--sil);font-weight:500;font-size:12px;display:block;margin-top:2px}
+.phone{width:360px;height:720px;border-radius:34px;border:8px solid #000;overflow:hidden;position:relative}
+.scr{height:100%;overflow:hidden;padding:16px 14px 0}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.brand{display:flex;gap:8px;align-items:center}.brand img{width:34px;height:34px;border-radius:8px}
+.who{display:flex;border-radius:999px;padding:3px}
+.who b{padding:6px 13px;border-radius:999px;font-size:12px;letter-spacing:1px}
+.tabs{position:absolute;left:0;right:0;bottom:0;display:flex;padding:9px 0 14px}
+.tabs div{flex:1;text-align:center;font-size:10px;letter-spacing:1.2px;font-weight:700}
+.tabs i{display:block;font-style:normal;font-size:19px;margin-bottom:2px}
+input{all:unset}
+
+/* ---------- A: Silver Script ---------- */
+.A{background:var(--blk);font-family:Quicksand,sans-serif}
+.A .bt{font-family:"Dancing Script";font-size:25px;color:var(--wht);line-height:1}
+.A .who{background:#151a1b;border:1px solid #263133}.A .who b{color:var(--sil)}.A .who b.on{background:var(--mid);color:var(--wht)}
+.A .wk{background:var(--mid);border-radius:16px;text-align:center;padding:10px;margin-bottom:10px}
+.A .wk .n{font-family:"Dancing Script";font-size:32px;line-height:1}.A .wk .t{font-size:12px;color:#cfe3e4;font-weight:600}
+.A .days{display:flex;gap:6px;margin-bottom:10px}
+.A .day{flex:1;border:1px solid #263133;border-radius:12px;padding:6px 0;text-align:center;font-weight:700;font-size:12px;color:var(--sil)}
+.A .day.on{background:var(--sil);color:var(--blk);border-color:var(--sil)}
+.A .card{background:#121819;border:1px solid #263133;border-radius:16px;padding:12px;margin-bottom:10px}
+.A .nm{font-family:"Dancing Script";font-size:23px;line-height:1.1}
+.A .hd{display:flex;justify-content:space-between;align-items:center}
+.A .pr{background:var(--kelly);color:#06210a;font-weight:800;font-size:11px;padding:3px 8px;border-radius:6px}
+.A .last{font-size:12px;color:var(--sil);margin:5px 0 8px}
+.A .sets{display:grid;grid-template-columns:22px 1fr 12px 1fr;gap:6px;align-items:center}
+.A .sets .i{font-size:12px;color:var(--sil);text-align:center;font-weight:700}
+.A .box{background:#0B0F10;border:1px solid #2b3a3c;border-radius:10px;text-align:center;padding:8px 0;font-weight:700;font-size:16px}
+.A .box.g{color:#55676a;font-weight:600}
+.A .tabs{background:#070a0a;border-top:1px solid #1d2627}.A .tabs div{color:#6f7b7d}.A .tabs .on{color:var(--sil)}
+
+/* ---------- B: Soft & Sweet ---------- */
+.B{background:var(--mid);font-family:Nunito,sans-serif}
+.B .bt{font-family:Pacifico;font-size:21px;line-height:1.1}
+.B .who{background:rgba(0,0,0,.25)}.B .who b{color:#cfe3e4}.B .who b.on{background:var(--wht);color:var(--mid)}
+.B .wk{display:flex;justify-content:space-between;align-items:center;margin:4px 2px 12px}
+.B .wk .n{font-family:Pacifico;font-size:26px}.B .wk .t{font-size:12px;color:#cfe3e4;font-weight:700}
+.B .wk .pill{background:var(--wht);color:var(--mid);font-weight:800;font-size:11px;padding:7px 12px;border-radius:999px}
+.B .days{display:flex;gap:6px;margin-bottom:12px}
+.B .day{flex:1;border-radius:999px;padding:7px 0;text-align:center;font-weight:800;font-size:12px;background:rgba(0,0,0,.22);color:#cfe3e4}
+.B .day.on{background:var(--blk);color:var(--wht)}
+.B .card{background:var(--wht);color:#13292b;border-radius:22px;padding:12px 14px;margin-bottom:10px}
+.B .hd{display:flex;justify-content:space-between;align-items:center}
+.B .nm{font-weight:800;font-size:16px}
+.B .pr{background:var(--mid);color:var(--wht);font-weight:800;font-size:11px;padding:3px 9px;border-radius:999px}
+.B .last{font-size:12px;color:#5c6f71;margin:3px 0 6px}
+.B .chips{display:flex;gap:6px}
+.B .chip{flex:1;background:#E6EEEE;border-radius:14px;text-align:center;padding:7px 0 6px}
+.B .chip .w{font-weight:800;font-size:16px;color:var(--mid)}.B .chip .r{font-size:11px;color:#5c6f71;font-weight:700}
+.B .chip.g .w{color:#9aabad}
+.B .tabs{background:var(--blk)}.B .tabs div{color:#7d8a8c}.B .tabs .on{color:var(--wht)}
+.B .tabs .on i{background:var(--mid);border-radius:999px;width:46px;margin:0 auto 2px;padding:2px 0}
+
+/* ---------- C: Classy Focus ---------- */
+.C{background:linear-gradient(180deg,var(--mid) 0%,var(--deep) 46%,var(--blk) 100%);font-family:Poppins,sans-serif}
+.C .bt{font-family:"Playfair Display";font-style:italic;font-weight:800;font-size:22px}
+.C .who{border:1px solid var(--sil)}.C .who b{color:var(--sil)}.C .who b.on{background:var(--sil);color:var(--blk)}
+.C .wk{text-align:center;margin:2px 0 10px}.C .wk .n{font-family:"Playfair Display";font-style:italic;font-weight:800;font-size:30px}
+.C .wk .t{font-size:11px;letter-spacing:2px;color:var(--sil);text-transform:uppercase}
+.C .days{display:flex;justify-content:center;gap:14px;margin-bottom:14px;font-size:12px;letter-spacing:1px;color:#9fb3b5}
+.C .days .on{color:var(--wht);border-bottom:2px solid var(--sil);padding-bottom:3px}
+.C .focus{border:1px solid rgba(165,172,175,.45);border-radius:22px;padding:16px;text-align:center}
+.C .cnt{font-size:11px;letter-spacing:2px;color:var(--sil)}
+.C .nm{font-family:"Playfair Display";font-style:italic;font-weight:700;font-size:26px;margin:4px 0 2px}
+.C .last{font-size:12px;color:#b9c6c7;margin-bottom:12px}
+.C .setrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid rgba(165,172,175,.2)}
+.C .setrow .i{width:26px;font-size:12px;color:var(--sil)}
+.C .setrow .v{flex:1;text-align:left;font-size:20px;font-weight:600}.C .setrow .v small{font-size:12px;color:var(--sil);font-weight:400}
+.C .setrow .ck{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--sil);display:flex;align-items:center;justify-content:center;font-size:14px}
+.C .setrow .ck.done{background:var(--kelly);border-color:var(--kelly);color:#06210a}
+.C .nav{display:flex;justify-content:space-between;margin-top:12px;font-size:12px;color:var(--sil)}
+.C .pr{display:inline-block;margin-top:10px;font-size:11px;letter-spacing:1.5px;color:var(--kelly);font-weight:600}
+.C .tabs{background:transparent;border-top:1px solid rgba(165,172,175,.25)}.C .tabs div{color:#7f8f91}.C .tabs .on{color:var(--wht)}
+</style></head>
+<body>
+<h1>ME VS ME · HER PAGE — PICK ONE</h1>
+<div class="sub">Eagles midnight green, silver and black. Same app, three looks. His side stays as is unless you say otherwise.</div>
+<div class="row">
+
+<!-- A -->
+<div class="opt"><div class="lab">A · "Silver Script"<span>Dancing Script titles · Quicksand body · same card layout as now</span></div>
+<div class="phone A"><div class="scr">
+  <div class="top"><div class="brand"><img src="icon-192.png" alt=""><div class="bt">Me vs Me</div></div><div class="who"><b>HIM</b><b class="on">HER</b></div></div>
+  <div class="wk"><div class="n">Week 11</div><div class="t">Fresh off Vacay</div></div>
+  <div class="days"><div class="day on">WED</div><div class="day">THU</div><div class="day">FRI</div><div class="day">SAT</div><div class="day">SUN</div></div>
+  <div class="card"><div class="hd"><div class="nm">Single arm machine rows</div><span class="pr">🔥 PR</span></div>
+    <div class="last">Last time: 45×15 · 55×12 · 65×12 · 65×10</div>
+    <div class="sets"><div class="i">1</div><div class="box">50</div><div class="i">×</div><div class="box">15</div>
+    <div class="i">2</div><div class="box">60</div><div class="i">×</div><div class="box">12</div>
+    <div class="i">3</div><div class="box g">65</div><div class="i">×</div><div class="box g">12</div>
+    <div class="i">4</div><div class="box g">65</div><div class="i">×</div><div class="box g">10</div></div></div>
+  <div class="card"><div class="hd"><div class="nm">Deadlifts</div></div><div class="last">Last time: 95×15 · 105×12 · 135×12 · 145×10</div></div>
+</div><div class="tabs"><div class="on"><i>🏋️</i>PROGRAM</div><div><i>📈</i>SCOREBOARD</div><div><i>⚖️</i>BODY</div></div></div></div>
+
+<!-- B -->
+<div class="opt"><div class="lab">B · "Soft &amp; Sweet"<span>Pacifico titles · Nunito body · white rounded cards, sets as bubbles</span></div>
+<div class="phone B"><div class="scr">
+  <div class="top"><div class="brand"><img src="icon-192.png" alt=""><div class="bt">Me vs Me</div></div><div class="who"><b>HIM</b><b class="on">HER</b></div></div>
+  <div class="wk"><div><div class="n">Week 11</div><div class="t">Fresh off Vacay</div></div><div class="pill">+ WEEK 12</div></div>
+  <div class="days"><div class="day on">Wed</div><div class="day">Thu</div><div class="day">Fri</div><div class="day">Sat</div><div class="day">Sun</div></div>
+  <div class="card"><div class="hd"><div class="nm">Single arm machine rows</div><span class="pr">🔥 PR</span></div>
+    <div class="last">Last time: 45×15 · 55×12 · 65×12 · 65×10</div>
+    <div class="chips"><div class="chip"><div class="w">50</div><div class="r">× 15</div></div><div class="chip"><div class="w">60</div><div class="r">× 12</div></div><div class="chip g"><div class="w">65</div><div class="r">× 12</div></div><div class="chip g"><div class="w">65</div><div class="r">× 10</div></div></div></div>
+  <div class="card"><div class="hd"><div class="nm">Cable v-bar rows</div></div><div class="last">Last time: 55×15 · 62.5×12 · 70×12 · 77.5×10</div>
+    <div class="chips"><div class="chip g"><div class="w">55</div><div class="r">× 15</div></div><div class="chip g"><div class="w">62.5</div><div class="r">× 12</div></div><div class="chip g"><div class="w">70</div><div class="r">× 12</div></div><div class="chip g"><div class="w">77.5</div><div class="r">× 10</div></div></div></div>
+  <div class="card"><div class="hd"><div class="nm">Deadlifts</div></div><div class="last">Last time: 95×15 · 105×12 · 135×12 · 145×10</div></div>
+</div><div class="tabs"><div class="on"><i>🏋️</i>PROGRAM</div><div><i>📈</i>SCOREBOARD</div><div><i>⚖️</i>BODY</div></div></div></div>
+
+<!-- C -->
+<div class="opt"><div class="lab">C · "Classy Focus"<span>Playfair italic titles · Poppins body · one lift at a time, tap ✓ per set</span></div>
+<div class="phone C"><div class="scr">
+  <div class="top"><div class="brand"><img src="icon-192.png" alt=""><div class="bt">Me vs Me</div></div><div class="who"><b>HIM</b><b class="on">HER</b></div></div>
+  <div class="wk"><div class="n">Week 11</div><div class="t">Fresh off Vacay</div></div>
+  <div class="days"><span class="on">WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span></div>
+  <div class="focus"><div class="cnt">LIFT 1 OF 6 · BACK</div><div class="nm">Single arm machine rows</div>
+    <div class="last">Last time 45×15 · 55×12 · 65×12 · 65×10</div>
+    <div class="setrow"><div class="i">1</div><div class="v">50 <small>lbs ×</small> 15</div><div class="ck done">✓</div></div>
+    <div class="setrow"><div class="i">2</div><div class="v">60 <small>lbs ×</small> 12</div><div class="ck done">✓</div></div>
+    <div class="setrow"><div class="i">3</div><div class="v" style="color:#7f9294">65 <small>lbs ×</small> 12</div><div class="ck"></div></div>
+    <div class="setrow"><div class="i">4</div><div class="v" style="color:#7f9294">65 <small>lbs ×</small> 10</div><div class="ck"></div></div>
+    <div class="pr">🔥 ON PACE FOR A PR</div>
+    <div class="nav"><span>‹ Prev</span><span>● ○ ○ ○ ○ ○</span><span>Next lift ›</span></div></div>
+</div><div class="tabs"><div class="on"><i>🏋️</i>PROGRAM</div><div><i>📈</i>SCOREBOARD</div><div><i>⚖️</i>BODY</div></div></div></div>
+
+</div></body></html>
