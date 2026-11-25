@@ -429,3 +429,6 @@ h1{line-height:1.05}
 /* Folds (11/24 page merge) */
 .fold{border:1px solid var(--border);border-radius:10px;background:#0f1318;margin:12px 0}.fold>summary{list-style:none;display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer}.fold>summary::-webkit-details-marker{display:none}
 .fold>summary b{display:block;font-size:18px;color:var(--gold);letter-spacing:1px;text-transform:uppercase}.fold>summary small{display:block;font-size:11px;opacity:.65}.fold>summary i{font-style:normal;color:var(--gold);font-size:18px;transition:transform .2s}.fold[open]>summary i{transform:rotate(180deg)}.fold-body{padding:0 10px 12px}
+.wd-title{display:flex;align-items:baseline;gap:8px;margin:14px 0 6px}.wd-title b{font-size:17px;color:var(--gold);text-transform:uppercase;letter-spacing:1px}.wd-title small{font-size:11px;opacity:.6}
+.wd-rank{width:16px;font-weight:900;color:var(--gold);text-align:center}.wd-row strong small{display:block;font-size:9px;opacity:.7;text-align:right}.wd-main small em{font-style:normal;font-weight:800}
+.ndl-heat{overflow-x:auto}.ndl-heat tbody th,.ndl-heat thead th:first-child{position:sticky;left:0;z-index:2;background:#11151b;padding:0 6px}

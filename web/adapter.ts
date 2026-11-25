@@ -189,6 +189,8 @@ async function numbers(q: Record<string, string>) {
   return { date: t, from, range, sport: sp, crew, crewLocks, analysts, nightly, eat, bleed, heat: heatRows, agree, grades: Object.fromEntries(Object.entries(grades).map(([g, v]: any) => [g, ndlSum(v)])) };
 }
 // Numbers Don't Lie v2 (Boss 11/23): multi-sport, multi-analyst (lumped), 7/30/90/all.
+// Boss 11/24: In the Weeds ranks by ROI (money per dollar risked), not raw dollars.
+const rankRoi = (rows: any[]) => ({ best: rows.filter(r => (r.roi ?? 0) > 0).sort((a, b) => (b.roi - a.roi) || (b.net - a.net)).slice(0, 5), worst: rows.filter(r => (r.roi ?? 0) < 0).sort((a, b) => (a.roi - b.roi) || (a.net - b.net)).slice(0, 5) });
 async function numbers2(q: Record<string, string>) {
   const rev = (await api('revision')).revision as number;
   if (!cache || cache.revision !== rev) await loadAll(rev);
@@ -214,12 +216,12 @@ async function numbers2(q: Record<string, string>) {
   let weeds: any;
   if (sel.length) {
     const rows = [...grp(mine, p => { const l = laneName(p); return l ? p.sport + '|' + l : null }).entries()].map(([k, v]) => { const [sport, lane] = k.split('|'); return { names: sel, sport, lane, ...ndlSum(v) } }).filter(r => r.w + r.l >= MIN);
-    weeds = { best: rows.filter(r => r.net > 0).sort((a, b) => b.net - a.net).slice(0, 5), worst: rows.filter(r => r.net < 0).sort((a, b) => a.net - b.net).slice(0, 5) };
+    weeds = { groups: [{ title: 'Best bets', ...rankRoi(rows) }] };
   } else {
     const combos = new Map<string, any[]>();
     for (const g of games) { const l = laneName(g.p); if (!l) continue; const n = g.names.slice(0, 6); for (let mask = 1; mask < 1 << n.length; mask++) { const sub = n.filter((_, i) => mask & 1 << i); if (sub.length > 4) continue; const k = sub.join('+') + '|' + g.p.sport + '|' + l; const a = combos.get(k); a ? a.push(g.p) : combos.set(k, [g.p]) } }
     const rows = [...combos.entries()].map(([k, v]) => { const [nm, sport, lane] = k.split('|'); return { names: nm.split('+'), sport, lane, ...ndlSum(v) } }).filter(r => r.w + r.l >= MIN);
-    weeds = { best: rows.filter(r => r.net > 0).sort((a, b) => b.net - a.net || a.names.length - b.names.length).slice(0, 5), worst: rows.filter(r => r.net < 0).sort((a, b) => a.net - b.net || a.names.length - b.names.length).slice(0, 5) };
+    weeds = { groups: [{ title: 'Top 5 Crews', sub: '2+ on the same side', ...rankRoi(rows.filter(r => r.names.length >= 2)) }, { title: 'Top 5 Solo Artists', sub: 'one analyst', ...rankRoi(rows.filter(r => r.names.length === 1)) }] };
   }
   const heat = [...grp(mine, p => { const l = laneName(p); return l ? p.sport + '|' + l : null }).entries()].map(([k, v]) => { const [sport, lane] = k.split('|'); return { sport, lane, ...ndlSum(v) } });
   let lockInfo: any = null;
