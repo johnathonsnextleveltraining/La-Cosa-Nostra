@@ -174,3 +174,10 @@ Rule 7a's blanket "no favorite locks" replaced by a favorite whitelist (applies 
 - Burner spread games flip to the dog (coverage stays); burner MLs not posted. Track closing line on locks; injury/rest check on every favorite lock. Review 12/3.
 
 - Me vs Me auto-update: docs/inman/version.txt must ALWAYS equal APP_V in docs/inman/index.html. To force phones to update, change both to the same new value in one commit. Mismatch = endless reload loop.
+
+## Boss rules 11/26 (read before any pick work)
+- **Hova's process (`rules:hova_process_20261126`):** research every game yourself first. Sharps money is a FLAG to dig deeper, never the reason to pick. Find WHY the money is there (injury, lineup, matchup, situation, line-move timing). If you can't find a reason, the gap counts for nothing. Shortlist is ranked on Hova's own edge.
+- **Hova-only rules:** `rules:nfl_20261126`, `rules:cfb_20261126`, `rules:hova_totals_v1` (projection-first totals). They apply to Hova's card, locks and the shortlist only. Nino and G write their own rules (`rules:gmoney_card_v3_proposed`, Nino's in Sit-Down #227).
+- **Boss's locks:** his 4 biggest straight bets each day (tie = most crew agreement), built automatically by `lcn.build_johnny_locks` inside `lcn.auto_grade`.
+- **Don't turn the water off, fix the water heater:** never answer a losing lane with a ban. Find why it breaks and fix how it's picked.
+- 12/7 review scheduled in the original session (NFL + CFB + head-to-head vs crew).
