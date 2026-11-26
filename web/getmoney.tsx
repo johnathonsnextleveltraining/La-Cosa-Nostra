@@ -1,8 +1,8 @@
 import { R } from './ranks.tsx';
 // "Get Money" (Boss 11/17): live sweat board for every game on tonight's card.
-// Scores from ESPN every 5 minutes. Results here are unofficial until the 1:30 AM grader writes them.
+// Scores from ESPN every 5 minutes. lcn.auto_grade (pg_cron, every 3 min) writes official results as games go final.
 import { useMemo, useState } from 'react';
-import { art, crew } from '../src/lib/engine';
+import { art, crew, offset, summarize } from '../src/lib/engine';
 // Boss 11/17: gold crown + BOSS under it marks his tickets (same crown as Locked & Loaded)
 function DenCrown({size=24}:{size?:number}){return <svg width={size} height={size} viewBox="0 0 240 200" fill="currentColor" aria-hidden="true" focusable="false"><defs><path id="den-fleur" d="M0-35C-13-23-16-12-8-4C-19-14-31-7-27 4C-24 13-13 14-10 6C-11 18-5 21 0 22C5 21 11 18 10 6C13 14 24 13 27 4C31-7 19-14 8-4C16-12 13-23 0-35ZM-10 26H10V32H-10Z"/></defs><use href="#den-fleur" transform="translate(120 37) scale(.95)"/><use href="#den-fleur" transform="translate(62 65) scale(.7)"/><use href="#den-fleur" transform="translate(178 65) scale(.7)"/><use href="#den-fleur" transform="translate(18 72) rotate(-22) scale(.58)"/><use href="#den-fleur" transform="translate(222 72) rotate(22) scale(.58)"/><path d="M17 88Q34 126 59 130L59 88Q77 124 97 126L120 69L143 126Q163 124 181 88L181 130Q206 126 223 88L200 157Q120 134 40 157Z"/><path d="M41 164Q120 141 199 164L196 176Q120 156 44 176Z"/><path d="M44 183Q120 163 196 183L194 193Q120 175 46 193Z"/><path d="M120 137L124 143L120 149L116 143Z" fill="#0b0e12"/></svg>}
 import { useLiveData, findGame, evalPick, type Game } from './live';
@@ -29,7 +29,49 @@ const legsOf = (p: any): any[] => {
 };
 const STATUS: Record<string, string> = { W: '✓', L: '✕', Push: '∞', up: '▲', down: '▼', even: '=' };
 
+// Boss 11/26: TONIGHT / LAST NIGHT switch. Last night = just the crew's records and money, no games.
 export default function GetMoney({ data, sport }: { data: any; sport: string }) {
+  const [view, setView] = useState<'tonight' | 'last'>('tonight');
+  return <>
+    <div className="bb-switch" role="tablist" aria-label="Tonight or last night">
+      <button role="tab" aria-selected={view === 'tonight'} className={view === 'tonight' ? 'on' : ''} onClick={() => setView('tonight')}>TONIGHT</button>
+      <button role="tab" aria-selected={view === 'last'} className={view === 'last' ? 'on' : ''} onClick={() => setView('last')}>LAST NIGHT</button>
+    </div>
+    {view === 'tonight' ? <Tonight data={data} sport={sport} /> : <LastNight data={data} sport={sport} />}
+  </>;
+}
+
+export function LastNight({ data, sport }: { data: any; sport: string }) {
+  const yest = offset(data.date, -1);
+  const fits = (r: any) => r.date === yest && (sport === 'All' || r.sport === sport);
+  const perf = (data.performance || []).filter(fits);
+  const lockRows = (data.locks || []).filter(fits);
+  const names = [...crew, 'Johnny Biz'];
+  const rows = names.map(n => ({ n, s: summarize(perf.filter((p: any) => p.analyst === n)), k: summarize(lockRows.filter((l: any) => l.analyst === n)) }))
+    .filter(r => r.s.count).sort((a, b) => b.s.net - a.s.net);
+  const crewTot = summarize(perf.filter((p: any) => crew.includes(p.analyst)));
+  const rec = (x: any) => x.w + '–' + x.l + (x.push ? '–' + x.push : '');
+  const wp = (x: any) => x.w + x.l ? Math.round(100 * x.w / (x.w + x.l)) + '%' : '—';
+  const day = new Date(yest + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
+  return <div className="gm gm-last">
+    <div className="gm-bar"><div><span>LAST NIGHT</span> <b>{day}</b>{sport !== 'All' ? <> · <b>{sport}</b></> : null}</div></div>
+    {rows.length ? <>
+      <div className="gm-last-total">
+        <div><small>CREW RECORD</small><b>{rec(crewTot)}</b><em>{wp(crewTot)}</em></div>
+        <div><small>CREW MONEY</small><strong className={crewTot.net > 0 ? 'green' : crewTot.net < 0 ? 'red' : ''}>{money(crewTot.net)}</strong></div>
+      </div>
+      <div className="gm-last-list">{rows.map((r, i) => <div key={r.n} className={'gm-last-row' + (r.n === 'Johnny Biz' ? ' boss' : '')}>
+        <span className="gm-last-rank">{i + 1}</span>
+        <img src={r.n === 'Johnny Biz' ? 'art/johnny-free-face.webp' : pic(r.n)} alt="" />
+        <div className="gm-last-name"><b>{SHORT[r.n]}</b><small>{rec(r.s)} · {wp(r.s)}{r.k.w + r.k.l + r.k.push ? ' · locks ' + rec(r.k) : ''}</small></div>
+        <strong className={r.s.net > 0 ? 'green' : r.s.net < 0 ? 'red' : ''}>{money(r.s.net)}</strong>
+      </div>)}</div>
+      {rows.some(r => r.s.pending) && <p className="muted">Some of last night's picks are still pending. The grader settles them as the finals come in.</p>}
+    </> : <p className="muted">Nothing settled from last night{sport !== 'All' ? ' in ' + sport : ''}.</p>}
+  </div>;
+}
+
+function Tonight({ data, sport }: { data: any; sport: string }) {
   const { games, stamp, reload } = useLiveData(data.date, 300000);
   const names = [...crew, 'Johnny Biz'];
   const picks = useMemo(() => (data.current || []).flatMap((p: any) => MK.includes(p.market) ? [p] : legsOf(p)).filter((p: any) => names.includes(p.analyst) && MK.includes(p.market) && (sport === 'All' || p.sport === sport)), [data.current, sport]);
