@@ -635,10 +635,17 @@ h1.h1-one{white-space:nowrap;font-size:clamp(26px,8.2vw,64px)!important;line-hei
 .ndl-heat.kf-hot td *,.ndl-heat.kf-hot td small{color:#000 !important}
 .ndl-heat.kf-cold td,.ndl-heat.kf-cold td.kf-on{background:#1e4f8a !important;color:#fff !important}
 .ndl-heat.kf-cold td *,.ndl-heat.kf-cold td small{color:#fff !important}
+/* Boss 11/26: tap the picture next to PAID IN FULL to switch analyst */
+.pif-selected-wrap{position:relative}
+.pif-pickable{cursor:pointer;font:inherit;color:inherit;text-align:left}
+.pif-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:40;background:#10141a;border:1px solid var(--border);border-radius:10px;padding:6px;display:grid;grid-template-columns:repeat(2,1fr);gap:6px;min-width:250px}
+.pif-menu button{display:flex;align-items:center;gap:8px;background:#151a21;border:1px solid #2a2f36;border-radius:8px;padding:6px;color:#e6e8eb;cursor:pointer}
+.pif-menu button.on{border-color:var(--gold)}
+.pif-menu img{width:40px;height:40px;border-radius:6px;object-fit:cover}
 </style>
 </head>
 <body>
 <div id="root"></div>
-<script src="app.js?v=f2f122c9"></script>
+<script src="app.js?v=c30581a9"></script>
 </body>
 </html>
