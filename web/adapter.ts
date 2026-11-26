@@ -188,6 +188,24 @@ async function numbers(q: Record<string, string>) {
   const grades: any = {}; for (const l of lk.filter(l => NDL_CREW.includes(l.analyst))) { const g = String(l.grade || '').charAt(0) || '—'; const x = grades[g] || (grades[g] = []); x.push({ ...l, risk: l.risk ?? l.frozen?.risk ?? 20000 }) }
   return { date: t, from, range, sport: sp, crew, crewLocks, analysts, nightly, eat, bleed, heat: heatRows, agree, grades: Object.fromEntries(Object.entries(grades).map(([g, v]: any) => [g, ndlSum(v)])) };
 }
+function sheetFor(d: string, who: string) {
+  const MKS = ['Spread', 'Total', 'ML'], all = cache!.picks as any[];
+  const sideOf = (p: any) => p.market === 'Total' ? String(p.pick).trim().split(/\s+/)[0].toLowerCase() : String(p.pick).replace(/\s*([+-]\d+(\.\d+)?|ML|PK)\s*$/i, '').toLowerCase().trim();
+  const key = (p: any) => p.date + '|' + String(p.matchup).toLowerCase() + '|' + p.market + '|' + sideOf(p);
+  const laneOf = (p: any) => { const l = ndlLane(p); return l ? l.replace(/ \((home|road)\)/, '') : null };
+  const since = offset(d, -60);
+  // past agreement index: key -> {sport, lane, names, result, net(one $200 pick)}
+  const idx = new Map<string, any>();
+  for (const p of all) { if (p.date < since || p.date >= d || !NDL_CREW.includes(p.analyst) || !MKS.includes(p.market) || !['W', 'L', 'Push'].includes(p.result)) continue; const k = key(p); let g = idx.get(k); if (!g) { const lane = laneOf(p); if (!lane) continue; g = { sport: p.sport, lane, names: new Set<string>(), result: p.result, net: p.net || 0 }; idx.set(k, g) } g.names.add(p.analyst) }
+  const day = all.filter(p => p.date === d && MKS.includes(p.market) && (NDL_CREW.includes(p.analyst) || p.analyst === 'Johnny Biz'));
+  const byKey = new Map<string, string[]>(); for (const p of day) { const k = key(p); const a = byKey.get(k) || []; if (!a.includes(p.analyst)) a.push(p.analyst); byKey.set(k, a) }
+  return day.filter(p => p.analyst === who).map(p => {
+    const others = (byKey.get(key(p)) || []).filter(n => n !== who), group = [who, ...others].filter(n => NDL_CREW.includes(n)), lane = laneOf(p);
+    let w = 0, l = 0, push = 0, net = 0;
+    if (lane) for (const g of idx.values()) { if (g.sport !== p.sport || g.lane !== lane || !group.every(n => g.names.has(n))) continue; if (g.result === 'W') w++; else if (g.result === 'L') l++; else push++; net += g.net }
+    return { id: p.id, sport: p.sport, market: p.market, matchup: p.matchup, pick: p.pick, odds: p.odds, result: p.result, others, lane, solo: group.length < 2, w, l, push, net };
+  });
+}
 // Numbers Don't Lie v2 (Boss 11/23): multi-sport, multi-analyst (lumped), 7/30/90/all.
 // Boss 11/24: In the Weeds ranks by ROI (money per dollar risked), not raw dollars.
 // Boss 11/26: show real games next to picks — six analysts on one game is 6 picks but 1 game.
@@ -281,6 +299,8 @@ const realFetch = window.fetch.bind(window);
     if (u.pathname === '/api/export') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); const cols = ['date', 'analyst', 'sport', 'market', 'matchup', 'pick', 'odds', 'risk', 'result', 'net']; const esc = (x: any) => { const t = x == null ? '' : String(x); return /[",\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t }; const body = [cols.join(',')].concat(cache!.picks.map((p: any) => cols.map(c => esc(c === 'risk' || c === 'net' ? (p[c] == null ? '' : p[c] / 100) : p[c])).join(','))).join('\n'); return new Response(body, { headers: { 'content-type': 'text/csv' } }) }
     if (u.pathname === '/api/backup') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); return new Response(JSON.stringify({ exported: new Date().toISOString(), revision: rev, picks: cache!.picks, locks: cache!.locks, settings: cache!.settings }), { headers: { 'content-type': 'application/json' } }) }
     if (u.pathname === '/api/together') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); const names = (u.searchParams.get('names') || '').split('|').filter(Boolean), sp = u.searchParams.get('sport'), mk = u.searchParams.get('market'); const side = (x: any) => String(x.pick || '').toLowerCase().replace(/[^a-z]/g, ''); const by = new Map<string, any[]>(); for (const x of cache!.picks as any[]) { if (!names.includes(x.analyst) || x.sport !== sp || x.market !== mk || !['W', 'L', 'Push'].includes(x.result)) continue; const k = x.date + '|' + x.matchup + '|' + side(x); const a = by.get(k) || []; a.push(x); by.set(k, a) } const games = [...by.values()].filter(a => names.every(n => a.some(x => x.analyst === n))).map(a => a[0]).sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : 0).slice(0, 10); return json(games) }
+    // Boss 11/26: Get Money analyst sheet — their picks, who agrees, and how that crew hits in that Hot Box lane (60 days)
+    if (u.pathname === '/api/sheet') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); return json(sheetFor(u.searchParams.get('date') || '', u.searchParams.get('who') || '')) }
     // Boss 11/26: one day's picks for the Get Money analyst sheet (last night view)
     if (u.pathname === '/api/day') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); const d = u.searchParams.get('date') || ''; return json((cache!.picks as any[]).filter(p => p.date === d).map(({ raw, ...p }: any) => p)) }
     if (u.pathname === '/api/sl-marks') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); return json(slMarks()) }

@@ -55,8 +55,7 @@ export function LastNight({ data, sport, den }: { data: any; sport: string; den?
   const crewTot = summarize(perf.filter((p: any) => crew.includes(p.analyst)));
   const lockTot = summarize(lockRows.filter((l: any) => crew.includes(l.analyst)));
   const [sl, setSl] = useState<{ w: number; l: number; p: number; net: number } | null>(null);
-  const [sheet, setSheet] = useState(''), [dayPicks, setDayPicks] = useState<any[] | null>(null);
-  useEffect(() => { if (!sheet || dayPicks) return; fetch('/api/day?date=' + yest, { cache: 'no-store' }).then(r => r.json()).then(v => setDayPicks(Array.isArray(v) ? v : [])).catch(() => setDayPicks([])) }, [sheet, yest]);
+  const [sheet, setSheet] = useState('');
   useEffect(() => {
     let dead = false;
     (async () => {
@@ -98,7 +97,7 @@ export function LastNight({ data, sport, den }: { data: any; sport: string; den?
       <strong className={tone(r.s.net)}>{money(r.s.net)}</strong>
       <small>{r.s.pending ? r.s.pending + ' pending' : 'done'}</small>
     </div>)}</div> : <p className="muted">Nothing settled from last night{sport !== 'All' ? ' in ' + sport : ''}.</p>}
-    {sheet && <AnalystSheet data={data} name={sheet} date={yest} sport={sport} picks={dayPicks} games={null} onClose={() => setSheet('')} />}
+    {sheet && <AnalystSheet data={data} name={sheet} date={yest} sport={sport} games={null} onClose={() => setSheet('')} />}
   </div>;
 }
 
@@ -142,7 +141,7 @@ function Tonight({ data, sport }: { data: any; sport: string }) {
       <strong className={x.net > 0 ? 'green' : x.net < 0 ? 'red' : ''}>{money(x.net)}</strong>
       <small>{x.up || x.down ? <><em className="green">{x.up}▲</em> <em className="red">{x.down}▼</em> live</> : x.left ? x.left + ' to go' : 'done'}</small>
     </div>)}</div>
-    {sheet && <AnalystSheet data={data} name={sheet} date={data.date} sport={sport} picks={data.current || []} games={games} onClose={() => setSheet('')} />}
+    {sheet && <AnalystSheet data={data} name={sheet} date={data.date} sport={sport} games={games} onClose={() => setSheet('')} />}
     <div className="gm-games">{list.map(x => <GameCard key={x.k} x={x} />)}</div>
     {!list.length && <p className="muted">No picks on tonight's card for this sport.</p>}
   </div>;
@@ -179,28 +178,24 @@ function GameCard({ x }: { x: any }) {
 // Boss 11/26: tap an analyst on Get Money -> their picks, who agrees, and how that crew hits together.
 const sideKey = (p: any) => p.market === 'Total' ? String(p.pick).trim().split(/\s+/)[0].toLowerCase() : String(p.pick).replace(/\s*([+\-−]\d+(\.\d+)?|ML|PK)\s*$/i, '').toLowerCase().trim();
 const gameKey = (p: any) => p.sport + '|' + String(p.matchup).toLowerCase() + '|' + p.market + '|' + sideKey(p);
-export function AnalystSheet({ data, name, date, sport, picks, games, onClose }: { data: any; name: string; date: string; sport: string; picks: any[] | null; games: any; onClose: () => void }) {
-  const names = [...crew, 'Johnny Biz'];
-  const all = (picks || []).filter((p: any) => names.includes(p.analyst) && MK.includes(p.market) && (sport === 'All' || p.sport === sport));
-  const by = new Map<string, any[]>(); for (const p of all) { const k = gameKey(p); const a = by.get(k); a ? a.push(p) : by.set(k, [p]) }
-  const cohort = (sp: string, mk: string, ns: string[]) => (data.cohorts || []).find((c: any) => c.sport === sp && c.market === mk && c.names.length === ns.length && ns.every(n => c.names.includes(n)));
-  const mine = all.filter((p: any) => p.analyst === name).map((p: any) => {
-    const others = [...new Set((by.get(gameKey(p)) || []).map((q: any) => q.analyst).filter((n: string) => n !== name))] as string[];
-    const crewSide = [name, ...others].filter(n => crew.includes(n)).sort();
-    const c = crewSide.length >= 2 && crewSide.length <= 4 ? cohort(p.sport, p.market, crewSide) : null;
-    const st = p.result || (games ? evalPick(p.pick, p.market, findGame(games, p.sport, p.matchup)) : '');
-    return { p, others, c, st };
-  }).sort((a: any, b: any) => b.others.length - a.others.length || String(a.p.matchup).localeCompare(b.p.matchup));
+export function AnalystSheet({ data, name, date, sport, games, onClose }: { data: any; name: string; date: string; sport: string; picks?: any; games: any; onClose: () => void }) {
+  const [rows, setRows] = useState<any[] | null>(null);
+  useEffect(() => { setRows(null); fetch('/api/sheet?date=' + date + '&who=' + encodeURIComponent(name), { cache: 'no-store' }).then(r => r.json()).then(v => setRows(Array.isArray(v) ? v : [])).catch(() => setRows([])) }, [date, name, data?.revision]);
+  const mine = (rows || []).filter((r: any) => sport === 'All' || r.sport === sport).map((r: any) => ({ ...r, st: r.result || (games ? evalPick(r.pick, r.market, findGame(games, r.sport, r.matchup)) : '') }))
+    .sort((a: any, b: any) => b.others.length - a.others.length || String(a.matchup).localeCompare(b.matchup));
+  // Boss 11/26: silver crown = the best-earning group on this sheet; gold crown + BOSS = Boss is on that side
+  const best = mine.filter((r: any) => !r.solo && r.w + r.l >= 5 && r.net > 0).sort((a: any, b: any) => b.net - a.net)[0]?.id;
   const day = new Date(date + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
+  const laneTxt = (r: any) => String(r.lane || '').replace('ML chalk -300+', 'ML −300 or worse').replace('ML longshot +400', 'ML +400 or more').replace('Fav spread', 'Favorite spread');
   return <div className="gm-sheet-wrap" onClick={onClose}><div className="gm-sheet" onClick={e => e.stopPropagation()}>
     <div className="gm-sheet-head"><img src={name === 'Johnny Biz' ? 'art/johnny-free-face.webp' : pic(name)} alt="" /><div><b>{SHORT[name]}</b><small>{day} · {mine.length} picks</small></div><button onClick={onClose} aria-label="Close">✕</button></div>
-    {picks === null ? <p className="muted">Loading…</p> : !mine.length ? <p className="muted">No picks{sport !== 'All' ? ' in ' + sport : ''}.</p> :
-    mine.map(({ p, others, c, st }: any) => <div key={p.id || gameKey(p)} className={'gm-sheet-row ' + (st === 'W' || st === 'up' ? 'win' : st === 'L' || st === 'down' ? 'lose' : '')}>
-      <span className="gm-mark">{STATUS[st] || '•'}</span>
-      <div className="gm-sheet-pick"><b><R t={p.pick} s={p.sport} /></b> <small>{oddsText(p.odds)} · {p.market === 'ML' ? 'Moneyline' : p.market} · {p.sport}</small><small className="gm-sheet-game"><R t={p.matchup} s={p.sport} /></small>
-        <div className="gm-sheet-agree">{others.length ? <>{others.map((n: string) => n === 'Johnny Biz' ? <span key={n} className="gm-boss"><DenCrown size={18} /></span> : <img key={n} src={pic(n)} alt={SHORT[n]} title={SHORT[n]} />)}<em>{c ? c.w + '–' + c.l + ' together · ' + p.sport + ' ' + (p.market === 'ML' ? 'moneylines' : p.market.toLowerCase() + 's') + ' · 60 days' : others.some((n: string) => crew.includes(n)) ? 'not 5 games together yet' : ''}</em></> : <em>Riding solo</em>}</div>
+    {rows === null ? <p className="muted">Loading…</p> : !mine.length ? <p className="muted">No picks{sport !== 'All' ? ' in ' + sport : ''}.</p> :
+    mine.map((r: any) => { const n = r.w + r.l, has = n >= 5; return <div key={r.id} className={'gm-sheet-row ' + (r.st === 'W' || r.st === 'up' ? 'win' : r.st === 'L' || r.st === 'down' ? 'lose' : '')}>
+      <span className="gm-mark">{STATUS[r.st] || '•'}</span>
+      <div className="gm-sheet-pick"><b><R t={r.pick} s={r.sport} /></b> <small>{oddsText(r.odds)} · {r.sport}</small><small className="gm-sheet-game"><R t={r.matchup} s={r.sport} /></small>
+        <div className="gm-sheet-agree">{r.others.length ? r.others.map((x: string) => x === 'Johnny Biz' ? <span key={x} className="gm-boss gm-sheet-boss"><DenCrown size={20} /><small>BOSS</small></span> : <img key={x} src={pic(x)} alt={SHORT[x]} title={SHORT[x]} />) : null}<em>{(r.solo ? 'Riding solo · ' : '') + (has ? r.w + '–' + r.l + (r.solo ? '' : ' together') + ' · ' + laneTxt(r) + ' · 60 days' : 'under 5 games in ' + laneTxt(r))}</em></div>
       </div>
-      {c ? <div className="gm-sheet-rate"><strong className={c.w > c.l ? 'green' : c.l > c.w ? 'red' : ''}>{Math.round(100 * c.w / (c.w + c.l))}%</strong><small className={c.net > 0 ? 'green' : c.net < 0 ? 'red' : ''}>{money(c.net || 0)}</small></div> : <div />}
-    </div>)}
+      {has ? <div className="gm-sheet-rate">{r.id === best && <span className="gm-silver" title="Best group on this card"><DenCrown size={22} /></span>}<strong className={r.w > r.l ? 'green' : r.l > r.w ? 'red' : ''}>{Math.round(100 * r.w / n)}%</strong><small className={r.net > 0 ? 'green' : r.net < 0 ? 'red' : ''}>{money(r.net)}</small></div> : <div />}
+    </div> })}
   </div></div>;
 }

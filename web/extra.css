@@ -519,3 +519,6 @@ h1.h1-one{white-space:nowrap;font-size:clamp(26px,8.2vw,64px)!important;line-hei
 .gm-sheet-rate strong{font-family:'Saira Stencil One','Barlow',sans-serif;font-weight:400;font-size:28px;line-height:1}
 .gm-sheet-rate small{font-size:13px;margin-top:3px}
 .gm-sheet-rate .green{color:#a4ef75}.gm-sheet-rate .red{color:#ff6666}
+.gm-silver{color:#c9ced6;display:block;line-height:0;margin-bottom:2px}
+.gm-sheet-boss{display:inline-flex;flex-direction:column;align-items:center;color:var(--gold);line-height:1}
+.gm-sheet-boss small{font-size:8px;letter-spacing:.06em;color:var(--gold);margin-top:1px}
