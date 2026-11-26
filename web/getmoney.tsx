@@ -55,6 +55,8 @@ export function LastNight({ data, sport, den }: { data: any; sport: string; den?
   const crewTot = summarize(perf.filter((p: any) => crew.includes(p.analyst)));
   const lockTot = summarize(lockRows.filter((l: any) => crew.includes(l.analyst)));
   const [sl, setSl] = useState<{ w: number; l: number; p: number; net: number } | null>(null);
+  const [sheet, setSheet] = useState(''), [dayPicks, setDayPicks] = useState<any[] | null>(null);
+  useEffect(() => { if (!sheet || dayPicks) return; fetch('/api/day?date=' + yest, { cache: 'no-store' }).then(r => r.json()).then(v => setDayPicks(Array.isArray(v) ? v : [])).catch(() => setDayPicks([])) }, [sheet, yest]);
   useEffect(() => {
     let dead = false;
     (async () => {
@@ -89,18 +91,20 @@ export function LastNight({ data, sport, den }: { data: any; sport: string; den?
       <div><small>LIONS DEN</small><b className={den ? wl(den) : ''}>{den ? rec(den) : '—'}</b><em>{den && den.w + den.l ? Math.round(100 * den.w / (den.w + den.l)) + '%' : 'No Den'}</em></div>
       <div><small>CREW</small><b className={wl(crewTot)}>{rec(crewTot)}</b><em className={tone(crewTot.net)}>{money(crewTot.net)}</em></div>
     </div>
-    {rows.length ? <div className="gm-strip gm-strip-last">{rows.map(r => <div key={r.n} className={'gm-box' + (r.n === 'Johnny Biz' ? ' boss' : '')}>
+    {rows.length ? <div className="gm-strip gm-strip-last">{rows.map(r => <div key={r.n} role="button" tabIndex={0} onClick={() => setSheet(r.n)} className={'gm-box gm-tap' + (r.n === 'Johnny Biz' ? ' boss' : '')}>
       <img src={morning(r.n)} onError={(e: any) => { e.currentTarget.onerror = null; e.currentTarget.src = r.n === 'Johnny Biz' ? 'art/johnny-free-face.webp' : pic(r.n) }} alt="" />
       <span>{SHORT[r.n]}</span>
       <b>{rec(r.s)}</b>
       <strong className={tone(r.s.net)}>{money(r.s.net)}</strong>
       <small>{r.s.pending ? r.s.pending + ' pending' : 'done'}</small>
     </div>)}</div> : <p className="muted">Nothing settled from last night{sport !== 'All' ? ' in ' + sport : ''}.</p>}
+    {sheet && <AnalystSheet data={data} name={sheet} date={yest} sport={sport} picks={dayPicks} games={null} onClose={() => setSheet('')} />}
   </div>;
 }
 
 function Tonight({ data, sport }: { data: any; sport: string }) {
   const { games, stamp, reload } = useLiveData(data.date, 300000);
+  const [sheet, setSheet] = useState('');
   const names = [...crew, 'Johnny Biz'];
   const picks = useMemo(() => (data.current || []).flatMap((p: any) => MK.includes(p.market) ? [p] : legsOf(p)).filter((p: any) => names.includes(p.analyst) && MK.includes(p.market) && (sport === 'All' || p.sport === sport)), [data.current, sport]);
 
@@ -131,13 +135,14 @@ function Tonight({ data, sport }: { data: any; sport: string }) {
       <div><span className={live ? 'live-dot' : ''}>{live ? 'LIVE' : 'TONIGHT'}</span> <b>{live} going</b> · <b>{pre} to go</b> · <b>{fin} final</b></div>
       <button onClick={reload}>{stamp ? 'Updated ' + new Date(stamp).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' }) : 'Loading scores…'} ↻</button>
     </div>
-    <div className="gm-strip">{strip.map(x => <div key={x.n} className={'gm-box' + (x.n === 'Johnny Biz' ? ' boss' : '')}>
+    <div className="gm-strip">{strip.map(x => <div key={x.n} role="button" tabIndex={0} onClick={() => setSheet(x.n)} className={'gm-box gm-tap' + (x.n === 'Johnny Biz' ? ' boss' : '')}>
       <img src={x.n === 'Johnny Biz' ? 'art/johnny-free-face.webp' : pic(x.n)} alt="" />
       <span>{SHORT[x.n]}</span>
       <b>{x.w}–{x.l}{x.push ? '–' + x.push : ''}</b>
       <strong className={x.net > 0 ? 'green' : x.net < 0 ? 'red' : ''}>{money(x.net)}</strong>
       <small>{x.up || x.down ? <><em className="green">{x.up}▲</em> <em className="red">{x.down}▼</em> live</> : x.left ? x.left + ' to go' : 'done'}</small>
     </div>)}</div>
+    {sheet && <AnalystSheet data={data} name={sheet} date={data.date} sport={sport} picks={data.current || []} games={games} onClose={() => setSheet('')} />}
     <div className="gm-games">{list.map(x => <GameCard key={x.k} x={x} />)}</div>
     {!list.length && <p className="muted">No picks on tonight's card for this sport.</p>}
   </div>;
@@ -169,4 +174,32 @@ function GameCard({ x }: { x: any }) {
       <div className="gm-who">{sd.who.map((n: string) => n === 'Johnny Biz' ? <span key={n} className="gm-boss"><DenCrown size={22}/><small>BOSS</small></span> : <img key={n} src={pic(n)} alt={SHORT[n]} title={SHORT[n]} />)}</div>
     </div>)}</div>}
   </section>;
+}
+
+// Boss 11/26: tap an analyst on Get Money -> their picks, who agrees, and how that crew hits together.
+const sideKey = (p: any) => p.market === 'Total' ? String(p.pick).trim().split(/\s+/)[0].toLowerCase() : String(p.pick).replace(/\s*([+\-−]\d+(\.\d+)?|ML|PK)\s*$/i, '').toLowerCase().trim();
+const gameKey = (p: any) => p.sport + '|' + String(p.matchup).toLowerCase() + '|' + p.market + '|' + sideKey(p);
+export function AnalystSheet({ data, name, date, sport, picks, games, onClose }: { data: any; name: string; date: string; sport: string; picks: any[] | null; games: any; onClose: () => void }) {
+  const names = [...crew, 'Johnny Biz'];
+  const all = (picks || []).filter((p: any) => names.includes(p.analyst) && MK.includes(p.market) && (sport === 'All' || p.sport === sport));
+  const by = new Map<string, any[]>(); for (const p of all) { const k = gameKey(p); const a = by.get(k); a ? a.push(p) : by.set(k, [p]) }
+  const cohort = (sp: string, mk: string, ns: string[]) => (data.cohorts || []).find((c: any) => c.sport === sp && c.market === mk && c.names.length === ns.length && ns.every(n => c.names.includes(n)));
+  const mine = all.filter((p: any) => p.analyst === name).map((p: any) => {
+    const others = [...new Set((by.get(gameKey(p)) || []).map((q: any) => q.analyst).filter((n: string) => n !== name))] as string[];
+    const crewSide = [name, ...others].filter(n => crew.includes(n)).sort();
+    const c = crewSide.length >= 2 && crewSide.length <= 4 ? cohort(p.sport, p.market, crewSide) : null;
+    const st = p.result || (games ? evalPick(p.pick, p.market, findGame(games, p.sport, p.matchup)) : '');
+    return { p, others, c, st };
+  }).sort((a: any, b: any) => b.others.length - a.others.length || String(a.p.matchup).localeCompare(b.p.matchup));
+  const day = new Date(date + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
+  return <div className="gm-sheet-wrap" onClick={onClose}><div className="gm-sheet" onClick={e => e.stopPropagation()}>
+    <div className="gm-sheet-head"><img src={name === 'Johnny Biz' ? 'art/johnny-free-face.webp' : pic(name)} alt="" /><div><b>{SHORT[name]}</b><small>{day} · {mine.length} picks</small></div><button onClick={onClose} aria-label="Close">✕</button></div>
+    {picks === null ? <p className="muted">Loading…</p> : !mine.length ? <p className="muted">No picks{sport !== 'All' ? ' in ' + sport : ''}.</p> :
+    mine.map(({ p, others, c, st }: any) => <div key={p.id || gameKey(p)} className={'gm-sheet-row ' + (st === 'W' || st === 'up' ? 'win' : st === 'L' || st === 'down' ? 'lose' : '')}>
+      <span className="gm-mark">{STATUS[st] || '•'}</span>
+      <div className="gm-sheet-pick"><b><R t={p.pick} s={p.sport} /></b> <small>{oddsText(p.odds)} · {p.market === 'ML' ? 'Moneyline' : p.market} · {p.sport}</small><small className="gm-sheet-game"><R t={p.matchup} s={p.sport} /></small>
+        <div className="gm-sheet-agree">{others.length ? <>{others.map((n: string) => n === 'Johnny Biz' ? <span key={n} className="gm-boss"><DenCrown size={18} /></span> : <img key={n} src={pic(n)} alt={SHORT[n]} title={SHORT[n]} />)}<em>{c ? Math.round(100 * c.w / (c.w + c.l)) + '% together (' + c.w + '–' + c.l + ', last 60 days)' : others.some((n: string) => crew.includes(n)) ? 'not 5 games together yet' : ''}</em></> : <em>Riding solo</em>}</div>
+      </div>
+    </div>)}
+  </div></div>;
 }

@@ -593,10 +593,25 @@ h1.h1-one{white-space:nowrap;font-size:clamp(26px,8.2vw,64px)!important;line-hei
 @media(max-width:800px){.pif-analysts img{width:52px;height:52px}}
 @media(max-width:500px){.pif-analysts img{width:48px;height:48px}}
 .ndl-heat .hm-games{display:block;font-size:9px;color:#8b95a0}
+/* Boss 11/26: Get Money analyst sheet */
+.gm-tap{cursor:pointer}
+.gm-sheet-wrap{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:60;display:flex;align-items:flex-end;justify-content:center}
+.gm-sheet{width:100%;max-width:640px;max-height:82vh;overflow:auto;background:#10141a;border:1px solid var(--border);border-radius:12px 12px 0 0;padding:12px 12px 24px}
+.gm-sheet-head{display:flex;align-items:center;gap:10px;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:8px;position:sticky;top:-12px;background:#10141a;z-index:1}
+.gm-sheet-head img{width:48px;height:48px;border-radius:8px;object-fit:cover;object-position:center 20%}
+.gm-sheet-head div{flex:1;display:flex;flex-direction:column}.gm-sheet-head b{font-size:18px}.gm-sheet-head small{color:#8b95a0;font-size:12px}
+.gm-sheet-head button{background:none;border:1px solid var(--border);color:#c5cbd2;border-radius:6px;padding:6px 10px;cursor:pointer}
+.gm-sheet-row{display:grid;grid-template-columns:22px 1fr;gap:8px;padding:9px 4px;border-bottom:1px solid #1f252c}
+.gm-sheet-row.win .gm-mark{color:#a4ef75}.gm-sheet-row.lose .gm-mark{color:#ff6666}
+.gm-sheet-pick b{font-size:15px}.gm-sheet-pick small{color:#8b95a0;font-size:11px}.gm-sheet-game{display:block;margin-top:2px}
+.gm-sheet-agree{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-top:6px}
+.gm-sheet-agree img{width:26px;height:26px;border-radius:50%;object-fit:cover;object-position:center 20%}
+.gm-sheet-agree em{font-style:normal;font-size:12px;color:var(--gold);margin-left:4px}
+.gm-sheet-agree .gm-boss{color:var(--gold);display:inline-flex}
 </style>
 </head>
 <body>
 <div id="root"></div>
-<script src="app.js?v=206cb50e"></script>
+<script src="app.js?v=7de8df95"></script>
 </body>
 </html>
