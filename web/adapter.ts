@@ -190,6 +190,8 @@ async function numbers(q: Record<string, string>) {
 }
 // Numbers Don't Lie v2 (Boss 11/23): multi-sport, multi-analyst (lumped), 7/30/90/all.
 // Boss 11/24: In the Weeds ranks by ROI (money per dollar risked), not raw dollars.
+// Boss 11/26: show real games next to picks — six analysts on one game is 6 picks but 1 game.
+const gameCount = (v: any[]) => new Set(v.map((p: any) => p.date + '|' + String(p.matchup).toLowerCase())).size;
 const rankRoi = (rows: any[]) => ({ best: rows.filter(r => (r.roi ?? 0) > 0).sort((a, b) => (b.roi - a.roi) || (b.net - a.net)).slice(0, 5), worst: rows.filter(r => (r.roi ?? 0) < 0).sort((a, b) => (a.roi - b.roi) || (a.net - b.net)).slice(0, 5) });
 async function numbers2(q: Record<string, string>) {
   const rev = (await api('revision')).revision as number;
@@ -215,15 +217,15 @@ async function numbers2(q: Record<string, string>) {
   const games = [...grp(crewAll.filter(p => ['Spread', 'Total', 'ML'].includes(p.market)), p => p.date + '|' + p.matchup + '|' + p.market + '|' + sideOf(p)).values()].map(v => ({ names: [...new Set(v.map((p: any) => p.analyst))].sort() as string[], p: v[0] }));
   let weeds: any;
   if (sel.length) {
-    const rows = [...grp(mine, p => { const l = laneName(p); return l ? p.sport + '|' + l : null }).entries()].map(([k, v]) => { const [sport, lane] = k.split('|'); return { names: sel, sport, lane, ...ndlSum(v) } }).filter(r => r.w + r.l >= MIN);
+    const rows = [...grp(mine, p => { const l = laneName(p); return l ? p.sport + '|' + l : null }).entries()].map(([k, v]) => { const [sport, lane] = k.split('|'); return { names: sel, sport, lane, games: gameCount(v), ...ndlSum(v) } }).filter(r => r.w + r.l >= MIN);
     weeds = { groups: [{ title: 'Best bets', ...rankRoi(rows) }] };
   } else {
     const combos = new Map<string, any[]>();
     for (const g of games) { const l = laneName(g.p); if (!l) continue; const n = g.names.slice(0, 6); for (let mask = 1; mask < 1 << n.length; mask++) { const sub = n.filter((_, i) => mask & 1 << i); if (sub.length > 4) continue; const k = sub.join('+') + '|' + g.p.sport + '|' + l; const a = combos.get(k); a ? a.push(g.p) : combos.set(k, [g.p]) } }
-    const rows = [...combos.entries()].map(([k, v]) => { const [nm, sport, lane] = k.split('|'); return { names: nm.split('+'), sport, lane, ...ndlSum(v) } }).filter(r => r.w + r.l >= MIN);
+    const rows = [...combos.entries()].map(([k, v]) => { const [nm, sport, lane] = k.split('|'); return { names: nm.split('+'), sport, lane, games: gameCount(v), ...ndlSum(v) } }).filter(r => r.w + r.l >= MIN);
     weeds = { groups: [{ title: 'Top 5 Crews', sub: '2+ on the same side', ...rankRoi(rows.filter(r => r.names.length >= 2)) }, { title: 'Top 5 Solo Artists', sub: 'one analyst', ...rankRoi(rows.filter(r => r.names.length === 1)) }] };
   }
-  const heat = [...grp(mine, p => { const l = laneName(p); return l ? p.sport + '|' + l : null }).entries()].map(([k, v]) => { const [sport, lane] = k.split('|'); return { sport, lane, ...ndlSum(v) } });
+  const heat = [...grp(mine, p => { const l = laneName(p); return l ? p.sport + '|' + l : null }).entries()].map(([k, v]) => { const [sport, lane] = k.split('|'); return { sport, lane, games: gameCount(v), ...ndlSum(v) } });
   let lockInfo: any = null;
   if (sel.length) {
     const lk = (locks as any[]).filter(l => sel.includes(l.analyst) && ['W', 'L', 'Push'].includes(l.result) && okS(l.sport) && String(l.date) >= from && String(l.date) <= t).map(l => ({ ...l, risk: l.risk ?? l.frozen?.risk ?? 20000 }));
