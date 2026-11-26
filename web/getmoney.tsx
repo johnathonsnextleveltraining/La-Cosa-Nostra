@@ -180,16 +180,18 @@ const sideKey = (p: any) => p.market === 'Total' ? String(p.pick).trim().split(/
 const gameKey = (p: any) => p.sport + '|' + String(p.matchup).toLowerCase() + '|' + p.market + '|' + sideKey(p);
 export function AnalystSheet({ data, name, date, sport, games, onClose }: { data: any; name: string; date: string; sport: string; picks?: any; games: any; onClose: () => void }) {
   const [rows, setRows] = useState<any[] | null>(null);
+  const [sp, setSp] = useState(sport);
   useEffect(() => { setRows(null); fetch('/api/sheet?date=' + date + '&who=' + encodeURIComponent(name), { cache: 'no-store' }).then(r => r.json()).then(v => setRows(Array.isArray(v) ? v : [])).catch(() => setRows([])) }, [date, name, data?.revision]);
-  const mine = (rows || []).filter((r: any) => sport === 'All' || r.sport === sport).map((r: any) => ({ ...r, st: r.result || (games ? evalPick(r.pick, r.market, findGame(games, r.sport, r.matchup)) : '') }))
+  const sportsHere = ['NBA', 'NFL', 'CBB', 'CFB'].filter(x => (rows || []).some((r: any) => r.sport === x));
+  const mine = (rows || []).filter((r: any) => sp === 'All' || r.sport === sp).map((r: any) => ({ ...r, st: r.result || (games ? evalPick(r.pick, r.market, findGame(games, r.sport, r.matchup)) : '') }))
     .sort((a: any, b: any) => b.others.length - a.others.length || String(a.matchup).localeCompare(b.matchup));
   // Boss 11/26: silver crown = the best-earning group on this sheet; gold crown + BOSS = Boss is on that side
   const best = mine.filter((r: any) => !r.solo && r.w + r.l >= 5 && r.net > 0).sort((a: any, b: any) => b.net - a.net)[0]?.id;
   const day = new Date(date + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
   const laneTxt = (r: any) => String(r.lane || '').replace('ML chalk -300+', 'ML −300 or worse').replace('ML longshot +400', 'ML +400 or more').replace('Fav spread', 'Favorite spread');
   return <div className="gm-sheet-wrap" onClick={onClose}><div className="gm-sheet" onClick={e => e.stopPropagation()}>
-    <div className="gm-sheet-head"><img src={name === 'Johnny Biz' ? 'art/johnny-free-face.webp' : pic(name)} alt="" /><div><b>{SHORT[name]}</b><small>{day} · {mine.length} picks</small></div><button onClick={onClose} aria-label="Close">✕</button></div>
-    {rows === null ? <p className="muted">Loading…</p> : !mine.length ? <p className="muted">No picks{sport !== 'All' ? ' in ' + sport : ''}.</p> :
+    <div className="gm-sheet-head"><img src={name === 'Johnny Biz' ? 'art/johnny-free-face.webp' : pic(name)} alt="" /><div><b>{SHORT[name]}</b><small>{day} · {mine.length} picks</small></div><div className="gm-sheet-sports">{['All', ...sportsHere].map(x => <button key={x} className={sp === x ? 'on' : ''} onClick={() => setSp(x)}>{x === 'All' ? 'ALL' : x}</button>)}</div><button onClick={onClose} aria-label="Close">✕</button></div>
+    {rows === null ? <p className="muted">Loading…</p> : !mine.length ? <p className="muted">No picks{sp !== 'All' ? ' in ' + sp : ''}.</p> :
     mine.map((r: any) => { const n = r.w + r.l, has = n >= 5; return <div key={r.id} className={'gm-sheet-row ' + (r.st === 'W' || r.st === 'up' ? 'win' : r.st === 'L' || r.st === 'down' ? 'lose' : '')}>
       <span className="gm-mark">{STATUS[r.st] || '•'}</span>
       <div className="gm-sheet-pick"><b><R t={r.pick} s={r.sport} /></b> <small>{oddsText(r.odds)} · {r.sport}</small><small className="gm-sheet-game"><R t={r.matchup} s={r.sport} /></small>
