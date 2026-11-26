@@ -198,8 +198,9 @@ export function AnalystSheet({ data, name, date, sport, picks, games, onClose }:
     mine.map(({ p, others, c, st }: any) => <div key={p.id || gameKey(p)} className={'gm-sheet-row ' + (st === 'W' || st === 'up' ? 'win' : st === 'L' || st === 'down' ? 'lose' : '')}>
       <span className="gm-mark">{STATUS[st] || '•'}</span>
       <div className="gm-sheet-pick"><b><R t={p.pick} s={p.sport} /></b> <small>{oddsText(p.odds)} · {p.market === 'ML' ? 'Moneyline' : p.market} · {p.sport}</small><small className="gm-sheet-game"><R t={p.matchup} s={p.sport} /></small>
-        <div className="gm-sheet-agree">{others.length ? <>{others.map((n: string) => n === 'Johnny Biz' ? <span key={n} className="gm-boss"><DenCrown size={18} /></span> : <img key={n} src={pic(n)} alt={SHORT[n]} title={SHORT[n]} />)}<em>{c ? Math.round(100 * c.w / (c.w + c.l)) + '% together (' + c.w + '–' + c.l + ', last 60 days)' : others.some((n: string) => crew.includes(n)) ? 'not 5 games together yet' : ''}</em></> : <em>Riding solo</em>}</div>
+        <div className="gm-sheet-agree">{others.length ? <>{others.map((n: string) => n === 'Johnny Biz' ? <span key={n} className="gm-boss"><DenCrown size={18} /></span> : <img key={n} src={pic(n)} alt={SHORT[n]} title={SHORT[n]} />)}<em>{c ? c.w + '–' + c.l + ' together · ' + p.sport + ' ' + (p.market === 'ML' ? 'moneylines' : p.market.toLowerCase() + 's') + ' · 60 days' : others.some((n: string) => crew.includes(n)) ? 'not 5 games together yet' : ''}</em></> : <em>Riding solo</em>}</div>
       </div>
+      {c ? <div className="gm-sheet-rate"><strong className={c.w > c.l ? 'green' : c.l > c.w ? 'red' : ''}>{Math.round(100 * c.w / (c.w + c.l))}%</strong><small className={c.net > 0 ? 'green' : c.net < 0 ? 'red' : ''}>{money(c.net || 0)}</small></div> : <div />}
     </div>)}
   </div></div>;
 }
