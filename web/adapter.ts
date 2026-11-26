@@ -188,6 +188,33 @@ async function numbers(q: Record<string, string>) {
   const grades: any = {}; for (const l of lk.filter(l => NDL_CREW.includes(l.analyst))) { const g = String(l.grade || '').charAt(0) || '—'; const x = grades[g] || (grades[g] = []); x.push({ ...l, risk: l.risk ?? l.frozen?.risk ?? 20000 }) }
   return { date: t, from, range, sport: sp, crew, crewLocks, analysts, nightly, eat, bleed, heat: heatRows, agree, grades: Object.fromEntries(Object.entries(grades).map(([g, v]: any) => [g, ndlSum(v)])) };
 }
+// Boss 11/26: per sport x bet type, the crew (solo, duo, trio or 4) with the best / worst win % over a running 30 days,
+// min 5 decisions, and only groups that have a pick together on the chosen day. Boss's own bets never count.
+function kitchenFor(d: string) {
+  const MKS = ['Spread', 'Total', 'ML'], all = cache!.picks as any[];
+  const sideOf = (p: any) => p.market === 'Total' ? String(p.pick).trim().split(/\s+/)[0].toLowerCase() : String(p.pick).replace(/\s*([+-]\d+(\.\d+)?|ML|PK)\s*$/i, '').toLowerCase().trim();
+  const key = (p: any) => p.date + '|' + String(p.matchup).toLowerCase() + '|' + p.market + '|' + sideOf(p);
+  const laneOf = (p: any) => { const l = ndlLane(p); return l ? l.replace(/ \((home|road)\)/, '') : null };
+  const since = offset(d, -30);
+  const hist: any[] = [], hmap = new Map<string, any>();
+  for (const p of all) { if (p.date < since || p.date >= d || !NDL_CREW.includes(p.analyst) || !MKS.includes(p.market) || !['W', 'L', 'Push'].includes(p.result)) continue; const k = key(p); let g = hmap.get(k); if (!g) { const lane = laneOf(p); if (!lane) continue; g = { sport: p.sport, lane, names: new Set<string>(), result: p.result, net: p.net || 0 }; hmap.set(k, g); hist.push(g) } g.names.add(p.analyst) }
+  const dmap = new Map<string, any>();
+  for (const p of all) { if (p.date !== d || !NDL_CREW.includes(p.analyst) || !MKS.includes(p.market)) continue; const k = key(p); let g = dmap.get(k); if (!g) { const lane = laneOf(p); if (!lane) continue; g = { sport: p.sport, lane, names: new Set<string>(), pick: p.pick, matchup: p.matchup, odds: p.odds, result: p.result || '' }; dmap.set(k, g) } g.names.add(p.analyst); if (p.result && !g.result) g.result = p.result }
+  const day = [...dmap.values()];
+  const subsets = (ns: string[]) => { const out: string[][] = []; for (let m = 1; m < 1 << ns.length; m++) { const s = ns.filter((_, i) => m & 1 << i); if (s.length <= 4) out.push(s) } return out };
+  const cand = new Map<string, Map<string, string[]>>();
+  for (const g of day) { const ck = g.sport + '|' + g.lane; const m = cand.get(ck) || new Map(); for (const s of subsets([...g.names].sort())) m.set(s.join('+'), s); cand.set(ck, m) }
+  const cells: any[] = [];
+  for (const [ck, groups] of cand) {
+    const [sport, lane] = ck.split('|'); const rows: any[] = [];
+    for (const ns of groups.values()) { let w = 0, l = 0, push = 0, net = 0; for (const g of hist) { if (g.sport !== sport || g.lane !== lane || !ns.every(n => g.names.has(n))) continue; if (g.result === 'W') w++; else if (g.result === 'L') l++; else push++; net += g.net } if (w + l < 5) continue; rows.push({ names: ns, w, l, push, net, rate: w / (w + l) }) }
+    if (!rows.length) continue;
+    const games = (ns: string[]) => day.filter(g => g.sport === sport && g.lane === lane && ns.every(n => g.names.has(n))).map(g => ({ pick: g.pick, matchup: g.matchup, odds: g.odds, result: g.result, names: [...g.names].sort() }));
+    const hot = [...rows].sort((a, b) => b.rate - a.rate || b.net - a.net)[0], cold = [...rows].sort((a, b) => a.rate - b.rate || a.net - b.net)[0];
+    cells.push({ sport, lane, hot: hot.rate > 0.5 ? { ...hot, games: games(hot.names) } : null, cold: cold.rate < 0.5 ? { ...cold, games: games(cold.names) } : null });
+  }
+  return { date: d, ready: day.length > 0, cells };
+}
 function sheetFor(d: string, who: string) {
   const MKS = ['Spread', 'Total', 'ML'], all = cache!.picks as any[];
   const sideOf = (p: any) => p.market === 'Total' ? String(p.pick).trim().split(/\s+/)[0].toLowerCase() : String(p.pick).replace(/\s*([+-]\d+(\.\d+)?|ML|PK)\s*$/i, '').toLowerCase().trim();
@@ -299,6 +326,8 @@ const realFetch = window.fetch.bind(window);
     if (u.pathname === '/api/export') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); const cols = ['date', 'analyst', 'sport', 'market', 'matchup', 'pick', 'odds', 'risk', 'result', 'net']; const esc = (x: any) => { const t = x == null ? '' : String(x); return /[",\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t }; const body = [cols.join(',')].concat(cache!.picks.map((p: any) => cols.map(c => esc(c === 'risk' || c === 'net' ? (p[c] == null ? '' : p[c] / 100) : p[c])).join(','))).join('\n'); return new Response(body, { headers: { 'content-type': 'text/csv' } }) }
     if (u.pathname === '/api/backup') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); return new Response(JSON.stringify({ exported: new Date().toISOString(), revision: rev, picks: cache!.picks, locks: cache!.locks, settings: cache!.settings }), { headers: { 'content-type': 'application/json' } }) }
     if (u.pathname === '/api/together') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); const names = (u.searchParams.get('names') || '').split('|').filter(Boolean), sp = u.searchParams.get('sport'), mk = u.searchParams.get('market'); const side = (x: any) => String(x.pick || '').toLowerCase().replace(/[^a-z]/g, ''); const by = new Map<string, any[]>(); for (const x of cache!.picks as any[]) { if (!names.includes(x.analyst) || x.sport !== sp || x.market !== mk || !['W', 'L', 'Push'].includes(x.result)) continue; const k = x.date + '|' + x.matchup + '|' + side(x); const a = by.get(k) || []; a.push(x); by.set(k, a) } const games = [...by.values()].filter(a => names.every(n => a.some(x => x.analyst === n))).map(a => a[0]).sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : 0).slice(0, 10); return json(games) }
+    // Boss 11/26: Hot in the Kitchen / Cold in the Freezer (Numbers Don't Lie)
+    if (u.pathname === '/api/kitchen') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); return json(kitchenFor(u.searchParams.get('day') === 'yesterday' ? offset(today(), -1) : today())) }
     // Boss 11/26: Get Money analyst sheet — their picks, who agrees, and how that crew hits in that Hot Box lane (60 days)
     if (u.pathname === '/api/sheet') { const rev = (await api('revision')).revision as number; if (!cache || cache.revision !== rev) await loadAll(rev); return json(sheetFor(u.searchParams.get('date') || '', u.searchParams.get('who') || '')) }
     // Boss 11/26: one day's picks for the Get Money analyst sheet (last night view)

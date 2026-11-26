@@ -122,6 +122,10 @@ export default function Numbers({ revision, footer }: { sport?: string; revision
     <div className="panel wl-panel"><h3>Wins vs Losses</h3>{d.byMarket.filter((m: any) => m.n).map((m: any) => <WL key={m.k} k={m.k === 'ML' ? 'Moneyline' : m.k} s={m} />)}{d.bySport.length > 1 && d.bySport.map((m: any) => <WL key={m.k} k={m.k} s={m} />)}</div>
     <div className="panel"><h3>Money, night by night</h3><MoneyLine pts={d.line} /></div>
 
+    <Kitchen kind="hot" sports={sports} revision={revision} />
+    <Kitchen kind="cold" sports={sports} revision={revision} />
+    <Shortlist revision={revision} sports={sports} />
+
     <div className="ndl2-sec"><h2>In the Weeds</h2><span>{sel.length ? 'by bet type' : 'by who agreed + bet type'} · {d.min}+ decisions</span></div>
     {d.weeds.groups.map((G: any) => { const wmax = Math.max(0.01, ...G.best.map((r: any) => r.roi)), lmax = Math.max(0.01, ...G.worst.map((r: any) => -r.roi)); return <div key={G.title}>
       <div className="wd-title"><b>{G.title}</b>{G.sub && <small>{G.sub}</small>}</div>
@@ -129,16 +133,7 @@ export default function Numbers({ revision, footer }: { sport?: string; revision
       <div className="panel wd"><h3 className="red">🩸 Money pits</h3><div className="wd-drop">{G.worst.map((r: any, i: number) => <div key={i} className="wd-col"><strong className="red">{Math.round(r.roi * 100)}%</strong><div className="wd-pit"><i style={{ height: (-r.roi / lmax * 100) + '%' }} /></div><Faces names={r.names} /><b>{who(r.names)}</b><small>{r.sport} {laneLabel(r.lane)}<br />{rec(r)} · {money(r.net)}<br />{r.w + r.l + (r.push || 0)} picks · {r.games ?? '—'} games</small></div>)}</div>{!G.worst.length && <p className="ndl-note">Nothing losing with {d.min}+ decisions. Enjoy it.</p>}</div>
     </div> })}
 
-    <div className="section-title"><h2>The Hot Box <span>{title.toUpperCase()}</span></h2></div>
-    <div className="panel table-wrap ndl-heat"><table><thead><tr><th></th>{HEAT_LANES.map(l => <th key={l}>{laneLabel(l)}</th>)}</tr></thead><tbody>{heatSports.map(s => <tr key={s}><th>{s}</th>{HEAT_LANES.map(l => { const c = cell(s, l); const roi = c?.roi; const bg = roi == null || c.w + c.l < 10 ? '' : roi >= 0.05 ? 'h3' : roi > 0 ? 'h2' : roi > -0.03 ? 'h1' : roi > -0.08 ? 'c1' : 'c2'; const on = pick && pick.s === s && pick.l === l; return <td key={l} className={bg + ' hm-click' + (on ? ' hm-on' : '')} onClick={() => setPick(on ? null : { s, l })}>{c && c.w + c.l ? <><b>{pct(c.rate)}</b><small>{c.w}–{c.l} · {money(c.net)}</small><small className="hm-games">{c.games ?? '—'} games</small></> : '·'}</td> })}</tr>)}</tbody></table></div>
-    <p className="ndl-note">Big number = win %. Color = money: green made money, red lost it. Under 10 decisions stays gray.</p>
-    <div className="hm-switch"><button className={'lg-chip' + (day === 'today' ? ' on' : '')} onClick={() => setDay('today')}>Today</button><button className={'lg-chip' + (day === 'yesterday' ? ' on' : '')} onClick={() => setDay('yesterday')}>Last Night</button><small>{pick ? '' : 'Tap a box on the heat map'}</small></div>
-    {pick && <div className="panel hm-games"><div className="hm-head"><b>{pick.s} · {laneLabel(pick.l)} · {day === 'today' ? 'Today' : 'Last Night'}</b><button onClick={() => setPick(null)}>✕</button></div>
-      {cellData === 'loading' ? <p className="ndl-note">Pulling the games…</p> : cellData?.err ? <p className="ndl-note">{cellData.err}. Tap the box again.</p> : cellData && <>{(cellData.sum.n > 0 || cellData.pending > 0) && <p className="hm-sum">{cellData.sum.n ? <><b>{rec(cellData.sum)}</b> crew picks · <em className={tone(cellData.sum.net)}>{money(cellData.sum.net)}</em></> : null}{cellData.pending ? (cellData.sum.n ? ' · ' : '') + cellData.pending + ' pending' : ''}</p>}
-        {cellData.games.map((g: any, i: number) => <div key={i} className="hm-game"><span className={'lg-mark ' + (g.result === 'W' ? 'w' : g.result === 'L' ? 'l' : 'p')}>{g.result === 'W' ? '✓' : g.result === 'L' ? '✕' : g.result === 'Push' ? '∞' : '•'}</span><div className="hm-main"><b><R t={g.pick} s={pick.s} /> <em>{g.odds > 0 ? '+' + g.odds : g.odds}</em></b><small><R t={g.matchup} s={pick.s} /></small></div><Faces names={g.names} /></div>)}
-        {!cellData.games.length && <p className="ndl-note">Nobody {sel.length ? 'you picked ' : ''}had a {pick.s} {laneLabel(pick.l).toLowerCase()} {day === 'today' ? 'today' : 'last night'}.</p>}</>}</div>}
 
-    <Shortlist revision={revision} sports={sports} />
 
     {d.locks && <><div className="section-title"><h2>🔒 The Locks <span>{title.toUpperCase()}</span></h2></div>
       <div className="panel ndl2-locks"><div className="lk-head"><Gauge v={d.locks.rate} label="Lock win %" sub={rec(d.locks)} /><div><b className={tone(d.locks.net)}>{money(d.locks.net)}</b><small>ROI {pct(d.locks.roi)}</small>{['A', 'B', 'C'].map(g => d.locks.grades[g]?.n ? <div key={g} className="lk-grade"><span>{g}</span>{rec(d.locks.grades[g])} <em className={tone(d.locks.grades[g].net)}>{money(d.locks.grades[g].net)}</em></div> : null)}</div></div>
@@ -151,4 +146,22 @@ export default function Numbers({ revision, footer }: { sport?: string; revision
 
     {footer && footer(sports)}
   </div>;
+}
+
+// Boss 11/26: "Hot in the Kitchen" (gold, best win % crew per sport x bet type) and "Cold in the Freezer" (blue, worst).
+// Running 30 days, min 5 decisions, only crews with a pick together on the chosen day. Tap a box for that crew's games.
+function Kitchen({ kind, sports, revision }: { kind: 'hot' | 'cold'; sports: string[]; revision: any }) {
+  const [day, setDay] = useState<'today' | 'yesterday'>('today'), [k, setK] = useState<any>(null), [open, setOpen] = useState<any>(null);
+  useEffect(() => { let live = true; setK(null); fetch('/api/kitchen?day=' + day, { cache: 'no-store' }).then(r => r.json()).then(v => live && setK(v && Array.isArray(v.cells) ? v : { cells: [], ready: false })).catch(() => live && setK({ cells: [], ready: false })); return () => { live = false } }, [day, revision]);
+  const hot = kind === 'hot', rowsSports = ['NBA', 'NFL', 'CBB', 'CFB'].filter(s => (!sports.length || sports.includes(s)) && (k?.cells || []).some((c: any) => c.sport === s && c[kind]));
+  const cell = (s: string, l: string) => (k?.cells || []).find((c: any) => c.sport === s && c.lane === l)?.[kind];
+  return <>
+    <div className="section-title kf-title"><h2>{hot ? '🔥 Hot in the Kitchen' : '🧊 Cold in the Freezer'}</h2><div className="kf-tabs"><button className={'lg-chip' + (day === 'today' ? ' on' : '')} onClick={() => setDay('today')}>Today</button><button className={'lg-chip' + (day === 'yesterday' ? ' on' : '')} onClick={() => setDay('yesterday')}>Last Night</button></div></div>
+    {!k ? <p className="ndl-note">Heating up…</p> : !k.ready ? <p className="ndl-note">Waiting on {day === 'today' ? "today's" : "last night's"} card.</p> : !rowsSports.length ? <p className="ndl-note">{hot ? 'Nobody hot on this card.' : 'Nobody cold on this card.'}</p> :
+    <div className={'panel table-wrap ndl-heat kf ' + (hot ? 'kf-hot' : 'kf-cold')}><table><thead><tr><th></th>{HEAT_LANES.map(l => <th key={l}>{laneLabel(l)}</th>)}</tr></thead><tbody>{rowsSports.map(s => <tr key={s}><th>{s}</th>{HEAT_LANES.map(l => { const c = cell(s, l); return <td key={l} className={c ? 'kf-on hm-click' : ''} onClick={() => c && setOpen({ s, l, c })}>{c ? <><b>{Math.round(c.rate * 100)}%</b><Faces names={c.names} /><small>{c.w}–{c.l} · {money(c.net)}</small></> : '·'}</td> })}</tr>)}</tbody></table></div>}
+    {open && <div className="gm-sheet-wrap" onClick={() => setOpen(null)}><div className="gm-sheet" onClick={e => e.stopPropagation()}>
+      <div className="gm-sheet-head"><Faces names={open.c.names} /><div><b>{who(open.c.names)}</b><small>{open.s} · {laneLabel(open.l)} · {day === 'today' ? 'Today' : 'Last Night'} · {Math.round(open.c.rate * 100)}% together, {open.c.w}–{open.c.l}, {money(open.c.net)} (30 days)</small></div><button onClick={() => setOpen(null)} aria-label="Close">✕</button></div>
+      {open.c.games.map((g: any, i: number) => <div key={i} className={'gm-sheet-row ' + (g.result === 'W' ? 'win' : g.result === 'L' ? 'lose' : '')}><span className="gm-mark">{g.result === 'W' ? '✓' : g.result === 'L' ? '✕' : g.result === 'Push' ? '∞' : '•'}</span><div className="gm-sheet-pick"><b><R t={g.pick} s={open.s} /></b> <small>{g.odds > 0 ? '+' + g.odds : g.odds}</small><small className="gm-sheet-game"><R t={g.matchup} s={open.s} /></small><div className="gm-sheet-agree"><Faces names={g.names} /></div></div><div /></div>)}
+    </div></div>}
+  </>;
 }
