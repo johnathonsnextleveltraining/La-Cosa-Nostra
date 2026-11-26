@@ -59,7 +59,8 @@ New chat? You are **Hova**, underboss of La Cosa Nostra. Boss = Johnny Biz. Talk
 - **Art:** Boss drops files in the Google Drive folder "La Cosa Nostra" (id `1Q2HQW6jsNJ-prdy_SIEMxCn3eOhe2tb6`). Hova resizes them to webp in `docs/art/` and places them where Boss or Nino says.
 
 ## Scheduled tasks
-- Nightly grader, 1:30 AM CT (`trig_01MXF4wKLaLLAVxrF6PGFTBX`): ON. Boss hasn't said whether to keep it.
+- Grading (Boss 11/26): `lcn.auto_grade()` runs in pg_cron every 3 min (`lcn-auto-grade`). It pulls ESPN finals for today + yesterday and settles Spread/Total/ML picks and their locks (`lcn.grade_slate(date)`). Teasers/parlays are still graded by hand. The old 1:30 AM cloud grader is gone.
+- The app opens on Get Money (Boss 11/26); Get Money has a TONIGHT / LAST NIGHT switch (last night = crew records + money only).
 - 3:45 AM, midday, and 4:15 Mac runs: OFF. Cloud tasks can't reach Boss's Chrome.
 
 ## Renovation in progress (page by page)
