@@ -18,7 +18,7 @@ export function pifViews(picks:Pick[],asof:string,shared:Shared):PifData{
  const settled=picks.filter(p=>p.date<=asof&&names.includes(p.analyst));
  const aggregate=(betType:boolean)=>{const groups=new Map<string,Pick[]>();for(const p of settled){const key=JSON.stringify([p.analyst,p.date,p.sport,p.market,...(betType?[pifBetType(p)]:[])]);groups.set(key,[...(groups.get(key)||[]),p])}return [...groups.values()].map(ps=>({_aggregate:true,analyst:ps[0].analyst,date:ps[0].date,sport:ps[0].sport,market:ps[0].market,...(betType?{betType:pifBetType(ps[0])}:{}),...summarize(ps)}))};
  // Include unsettled submissions when testing ambiguity: a pending conflicting copy cannot validate a settled agreement.
- const events=new Map<string,Pick[]>();for(const p of picks){if(p.date>asof||!names.includes(p.analyst)||!['Spread','Total','ML'].includes(p.market))continue;const key=eventKey(p)+'|'+p.market;events.set(key,[...(events.get(key)||[]),p])}
+ const events=new Map<string,Pick[]>();/* Boss 11/26: Johnny Biz is never part of a money connection — it shows who to listen to among the crew */for(const p of picks){if(p.date>asof||!crew.includes(p.analyst)||!['Spread','Total','ML'].includes(p.market))continue;const key=eventKey(p)+'|'+p.market;events.set(key,[...(events.get(key)||[]),p])}
  const cohorts=new Map<string,{sport:string;names:string[];own:Map<string,Pick[]>}>();
  const combos=(a:Pick[],n:number):Pick[][]=>n===0?[[]]:a.flatMap((v,i)=>combos(a.slice(i+1),n-1).map(t=>[v,...t]));
  for(const ps of events.values()){

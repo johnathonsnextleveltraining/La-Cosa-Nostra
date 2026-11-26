@@ -2,7 +2,7 @@ import {verifiedLockGrades} from './verified-lock-grades.ts';
 import {worstDuoView} from './losers-engine.ts';
 import {pifViews} from './pif-engine.ts';
 import {paidViews} from './paid-engine.ts';
-export const engineVersion='2026-11-09-frozen-positive-odds-v7';
+export const engineVersion='2026-11-26-pif-crew-only-v8';
 export type Pick={id:string;date:string;analyst:string;matchup:string;pick:string;odds:number|null;risk:number|null;toWin:number|null;market:string;sport:string;net:number|null;result:string;status:string;grade:string;source:string;raw?:unknown;classification?:string};
 export const crew=['Hova Da God','Nino Brown',"G' Money",'Sharp Syndicate','Paulie Publix','Rithmm'];
 export const art:Record<string,string>={'Hova Da God':'hova','Nino Brown':'nino',"G' Money":'g','Sharp Syndicate':'sharps','Paulie Publix':'paulie',Rithmm:'rithmm','Johnny Biz':'johnny'};
