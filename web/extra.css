@@ -477,3 +477,15 @@ h1.h1-one{white-space:nowrap;font-size:clamp(26px,8.2vw,64px)!important;line-hei
 .pif-day{min-height:0;padding:8px 8px 9px;gap:3px}
 @media(max-width:500px){.pif-day{min-height:0;padding:6px 3px 7px;gap:2px}}
 .pif-weekdays{padding:9px 0}
+/* Boss 11/26: analyst switcher + calendar on one screen — crop dead space above/below the month */
+.pif-analysts{padding:4px 0 8px;margin-top:8px;gap:6px}
+.pif-analysts button{padding:7px 6px}
+.pif-analysts img{width:28px;height:28px}
+.pif-panel{padding:14px 16px;margin-bottom:14px}
+.pif-heading{margin-bottom:10px;gap:12px}
+.pif-heading h2{font-size:22px;margin-top:2px}
+.pif-month-headline{margin-top:10px;gap:10px}
+.pif-month-headline span{margin-bottom:4px}
+.pif-month-headline strong{font-size:20px}
+@media(max-width:800px){.pif-analysts button{min-width:70px;padding:6px 4px;gap:3px}.pif-heading{gap:8px}.pif-heading h2{font-size:20px}}
+@media(max-width:500px){.pif-panel{padding:10px}.pif-analysts{padding:2px 0 6px;margin-top:4px}.pif-analysts img{width:24px;height:24px}.pif-month-headline strong{font-size:16px}.pif-month-headline small{margin-top:2px}}
