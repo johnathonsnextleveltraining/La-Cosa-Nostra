@@ -550,7 +550,8 @@ h1.h1-one{white-space:nowrap;font-size:clamp(26px,8.2vw,64px)!important;line-hei
 .lk2-prof-row>.jail-open{flex:0 0 130px!important;width:130px!important;height:130px!important}.lk2-prof-row>.jail-open img{width:130px!important;height:130px!important}
 
 /* Boss 11/26: Get Money LAST NIGHT view — crew records and money only */
-.gm-last-total{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.gm-last-total{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+@media (max-width:520px){.gm-last-total{grid-template-columns:1fr 1fr}}
 .gm-last-total>div{display:flex;flex-direction:column;align-items:center;padding:12px 8px;border:1px solid var(--border);border-radius:8px;background:#12161c}
 .gm-last-total small{font-size:11px;letter-spacing:.08em;color:#aab3bd}
 .gm-last-total b,.gm-last-total strong{font-family:'Saira Stencil One','Barlow',sans-serif;font-weight:400;font-size:24px;margin-top:4px}
@@ -562,10 +563,13 @@ h1.h1-one{white-space:nowrap;font-size:clamp(26px,8.2vw,64px)!important;line-hei
 .gm-last-row img{width:44px;height:44px;border-radius:50%;object-fit:cover;object-position:center 20%}
 .gm-last-name{display:flex;flex-direction:column;min-width:0}.gm-last-name b{font-size:16px}.gm-last-name small{font-size:12px;color:#8b95a0}
 .gm-last-row strong{font-family:'Saira Stencil One','Barlow',sans-serif;font-weight:400;font-size:20px}
+
+.gm-strip-last .gm-box img{width:64px;height:64px;border-radius:8px;object-position:center 30%}
+.gm-last-total b.green,.gm-last-total em.green{color:#a4ef75}.gm-last-total b.red,.gm-last-total em.red{color:#ff6666}
 </style>
 </head>
 <body>
 <div id="root"></div>
-<script src="app.js?v=71178d27"></script>
+<script src="app.js?v=7dee692d"></script>
 </body>
 </html>

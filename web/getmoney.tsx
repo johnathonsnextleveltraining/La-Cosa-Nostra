@@ -1,11 +1,12 @@
 import { R } from './ranks.tsx';
 // "Get Money" (Boss 11/17): live sweat board for every game on tonight's card.
 // Scores from ESPN every 5 minutes. lcn.auto_grade (pg_cron, every 3 min) writes official results as games go final.
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { api } from './adapter.ts';
 import { art, crew, offset, summarize } from '../src/lib/engine';
 // Boss 11/17: gold crown + BOSS under it marks his tickets (same crown as Locked & Loaded)
 function DenCrown({size=24}:{size?:number}){return <svg width={size} height={size} viewBox="0 0 240 200" fill="currentColor" aria-hidden="true" focusable="false"><defs><path id="den-fleur" d="M0-35C-13-23-16-12-8-4C-19-14-31-7-27 4C-24 13-13 14-10 6C-11 18-5 21 0 22C5 21 11 18 10 6C13 14 24 13 27 4C31-7 19-14 8-4C16-12 13-23 0-35ZM-10 26H10V32H-10Z"/></defs><use href="#den-fleur" transform="translate(120 37) scale(.95)"/><use href="#den-fleur" transform="translate(62 65) scale(.7)"/><use href="#den-fleur" transform="translate(178 65) scale(.7)"/><use href="#den-fleur" transform="translate(18 72) rotate(-22) scale(.58)"/><use href="#den-fleur" transform="translate(222 72) rotate(22) scale(.58)"/><path d="M17 88Q34 126 59 130L59 88Q77 124 97 126L120 69L143 126Q163 124 181 88L181 130Q206 126 223 88L200 157Q120 134 40 157Z"/><path d="M41 164Q120 141 199 164L196 176Q120 156 44 176Z"/><path d="M44 183Q120 163 196 183L194 193Q120 175 46 193Z"/><path d="M120 137L124 143L120 149L116 143Z" fill="#0b0e12"/></svg>}
-import { useLiveData, findGame, evalPick, type Game } from './live';
+import { useLiveData, findGame, evalPick, fetchGames, type Game } from './live';
 
 const SHORT: Record<string, string> = { 'Hova Da God': 'Hova', 'Nino Brown': 'Nino', "G' Money": 'G’ Money', 'Sharp Syndicate': 'Sharps', 'Paulie Publix': 'Paulie', Rithmm: 'Rithmm', 'Johnny Biz': 'Johnny Biz' };
 const pic = (n: string) => 'art/jail-' + art[n] + (n === 'Nino Brown' ? '-diesel' : '') + '.webp';
@@ -30,44 +31,71 @@ const legsOf = (p: any): any[] => {
 const STATUS: Record<string, string> = { W: '✓', L: '✕', Push: '∞', up: '▲', down: '▼', even: '=' };
 
 // Boss 11/26: TONIGHT / LAST NIGHT switch. Last night = just the crew's records and money, no games.
-export default function GetMoney({ data, sport }: { data: any; sport: string }) {
+export default function GetMoney({ data, sport, den }: { data: any; sport: string; den?: { w: number; l: number; p: number } }) {
   const [view, setView] = useState<'tonight' | 'last'>('tonight');
   return <>
     <div className="bb-switch" role="tablist" aria-label="Tonight or last night">
       <button role="tab" aria-selected={view === 'tonight'} className={view === 'tonight' ? 'on' : ''} onClick={() => setView('tonight')}>TONIGHT</button>
       <button role="tab" aria-selected={view === 'last'} className={view === 'last' ? 'on' : ''} onClick={() => setView('last')}>LAST NIGHT</button>
     </div>
-    {view === 'tonight' ? <Tonight data={data} sport={sport} /> : <LastNight data={data} sport={sport} />}
+    {view === 'tonight' ? <Tonight data={data} sport={sport} /> : <LastNight data={data} sport={sport} den={den} />}
   </>;
 }
 
-export function LastNight({ data, sport }: { data: any; sport: string }) {
+// Boss 11/26: last night uses the same tall boxes as tonight, with Nino's "Morning After" portraits,
+// and four records up top: Shortlist, Locks, Lions Den, Crew.
+const morning = (n: string) => 'art/morning-' + art[n] + '.webp';
+export function LastNight({ data, sport, den }: { data: any; sport: string; den?: { w: number; l: number; p: number } }) {
   const yest = offset(data.date, -1);
   const fits = (r: any) => r.date === yest && (sport === 'All' || r.sport === sport);
   const perf = (data.performance || []).filter(fits);
   const lockRows = (data.locks || []).filter(fits);
   const names = [...crew, 'Johnny Biz'];
-  const rows = names.map(n => ({ n, s: summarize(perf.filter((p: any) => p.analyst === n)), k: summarize(lockRows.filter((l: any) => l.analyst === n)) }))
-    .filter(r => r.s.count).sort((a, b) => b.s.net - a.s.net);
+  const rows = names.map(n => ({ n, s: summarize(perf.filter((p: any) => p.analyst === n)) })).filter(r => r.s.count).sort((a, b) => b.s.net - a.s.net);
   const crewTot = summarize(perf.filter((p: any) => crew.includes(p.analyst)));
-  const rec = (x: any) => x.w + '–' + x.l + (x.push ? '–' + x.push : '');
-  const wp = (x: any) => x.w + x.l ? Math.round(100 * x.w / (x.w + x.l)) + '%' : '—';
+  const lockTot = summarize(lockRows.filter((l: any) => crew.includes(l.analyst)));
+  const [sl, setSl] = useState<{ w: number; l: number; p: number; net: number } | null>(null);
+  useEffect(() => {
+    let dead = false;
+    (async () => {
+      try {
+        const all: any[] = await api('shortlists');
+        const row = (all || []).find((x: any) => x.date === yest);
+        const plays = (row?.plays || []).filter((x: any) => sport === 'All' || x.sport === sport);
+        const games = plays.some((x: any) => !x.result) ? await fetchGames(yest) : {};
+        const t = { w: 0, l: 0, p: 0, net: 0 };
+        for (const x of plays) {
+          const mk = /^(over|under)\b/i.test(x.pick) || /\b(over|under)\s+\d/i.test(x.pick) ? 'Total' : /\sML$/i.test(x.pick) ? 'ML' : 'Spread';
+          const pk = mk === 'Total' ? String(x.pick).replace(/^.*?\b(Over|Under)\b/i, '$1') : x.pick;
+          const res = x.result || evalPick(pk, mk, findGame(games, x.sport, x.matchup));
+          const o = Number(x.odds) || -110;
+          if (res === 'W') { t.w++; t.net += x.net_cents ?? Math.round(o < 0 ? 20000 * 100 / -o : 20000 * o / 100) }
+          else if (res === 'L') { t.l++; t.net -= 20000 } else if (/^push$/i.test(res)) t.p++;
+        }
+        if (!dead) setSl(row ? t : null);
+      } catch { if (!dead) setSl(null) }
+    })();
+    return () => { dead = true };
+  }, [yest, sport]);
+  const rec = (x: any) => x.w + '–' + x.l + ((x.push ?? x.p) ? '–' + (x.push ?? x.p) : '');
+  const tone = (n: number) => n > 0 ? 'green' : n < 0 ? 'red' : '';
+  const wl = (x: any) => x.w > x.l ? 'green' : x.l > x.w ? 'red' : '';
   const day = new Date(yest + 'T12:00:00Z').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' });
   return <div className="gm gm-last">
     <div className="gm-bar"><div><span>LAST NIGHT</span> <b>{day}</b>{sport !== 'All' ? <> · <b>{sport}</b></> : null}</div></div>
-    {rows.length ? <>
-      <div className="gm-last-total">
-        <div><small>CREW RECORD</small><b>{rec(crewTot)}</b><em>{wp(crewTot)}</em></div>
-        <div><small>CREW MONEY</small><strong className={crewTot.net > 0 ? 'green' : crewTot.net < 0 ? 'red' : ''}>{money(crewTot.net)}</strong></div>
-      </div>
-      <div className="gm-last-list">{rows.map((r, i) => <div key={r.n} className={'gm-last-row' + (r.n === 'Johnny Biz' ? ' boss' : '')}>
-        <span className="gm-last-rank">{i + 1}</span>
-        <img src={r.n === 'Johnny Biz' ? 'art/johnny-free-face.webp' : pic(r.n)} alt="" />
-        <div className="gm-last-name"><b>{SHORT[r.n]}</b><small>{rec(r.s)} · {wp(r.s)}{r.k.w + r.k.l + r.k.push ? ' · locks ' + rec(r.k) : ''}</small></div>
-        <strong className={r.s.net > 0 ? 'green' : r.s.net < 0 ? 'red' : ''}>{money(r.s.net)}</strong>
-      </div>)}</div>
-      {rows.some(r => r.s.pending) && <p className="muted">Some of last night's picks are still pending. The grader settles them as the finals come in.</p>}
-    </> : <p className="muted">Nothing settled from last night{sport !== 'All' ? ' in ' + sport : ''}.</p>}
+    <div className="gm-last-total">
+      <div><small>SHORTLIST</small><b className={sl ? wl(sl) : ''}>{sl ? rec(sl) : '—'}</b><em className={sl ? tone(sl.net) : ''}>{sl ? money(sl.net) : 'No list'}</em></div>
+      <div><small>LOCKS</small><b className={wl(lockTot)}>{rec(lockTot)}</b><em className={tone(lockTot.net)}>{money(lockTot.net)}</em></div>
+      <div><small>LIONS DEN</small><b className={den ? wl(den) : ''}>{den ? rec(den) : '—'}</b><em>{den && den.w + den.l ? Math.round(100 * den.w / (den.w + den.l)) + '%' : 'No Den'}</em></div>
+      <div><small>CREW</small><b className={wl(crewTot)}>{rec(crewTot)}</b><em className={tone(crewTot.net)}>{money(crewTot.net)}</em></div>
+    </div>
+    {rows.length ? <div className="gm-strip gm-strip-last">{rows.map(r => <div key={r.n} className={'gm-box' + (r.n === 'Johnny Biz' ? ' boss' : '')}>
+      <img src={morning(r.n)} onError={(e: any) => { e.currentTarget.onerror = null; e.currentTarget.src = r.n === 'Johnny Biz' ? 'art/johnny-free-face.webp' : pic(r.n) }} alt="" />
+      <span>{SHORT[r.n]}</span>
+      <b>{rec(r.s)}</b>
+      <strong className={tone(r.s.net)}>{money(r.s.net)}</strong>
+      <small>{r.s.pending ? r.s.pending + ' pending' : 'done'}</small>
+    </div>)}</div> : <p className="muted">Nothing settled from last night{sport !== 'All' ? ' in ' + sport : ''}.</p>}
   </div>;
 }
 
