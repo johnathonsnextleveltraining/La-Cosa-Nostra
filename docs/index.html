@@ -630,10 +630,15 @@ h1.h1-one{white-space:nowrap;font-size:clamp(26px,8.2vw,64px)!important;line-hei
 .kf td small{display:block;font-size:10px}
 .kf-hot td.kf-on{background:var(--gold);color:#0b0e12}.kf-hot td.kf-on small{color:#1a1a1a}
 .kf-cold td.kf-on{background:#1e4f8a;color:#fff}.kf-cold td.kf-on small{color:#e6eefa}
+/* Boss 11/26: EVERY box in the Kitchen is gold with black letters, EVERY box in the Freezer is blue with white letters */
+.ndl-heat.kf-hot td,.ndl-heat.kf-hot td.kf-on{background:var(--gold) !important;color:#000 !important}
+.ndl-heat.kf-hot td *,.ndl-heat.kf-hot td small{color:#000 !important}
+.ndl-heat.kf-cold td,.ndl-heat.kf-cold td.kf-on{background:#1e4f8a !important;color:#fff !important}
+.ndl-heat.kf-cold td *,.ndl-heat.kf-cold td small{color:#fff !important}
 </style>
 </head>
 <body>
 <div id="root"></div>
-<script src="app.js?v=9430102e"></script>
+<script src="app.js?v=f2f122c9"></script>
 </body>
 </html>
