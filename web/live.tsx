@@ -48,7 +48,8 @@ export function lockTerms(l: any) {
   return { pick: l.frozen?.pick || first, matchup, market, sport: l.sport };
 }
 export function findGame(games: Record<string, Game>, sport: string, matchup: string) {
-  const [a, h] = matchup.split(/\s+at\s+/); if (!a || !h) return null;
+  if (!games || !matchup) return null; // Boss 11/27: a shortlist play with no matchup crashed the page
+  const [a, h] = String(matchup).split(/\s+at\s+/); if (!a || !h) return null;
   const k = sport + '|' + norm(a) + '|' + norm(h); if (games[k]) return games[k];
   const na = norm(a), nh = norm(h), m = (x: string, n: string) => x.startsWith(n) || n.startsWith(x);
   // Boss 11/23: our slate sometimes has home/away flipped vs ESPN (Nevada at SF was really SF at Nevada) - match either way
