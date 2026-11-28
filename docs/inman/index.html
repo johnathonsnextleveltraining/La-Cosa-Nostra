@@ -194,20 +194,24 @@ select.sel{width:100%;background:var(--card2);border:1px solid var(--line);borde
 body.her .stick{background:#00343A}
 .stick header.top{margin-bottom:0}
 .hero{display:flex;gap:8px;align-items:stretch;margin:0 0 8px}
+.hero .heroimg{flex:1;min-width:0;width:50%;height:150px;object-fit:cover;border-radius:12px;border:2px solid var(--line);display:block}
+body.him .hero .heroimg{border-radius:6px;border-color:rgba(135,206,235,.5)}
+.hero .p-couple{object-position:50% 26%}
+.hero .p-pool{object-position:50% 18%}.hero .p-world{object-position:50% 6%}
+.hero .p-mirror{object-position:62% 30%}.hero .p-cable{object-position:50% 18%}.hero .p-flex{object-position:50% 35%}.hero .p-backpack{object-position:50% 25%}
+body.body-tab .hero .heroimg{height:190px;object-fit:contain;background:#000}
+.weekstrip{margin:0 0 8px}
+.weekstrip .weekbar{margin:0;padding:4px 2px}
+.weekstrip .weekbar .arrow{width:34px;height:34px}
+body.body-tab .weekstrip .arrow{visibility:hidden}
+.weekstrip .weekbar .mid{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:12px}
+.weekstrip .weekbar .ttl{margin-top:0}
+body.him .weekstrip .weekbar .wk{font-size:26px;letter-spacing:1px}
+body.him .weekstrip .weekbar .ttl{width:112px;height:52px;font-size:12px;padding:5px 12px}
+body.her .weekstrip .weekbar .wk{font-size:24px}
+body.her .weekstrip .weekbar .ttl{font-size:12px}
 body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top);background:#0b0d0e;z-index:40;pointer-events:none}
 body.her::before{background:#00343A}
-.hero .weekbar{flex:1;margin:0;min-width:0;padding:6px 2px}
-.hero .weekbar .arrow{width:24px;font-size:20px}
-.hero .heroimg{width:50%;height:136px;object-fit:cover;border-radius:12px;border:2px solid var(--line);display:block;flex:none}
-body.him .hero .heroimg{border-radius:6px;border-color:rgba(135,206,235,.5)}
-.hero .p-pool{object-position:50% 18%}.hero .p-world{object-position:50% 6%}
-body.body-tab .hero .arrow{visibility:hidden}
-body.body-tab .hero .heroimg{width:auto;height:190px;aspect-ratio:3/4;object-fit:contain;background:#000}
-.hero .p-mirror{object-position:62% 30%}.hero .p-cable{object-position:50% 18%}.hero .p-flex{object-position:50% 35%}.hero .p-backpack{object-position:50% 25%}
-body.him .hero .weekbar .mid{flex-direction:column;gap:2px}
-body.him .hero .weekbar .wk{font-size:24px;letter-spacing:1px}
-body.him .hero .weekbar .ttl{width:104px;height:54px;font-size:12px;padding:5px 10px}
-body.her .hero .weekbar .wk{font-size:22px}
 .login img.welcome{width:100%;max-width:330px;height:auto;border-radius:16px;border:2px solid var(--line)}
 
 .login h1{font-family:"Saira Stencil One";color:var(--blue);margin:0;font-size:28px;font-weight:400}
@@ -444,7 +448,7 @@ const HERO={log:{him:["mirror-cover","p-mirror"],her:["cable-row-profile","p-cab
 function weekBar(p, w, withNew){
   const pic=(HERO[S.tab]||{})[p];
   const bar=weekBarInner(p,w,withNew);
-  if(pic){ S._hero=`<div class="hero">${bar}<img class="heroimg ${pic[1]}" src="pics/${pic[0]}.jpg" alt=""></div>`; return ""; } return bar;
+  if(pic){ const cp = p==="her" ? "eagles-green-welcome" : "matching-blue-welcome"; S._hero=`<div class="hero"><img class="heroimg p-couple" src="pics/${cp}.jpg" alt=""><img class="heroimg ${pic[1]}" src="pics/${pic[0]}.jpg" alt=""></div><div class="weekstrip">${bar}</div>`; return ""; } return bar;
 }
 function weekBarInner(p, w, withNew){
   const ws=weeksOf(p), i=ws.indexOf(w);
@@ -643,7 +647,7 @@ render();
 if(S.code){ load().then(render).catch(e=>{ if(/bad code/.test(e.message)) logout(); else showSave("Offline — showing saved copy","err"); }); flush(); }
 </script>
 <script>
-const APP_V="1795866299";
+const APP_V="1795866576";
 async function checkUpdate(){ try{ const r=await fetch("version.txt?t="+Date.now(),{cache:"no-store"}); const nv=(await r.text()).trim(); if(nv && nv!==APP_V){ location.replace(location.pathname+"?v="+nv); } }catch(e){} }
 checkUpdate(); document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkUpdate(); });
 </script>
