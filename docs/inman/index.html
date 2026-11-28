@@ -121,8 +121,14 @@ header.top{display:flex;align-items:center;justify-content:space-between;gap:10p
 .sets input{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px 8px;text-align:center;font-size:17px;font-weight:600;outline:none}
 .sets input:focus{border-color:var(--me)}
 .sets input::placeholder{color:#4F6584;font-weight:500}
-.ex-foot{display:flex;justify-content:space-between;align-items:center;margin-top:9px;gap:8px}
-.ex-foot .v{font-size:12px;color:var(--muted)}
+.ex-foot{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;margin-top:9px;gap:8px}
+.ex-foot .ghost{justify-self:start}
+.ex-foot .tw{text-align:center;line-height:1.1}
+.ex-foot .tw .l{font-size:10px;letter-spacing:1.5px;color:var(--muted);font-weight:700}
+.ex-foot .v{font-size:18px;font-weight:800;color:var(--me)}
+.last .lt{color:var(--me);font-weight:800;white-space:nowrap}
+body.him .ex-foot .v{font-family:Righteous,sans-serif;font-weight:400}
+body.her .ex-foot .v{font-family:"Playfair Display",serif;font-style:italic}
 .ghost{border:1px dashed var(--line);background:transparent;color:var(--muted);border-radius:10px;padding:7px 10px;font-size:12px;font-weight:700}
 .status{font-size:11px;font-weight:800;letter-spacing:.5px;padding:3px 8px;border-radius:6px;white-space:nowrap}
 .s-pr{background:var(--purple);color:#0B1626}
@@ -433,14 +439,14 @@ function renderLog(){
   if(!list.length) h += `<div class="empty">No exercises on this day yet.</div>`;
   for(const e of list){
     const prev=prevOf(p,w,e.exercise), ps=prev? setsOf(prev):null, s=stat(e), st=statusOf(p,e);
-    const lastTxt = prev ? `Last time (Wk ${prev.week}): <b>${ps.map(([a,b])=> (a?fmt1(a):"BW")+"×"+(b??"–")).join(" · ")}</b>` : `First time logging this one`;
+    const lastTxt = prev ? `Last time (Wk ${prev.week}): <b>${ps.map(([a,b])=> (a?fmt1(a):"BW")+"×"+(b??"–")).join(" · ")}</b>${(()=>{const q=stat(prev); return q.vol?` <span class="lt">= ${fmt(q.vol)} lbs</span>`:(q.bw?` <span class="lt">= ${q.reps} reps</span>`:"");})()}` : `First time logging this one`;
     h += `<div class="card" data-id="${e.id}"><div class="ex-head"><div class="ex-name fit">${esc(e.exercise)}</div>
       ${s.done?`<span class="status s-${st[0]}">${st[1]}</span>`:''}<span class="chip">${esc(e.muscle||"")}</span><button class="more" data-act="edit">⋯</button></div>
       <div class="last">${lastTxt}</div><div class="sets">`;
     setsOf(e).forEach(([wt,r],i)=>{ const pw=ps?ps[i][0]:null, pr=ps?ps[i][1]:null;
       h += `<div class="n">${i+1}</div><input inputmode="decimal" data-f="w${i+1}" value="${wt??""}" placeholder="${pw!=null?fmt1(pw):'lbs'}">
         <div class="x">×</div><input inputmode="numeric" data-f="r${i+1}" value="${r??""}" placeholder="${pr!=null?pr:'reps'}">`; });
-    h += `</div><div class="ex-foot"><button class="ghost" data-act="copy" ${prev?'':'disabled'}>↺ Same as last time</button><div class="v">${s.vol?fmt(s.vol)+" lbs moved":(s.bw?s.reps+" reps":"")}</div></div></div>`;
+    h += `</div><div class="ex-foot"><button class="ghost" data-act="copy" ${prev?'':'disabled'}>↺ Same as last time</button><div class="tw"><div class="l">THIS WEEK</div><div class="v">${s.vol?fmt(s.vol)+" lbs":(s.bw?s.reps+" reps":"—")}</div></div><div></div></div></div>`;
   }
   h += `<button class="addex" data-act="add">+ ADD EXERCISE TO ${esc((d||"").toUpperCase())}</button>`;
   if(w===latest(p)) h += `<button class="newwk" data-act="newweek">START WEEK ${w+1}</button>`;
@@ -594,7 +600,7 @@ document.addEventListener("input", ev=>{
   const v=inp.value.trim().replace(",","."); e[inp.dataset.f] = v===""? null : (isNaN(+v)? e[inp.dataset.f] : +v);
   queueSave(e);
   // refresh the volume line without re-rendering (keeps the keyboard up)
-  const s=stat(e); card.querySelector(".ex-foot .v").textContent = s.vol? fmt(s.vol)+" lbs moved" : (s.bw? s.reps+" reps":"");
+  const s=stat(e); card.querySelector(".ex-foot .v").textContent = s.vol? fmt(s.vol)+" lbs" : (s.bw? s.reps+" reps":"—");
 });
 document.addEventListener("change", ev=>{ if(ev.target.dataset.act==="lift"){ S.lift[S.who]=ev.target.value; store.set("lift",S.lift); render(); } });
 document.addEventListener("keydown", ev=>{ if(ev.key==="Enter" && ev.target.id==="code") document.querySelector('[data-act="login"]').click(); });
@@ -606,7 +612,7 @@ render();
 if(S.code){ load().then(render).catch(e=>{ if(/bad code/.test(e.message)) logout(); else showSave("Offline — showing saved copy","err"); }); flush(); }
 </script>
 <script>
-const APP_V="1795629559";
+const APP_V="1795859108";
 async function checkUpdate(){ try{ const r=await fetch("version.txt?t="+Date.now(),{cache:"no-store"}); const nv=(await r.text()).trim(); if(nv && nv!==APP_V){ location.replace(location.pathname+"?v="+nv); } }catch(e){} }
 checkUpdate(); document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkUpdate(); });
 </script>
