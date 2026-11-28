@@ -116,6 +116,10 @@ header.top{display:flex;align-items:center;justify-content:space-between;gap:10p
 .last{font-size:12px;color:var(--muted);margin:6px 0 8px}
 .last b{color:var(--text);font-weight:600}
 .setwrap{display:flex;gap:8px;align-items:stretch}
+.mood{display:flex;flex-direction:column;align-items:center;min-height:0}
+.mood img{width:64px;height:64px;object-fit:contain;display:block}
+.mood .ml{font-size:11px;font-weight:800;letter-spacing:1.5px;margin-top:1px}
+.mood .m-up{color:var(--me)}body.her .mood .m-up{color:#4CBB17}.mood .m-same{color:#F5C518}.mood .m-down{color:#FF4D4D}
 .setwrap .sets{flex:1;min-width:0}
 .volcol{width:31%;display:flex;flex-direction:column;gap:8px;padding-top:18px}
 .volbox{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;border:1px solid var(--line);border-radius:10px;background:var(--card2);padding:6px 4px}
@@ -318,6 +322,13 @@ function bestBefore(p, w, name){
   for(const e of entries(p)) if(e.week<w && keyOf(e.exercise)===k){ const s=stat(e); if(s.done>0){any=true; b=Math.max(b,s.orm);} }
   return {b, any};
 }
+function volMood(p, e, prev){
+  const s=stat(e); if(!s.done || !prev) return null; const ps=stat(prev);
+  const a = s.vol||s.bw ? (s.bw? s.reps : s.vol) : 0, b = s.bw? ps.reps : ps.vol;
+  const up = p==="her" ? "up-her" : "up-him";
+  return a>b ? [up,"UP"] : a<b ? ["down","DOWN"] : ["same","STALLED"];
+}
+function moodHtml(m){ return m ? `<img src="emo/${m[0]}.png" alt=""><div class="ml m-${m[0].split("-")[0]}">${m[1]}</div>` : ""; }
 function statusOf(p, e){
   const s=stat(e); if(!s.done) return ["none","Not logged"];
   const prev=prevOf(p, e.week, e.exercise); const bb=bestBefore(p, e.week, e.exercise);
@@ -460,13 +471,13 @@ function renderLog(){
     const prev=prevOf(p,w,e.exercise), ps=prev? setsOf(prev):null, s=stat(e), st=statusOf(p,e);
     const lastTxt = prev ? `Last time (Wk ${prev.week}): <b>${ps.map(([a,b])=> (a?fmt1(a):"BW")+"×"+(b??"–")).join(" · ")}</b>${(()=>{const q=stat(prev), t=wsum(prev); return t?` <span class="lt">= ${fmt(t)} lbs</span>`:(q.bw?` <span class="lt">= ${q.reps} reps</span>`:"");})()}` : `First time logging this one`;
     h += `<div class="card" data-id="${e.id}"><div class="ex-head"><div class="ex-name fit">${esc(e.exercise)}</div>
-      ${s.done?`<span class="status s-${st[0]}">${st[1]}</span>`:''}<span class="chip">${esc(e.muscle||"")}</span><button class="more" data-act="edit">⋯</button></div>
+      ${s.done&&st[0]==="pr"?`<span class="status s-pr">${st[1]}</span>`:''}<span class="chip">${esc(e.muscle||"")}</span><button class="more" data-act="edit">⋯</button></div>
       <div class="last">${lastTxt}</div><div class="setwrap"><div class="sets"><div></div><div class="hd">LBS</div><div></div><div class="hd">REPS</div>`;
     setsOf(e).forEach(([wt,r],i)=>{ const pw=ps?ps[i][0]:null, pr=ps?ps[i][1]:null;
       h += `<div class="n">${i+1}</div><input inputmode="decimal" data-f="w${i+1}" value="${wt??""}" placeholder="${pw!=null?fmt1(pw):'lbs'}">
         <div class="x">×</div><input inputmode="numeric" data-f="r${i+1}" value="${r??""}" placeholder="${pr!=null?pr:'reps'}">`; });
     const pv=prev?stat(prev).vol:0;
-    h += `</div><div class="volcol"><div class="volbox"><div class="l">LAST WEEK</div><div class="n">${pv?fmt(pv):"—"}</div><div class="u">volume</div></div><div class="volbox this"><div class="l">THIS WEEK</div><div class="n vnow">${s.vol?fmt(s.vol):"—"}</div><div class="u">volume</div></div></div></div><div class="ex-foot"><button class="ghost" data-act="copy" ${prev?'':'disabled'}>↺ Same as last time</button><div class="tw"><div class="l">THIS WEEK</div><div class="v">${wsum(e)?fmt(wsum(e))+" lbs":(s.bw?s.reps+" reps":"—")}</div></div><div></div></div></div>`;
+    h += `</div><div class="volcol"><div class="volbox"><div class="l">LAST WEEK</div><div class="n">${pv?fmt(pv):"—"}</div><div class="u">volume</div></div><div class="volbox this"><div class="l">THIS WEEK</div><div class="n vnow">${s.vol?fmt(s.vol):"—"}</div><div class="u">volume</div></div><div class="mood">${moodHtml(volMood(p,e,prev))}</div></div></div><div class="ex-foot"><button class="ghost" data-act="copy" ${prev?'':'disabled'}>↺ Same as last time</button><div class="tw"><div class="l">THIS WEEK</div><div class="v">${wsum(e)?fmt(wsum(e))+" lbs":(s.bw?s.reps+" reps":"—")}</div></div><div></div></div></div>`;
   }
   h += `<button class="addex" data-act="add">+ ADD EXERCISE TO ${esc((d||"").toUpperCase())}</button>`;
   if(w===latest(p)) h += `<button class="newwk" data-act="newweek">START WEEK ${w+1}</button>`;
@@ -620,7 +631,7 @@ document.addEventListener("input", ev=>{
   const v=inp.value.trim().replace(",","."); e[inp.dataset.f] = v===""? null : (isNaN(+v)? e[inp.dataset.f] : +v);
   queueSave(e);
   // refresh the volume line without re-rendering (keeps the keyboard up)
-  const s=stat(e); card.querySelector(".ex-foot .v").textContent = wsum(e)? fmt(wsum(e))+" lbs" : (s.bw? s.reps+" reps":"—"); const vn=card.querySelector(".vnow"); if(vn) vn.textContent = s.vol? fmt(s.vol) : "—";
+  const s=stat(e); card.querySelector(".ex-foot .v").textContent = wsum(e)? fmt(wsum(e))+" lbs" : (s.bw? s.reps+" reps":"—"); const vn=card.querySelector(".vnow"); if(vn) vn.textContent = s.vol? fmt(s.vol) : "—"; const md=card.querySelector(".mood"); if(md) md.innerHTML = moodHtml(volMood(S.who,e,prevOf(S.who,e.week,e.exercise)));
 });
 document.addEventListener("change", ev=>{ if(ev.target.dataset.act==="lift"){ S.lift[S.who]=ev.target.value; store.set("lift",S.lift); render(); } });
 document.addEventListener("keydown", ev=>{ if(ev.key==="Enter" && ev.target.id==="code") document.querySelector('[data-act="login"]').click(); });
@@ -632,7 +643,7 @@ render();
 if(S.code){ load().then(render).catch(e=>{ if(/bad code/.test(e.message)) logout(); else showSave("Offline — showing saved copy","err"); }); flush(); }
 </script>
 <script>
-const APP_V="1795864643";
+const APP_V="1795865705";
 async function checkUpdate(){ try{ const r=await fetch("version.txt?t="+Date.now(),{cache:"no-store"}); const nv=(await r.text()).trim(); if(nv && nv!==APP_V){ location.replace(location.pathname+"?v="+nv); } }catch(e){} }
 checkUpdate(); document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkUpdate(); });
 </script>
