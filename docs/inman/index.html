@@ -60,7 +60,9 @@ body.him .addex{border-radius:6px}
 .newwk{width:100%;margin-top:10px;border:2px solid var(--me);background:transparent;color:var(--me);border-radius:6px;padding:12px;font-weight:800;letter-spacing:1px}
 nav.tabs .ic img{width:28px;height:28px;border-radius:6px;display:block;margin:0 auto}
 nav.tabs button:not(.on) .ic img{opacity:.55}
-body.her nav.tabs .ic img{content:url(tab-program-her.png)}
+body.her nav.tabs .ic img.ic-prog{content:url(tab-program-her.png)}
+body.her nav.tabs .ic img.ic-board{content:url(tab-board-her.png)}
+nav.tabs .ic img.ic-board{border-radius:0;object-fit:contain}
 body.her{--me:#A5ACAF;--bg:#0B0F10;--card:rgba(0,0,0,.2);--card2:rgba(0,0,0,.3);--line:rgba(165,172,175,.35);--muted:#B9C6C7;--text:#F4F6F6;--green:#4CBB17}
 body.her{background:linear-gradient(180deg,#004C54 0%,#00343A 46%,#0B0F10 100%) fixed;font-family:Poppins,system-ui,sans-serif}
 html:has(body.her){background:#0B0F10}
@@ -255,8 +257,8 @@ table.bt td:first-child,table.bt th:first-child{text-align:left}
 <div class="wrap" id="app"></div>
 <div class="savebar" id="savebar" style="opacity:0"></div>
 <nav class="tabs" id="tabs" style="display:none"><div class="in">
-  <button data-t="log"><span class="ic"><img src="tab-program.png" alt=""></span>PROGRAM</button>
-  <button data-t="board"><span class="ic">📈</span>SCOREBOARD</button>
+  <button data-t="log"><span class="ic"><img class="ic-prog" src="tab-program.png" alt=""></span>PROGRAM</button>
+  <button data-t="board"><span class="ic"><img class="ic-board" src="tab-board-him.png" alt=""></span>SCOREBOARD</button>
   <button data-t="body"><span class="ic">⚖️</span>BODY</button>
 </div></nav>
 <div id="modal"></div>
@@ -648,7 +650,7 @@ render();
 if(S.code){ load().then(render).catch(e=>{ if(/bad code/.test(e.message)) logout(); else showSave("Offline — showing saved copy","err"); }); flush(); }
 </script>
 <script>
-const APP_V="1795868077";
+const APP_V="1795868207";
 async function checkUpdate(){ try{ const r=await fetch("version.txt?t="+Date.now(),{cache:"no-store"}); const nv=(await r.text()).trim(); if(nv && nv!==APP_V){ location.replace(location.pathname+"?v="+nv); } }catch(e){} }
 checkUpdate(); document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkUpdate(); });
 </script>
