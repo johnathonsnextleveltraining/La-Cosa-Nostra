@@ -268,6 +268,7 @@ async function api(op, args){
 const num = v => (v===null || v===undefined || v==="") ? null : +v;
 const setsOf = e => [1,2,3,4].map(i => [num(e["w"+i]), num(e["r"+i])]);
 const keyOf = n => (n||"").toLowerCase().replace(/[^a-z0-9]/g,"").replace(/s$/,"");
+function wsum(e){ return setsOf(e).reduce((t,[w])=>t+(w>0?+w:0),0); }
 function stat(e){
   let vol=0, done=0, reps=0, top=0, topR=0, orm=0;
   for(const [w,r] of setsOf(e)){
@@ -439,14 +440,14 @@ function renderLog(){
   if(!list.length) h += `<div class="empty">No exercises on this day yet.</div>`;
   for(const e of list){
     const prev=prevOf(p,w,e.exercise), ps=prev? setsOf(prev):null, s=stat(e), st=statusOf(p,e);
-    const lastTxt = prev ? `Last time (Wk ${prev.week}): <b>${ps.map(([a,b])=> (a?fmt1(a):"BW")+"×"+(b??"–")).join(" · ")}</b>${(()=>{const q=stat(prev); return q.vol?` <span class="lt">= ${fmt(q.vol)} lbs</span>`:(q.bw?` <span class="lt">= ${q.reps} reps</span>`:"");})()}` : `First time logging this one`;
+    const lastTxt = prev ? `Last time (Wk ${prev.week}): <b>${ps.map(([a,b])=> (a?fmt1(a):"BW")+"×"+(b??"–")).join(" · ")}</b>${(()=>{const q=stat(prev), t=wsum(prev); return t?` <span class="lt">= ${fmt(t)} lbs</span>`:(q.bw?` <span class="lt">= ${q.reps} reps</span>`:"");})()}` : `First time logging this one`;
     h += `<div class="card" data-id="${e.id}"><div class="ex-head"><div class="ex-name fit">${esc(e.exercise)}</div>
       ${s.done?`<span class="status s-${st[0]}">${st[1]}</span>`:''}<span class="chip">${esc(e.muscle||"")}</span><button class="more" data-act="edit">⋯</button></div>
       <div class="last">${lastTxt}</div><div class="sets">`;
     setsOf(e).forEach(([wt,r],i)=>{ const pw=ps?ps[i][0]:null, pr=ps?ps[i][1]:null;
       h += `<div class="n">${i+1}</div><input inputmode="decimal" data-f="w${i+1}" value="${wt??""}" placeholder="${pw!=null?fmt1(pw):'lbs'}">
         <div class="x">×</div><input inputmode="numeric" data-f="r${i+1}" value="${r??""}" placeholder="${pr!=null?pr:'reps'}">`; });
-    h += `</div><div class="ex-foot"><button class="ghost" data-act="copy" ${prev?'':'disabled'}>↺ Same as last time</button><div class="tw"><div class="l">THIS WEEK</div><div class="v">${s.vol?fmt(s.vol)+" lbs":(s.bw?s.reps+" reps":"—")}</div></div><div></div></div></div>`;
+    h += `</div><div class="ex-foot"><button class="ghost" data-act="copy" ${prev?'':'disabled'}>↺ Same as last time</button><div class="tw"><div class="l">THIS WEEK</div><div class="v">${wsum(e)?fmt(wsum(e))+" lbs":(s.bw?s.reps+" reps":"—")}</div></div><div></div></div></div>`;
   }
   h += `<button class="addex" data-act="add">+ ADD EXERCISE TO ${esc((d||"").toUpperCase())}</button>`;
   if(w===latest(p)) h += `<button class="newwk" data-act="newweek">START WEEK ${w+1}</button>`;
@@ -600,7 +601,7 @@ document.addEventListener("input", ev=>{
   const v=inp.value.trim().replace(",","."); e[inp.dataset.f] = v===""? null : (isNaN(+v)? e[inp.dataset.f] : +v);
   queueSave(e);
   // refresh the volume line without re-rendering (keeps the keyboard up)
-  const s=stat(e); card.querySelector(".ex-foot .v").textContent = s.vol? fmt(s.vol)+" lbs" : (s.bw? s.reps+" reps":"—");
+  const s=stat(e); card.querySelector(".ex-foot .v").textContent = wsum(e)? fmt(wsum(e))+" lbs" : (s.bw? s.reps+" reps":"—");
 });
 document.addEventListener("change", ev=>{ if(ev.target.dataset.act==="lift"){ S.lift[S.who]=ev.target.value; store.set("lift",S.lift); render(); } });
 document.addEventListener("keydown", ev=>{ if(ev.key==="Enter" && ev.target.id==="code") document.querySelector('[data-act="login"]').click(); });
@@ -612,7 +613,7 @@ render();
 if(S.code){ load().then(render).catch(e=>{ if(/bad code/.test(e.message)) logout(); else showSave("Offline — showing saved copy","err"); }); flush(); }
 </script>
 <script>
-const APP_V="1795859108";
+const APP_V="1795859355";
 async function checkUpdate(){ try{ const r=await fetch("version.txt?t="+Date.now(),{cache:"no-store"}); const nv=(await r.text()).trim(); if(nv && nv!==APP_V){ location.replace(location.pathname+"?v="+nv); } }catch(e){} }
 checkUpdate(); document.addEventListener("visibilitychange",()=>{ if(!document.hidden) checkUpdate(); });
 </script>
